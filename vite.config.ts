@@ -14,6 +14,9 @@ export default defineConfig({
       "Cache-Control": "no-cache",
       "Pragma": "no-cache",
       "Expires": "0",
+    },
+    hmr: {
+      clientPort: 443,
     }
   },
   plugins: [react(), tailwindcss()],
