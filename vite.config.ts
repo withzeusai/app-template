@@ -9,6 +9,12 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 5173,
     allowedHosts: true,
+    strictPort: true,
+    headers: {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache",
+      "Expires": "0",
+    }
   },
   plugins: [react(), tailwindcss()],
   resolve: {
