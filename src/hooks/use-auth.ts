@@ -1,10 +1,9 @@
 import { useAuth, type AuthProviderProps } from "react-oidc-context";
 
 const AUTH_CONFIG: AuthProviderProps = {
-  authority:
-    import.meta.env.HERCULES_OIDC_AUTHORITY || "https://hercules.app/api/auth",
-  client_id: import.meta.env.HERCULES_OIDC_CLIENT_ID || "no_client_id",
-  redirect_uri: import.meta.env.HERCULES_OIDC_REDIRECT_URI || "no_redirect_uri",
+  authority: import.meta.env.VITE_HERCULES_OIDC_AUTHORITY!,
+  client_id: import.meta.env.VITE_HERCULES_OIDC_CLIENT_ID!,
+  redirect_uri: import.meta.env.VITE_HERCULES_OIDC_REDIRECT_URI!,
   response_type: "code",
   scope: "openid profile email",
 };
