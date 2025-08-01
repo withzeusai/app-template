@@ -22,16 +22,16 @@ export function usePostgrest() {
   const { user } = useAuth();
   const [postgrest, setPostgrest] = useState<PostgrestClient | null>(null);
 
-  const accessToken = user?.access_token;
+  const token = user?.access_token;
   useEffect(() => {
-    if (accessToken) {
+    if (token) {
       setPostgrest(
         postgrestWithHeaders({
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         }),
       );
     }
-  }, [accessToken]);
+  }, [token]);
 
   return postgrest;
 }

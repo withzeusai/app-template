@@ -1,4 +1,4 @@
-import { forwardRef, useCallback } from "react";
+import { forwardRef, useCallback, useEffect } from "react";
 import { type VariantProps } from "class-variance-authority";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 
@@ -68,6 +68,12 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
       isLoading,
       error,
     } = useAuth();
+
+    useEffect(() => {
+      if (error) {
+        console.error("Login error", error);
+      }
+    }, [error]);
 
     const handleClick = useCallback(
       async (event: React.MouseEvent<HTMLButtonElement>) => {
