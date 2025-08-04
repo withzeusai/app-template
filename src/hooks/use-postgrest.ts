@@ -22,7 +22,7 @@ export function usePostgrest() {
   const { user } = useAuth();
   const [postgrest, setPostgrest] = useState<PostgrestClient | null>(null);
 
-  const token = user?.access_token;
+  const token = user?.id_token;
   useEffect(() => {
     if (token) {
       setPostgrest(
