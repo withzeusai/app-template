@@ -10,6 +10,7 @@ const postgrestWithHeaders = (headers: Record<string, string>) => {
       return fetch(url, {
         ...options,
         headers: {
+          "Content-Type": "application/json",
           ...options.headers,
           ...headers,
         },
