@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "react-oidc-context";
@@ -12,8 +13,19 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 export default function App() {
+  const onSigninCallback = useCallback(() => {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }, []);
+  const onSignoutCallback = useCallback(() => {
+    window.location.pathname = "";
+  }, []);
+
   return (
-    <AuthProvider {...AUTH_CONFIG}>
+    <AuthProvider
+      {...AUTH_CONFIG}
+      onSigninCallback={onSigninCallback}
+      onSignoutCallback={onSignoutCallback}
+    >
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TooltipProvider>
