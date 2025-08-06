@@ -1,6 +1,6 @@
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
-import { herculesPlugin } from "@usehercules/vite";
+import hercules from "@usehercules/vite";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 
@@ -14,7 +14,7 @@ export default defineConfig({
       overlay: false,
     },
   },
-  plugins: [react(), tailwindcss(), herculesPlugin()],
+  plugins: [react(), tailwindcss(), hercules()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
