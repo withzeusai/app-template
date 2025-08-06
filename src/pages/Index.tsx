@@ -1,5 +1,3 @@
-import { SignInButton } from "@/components/ui/signin";
-
 export default function Index() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -10,7 +8,6 @@ export default function Index() {
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Start chatting to build your app
         </p>
-        <SignInButton />
       </div>
     </div>
   );

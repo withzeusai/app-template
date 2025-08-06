@@ -113,11 +113,11 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
         : signInText;
 
     const icon = isLoading ? (
-      <Loader2 className="h-4 w-4 animate-spin" />
+      <Loader2 className="size-4 animate-spin" />
     ) : isAuthenticated ? (
-      <LogOut className="h-4 w-4" />
+      <LogOut className="size-4" />
     ) : (
-      <LogIn className="h-4 w-4" />
+      <LogIn className="size-4" />
     );
 
     return (

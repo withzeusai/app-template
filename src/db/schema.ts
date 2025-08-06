@@ -25,7 +25,7 @@
 //     shared: boolean("shared").default(false),
 //   },
 //   (table) => [
-//     index("owner_idx").on(table.ownerId),
+//     index("notes_owner_idx").on(table.ownerId),
 //     crudPolicy({
 //       role: authenticatedRole,
 //       read: authUid(table.ownerId),
