@@ -10,7 +10,7 @@ type UseUserProps = {
 };
 
 export function useUser({ or }: UseUserProps) {
-  const { user, isLoading, error, isAuthenticated, signinRedirect } = useAuth();
+  const { user, isLoading, error, isAuthenticated, signinRedirect,  } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && or === "redirect") {
