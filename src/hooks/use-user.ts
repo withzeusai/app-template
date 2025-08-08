@@ -4,19 +4,19 @@ import { useAuth } from "./use-auth";
 
 type UseUserProps = {
   /**
-   * The method to automatically sign in the user if they are not authenticated
+   * Whether to automatically redirect to the login if the user is not authenticated
    */
-  or?: "redirect";
+  shouldRedirect?: boolean;
 };
 
-export function useUser({ or }: UseUserProps) {
+export function useUser({ shouldRedirect }: UseUserProps) {
   const { user, isLoading, error, isAuthenticated, signinRedirect,  } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && or === "redirect") {
+    if (!isLoading && !isAuthenticated && shouldRedirect) {
       signinRedirect();
     }
-  }, [isLoading, isAuthenticated, or, signinRedirect]);
+  }, [isLoading, isAuthenticated, shouldRedirect, signinRedirect]);
 
   const id = user?.profile.sub;
   const name = user?.profile.name;
