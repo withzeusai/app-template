@@ -5,6 +5,7 @@ import { Loader2, LogIn, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export interface SignInButtonProps
   extends Omit<React.ComponentProps<"button">, "onClick">,
@@ -71,6 +72,9 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
 
     useEffect(() => {
       if (error) {
+        toast.error("Login error", {
+          description: error.message,
+        });
         console.error("Login error", error);
       }
     }, [error]);
@@ -79,12 +83,6 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
       async (event: React.MouseEvent<HTMLButtonElement>) => {
         // Run custom onClick first
         onClick?.(event);
-
-        // Prevent default if there was an error
-        if (error) {
-          event.preventDefault();
-          return;
-        }
 
         try {
           if (isAuthenticated) {
@@ -97,7 +95,7 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
           // Don't prevent the default here as the auth library handles errors
         }
       },
-      [isAuthenticated, signinRedirect, signoutRedirect, onClick, error],
+      [isAuthenticated, signinRedirect, signoutRedirect, onClick],
     );
 
     const isDisabled = disabled || isLoading;
