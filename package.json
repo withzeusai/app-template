@@ -52,7 +52,7 @@
     "@types/node": "^24.2.1",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
-    "@usehercules/vite": "^1.0.1",
+    "@usehercules/vite": "^1.0.2",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
