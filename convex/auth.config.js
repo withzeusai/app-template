@@ -1,8 +1,8 @@
 export default {
   providers: [
     {
-      domain: "https://your.issuer.url.com",
-      applicationID: "your-application-id",
+      domain: process.env.AUTH_DOMAIN,
+      applicationID: process.env.AUTH_CLIENT_ID,
     },
   ],
 };

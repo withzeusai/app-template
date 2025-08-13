@@ -12,19 +12,19 @@ export function useAuth(): UseAuthHook {
 
   const idToken = oidcAuth.user?.id_token;
   const fetchAccessToken = useCallback(
-    async ({ forceRefreshToken: _todo }: { forceRefreshToken: boolean }) => {
-      // todo: refresh token if needed
+    // eslint-disable-next-line no-empty-pattern
+    async ({}: { forceRefreshToken: boolean }) => {
+      // TODO: refresh token if needed
       return idToken ?? null;
     },
     [idToken],
   );
 
-  const a = useMemo(() => {
-    return {
+  return useMemo(
+    () => ({
       ...oidcAuth,
       fetchAccessToken,
-    };
-  }, [oidcAuth, fetchAccessToken]);
-
-  return a;
+    }),
+    [oidcAuth, fetchAccessToken],
+  );
 }
