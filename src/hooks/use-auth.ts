@@ -13,9 +13,9 @@ export function useAuth(): UseAuthHook {
     fetchAccessToken: async ({ forceRefreshToken }) => {
       if (forceRefreshToken) {
         const user = await oidcAuth.signinSilent();
-        return user?.access_token ?? null;
+        return user?.id_token ?? null;
       } else {
-        return oidcAuth.user?.access_token ?? null;
+        return oidcAuth.user?.id_token ?? null;
       }
     },
   };
