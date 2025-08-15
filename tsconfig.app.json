@@ -17,14 +17,11 @@
 
     /* Linting */
     "strict": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
 
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["./src", "./convex"]
+  "include": ["./src"]
 }
