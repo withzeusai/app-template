@@ -36,7 +36,7 @@ type UseUserProps = {
   shouldRedirect?: boolean;
 };
 
-export function useUser({ shouldRedirect }: UseUserProps) {
+export function useUser({ shouldRedirect }: UseUserProps = {}) {
   const { user, isLoading, error, isAuthenticated, signinRedirect } = useAuth();
 
   useEffect(() => {
