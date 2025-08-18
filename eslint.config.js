@@ -15,11 +15,18 @@ export default tseslint.config([
       tseslint.configs.recommended,
       reactHooks.configs["recommended-latest"],
       reactRefresh.configs.vite,
+      convexPlugin.configs.recommended,
     ],
+    rules: {
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
+      "@typescript-eslint/no-unused-vars": "off",
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
     },
   },
-  ...convexPlugin.configs.recommended,
 ]);
