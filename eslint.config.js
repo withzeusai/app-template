@@ -1,3 +1,4 @@
+import convexPlugin from "@convex-dev/eslint-plugin";
 import js from "@eslint/js";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
@@ -20,4 +21,5 @@ export default tseslint.config([
       globals: globals.browser,
     },
   },
+  ...convexPlugin.configs.recommended,
 ]);

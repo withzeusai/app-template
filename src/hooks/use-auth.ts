@@ -45,9 +45,20 @@ export function useUser({ shouldRedirect }: UseUserProps = {}) {
     }
   }, [isLoading, isAuthenticated, shouldRedirect, signinRedirect]);
 
-  const id = user?.profile.sub;
-  const name = user?.profile.name;
-  const email = user?.profile.email;
-  const avatar = user?.profile.picture;
-  return { id, name, email, avatar, ...(user ?? {}), isLoading, error };
+  return useMemo(() => {
+    const id = user?.profile.sub;
+    const name = user?.profile.name;
+    const email = user?.profile.email;
+    const avatar = user?.profile.picture;
+    return {
+      ...(user ?? {}),
+      id,
+      name,
+      email,
+      avatar,
+      isAuthenticated,
+      isLoading,
+      error,
+    };
+  }, [user, isAuthenticated, isLoading, error]);
 }
