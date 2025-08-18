@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/components/providers/auth";
-import { QueryClientProvider } from "@/components/providers/query";
+import { QueryClientProvider } from "@/components/providers/query-client";
 
 export function DefaultProviders({ children }: { children: React.ReactNode }) {
   return (
