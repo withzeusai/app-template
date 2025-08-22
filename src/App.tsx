@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { DefaultProviders } from "./components/providers/default";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { DefaultProviders } from "./components/providers/default.tsx";
+import Index from "./pages/Index.tsx";
+import NotFound from "./pages/NotFound.tsx";
 
 export default function App() {
   return (
