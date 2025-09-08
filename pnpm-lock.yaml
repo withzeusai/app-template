@@ -124,11 +124,11 @@ importers:
         specifier: ^19.1.9
         version: 19.1.9(@types/react@19.1.12)
       '@usehercules/eslint-plugin':
-        specifier: ^1.0.11
-        version: 1.0.11(@typescript-eslint/parser@8.42.0(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2)
+        specifier: ^1.0.12
+        version: 1.0.12(@typescript-eslint/parser@8.42.0(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2)
       '@usehercules/vite':
-        specifier: ^1.0.11
-        version: 1.0.11(vite@7.1.4(@types/node@24.3.1)(jiti@2.5.1)(lightningcss@1.30.1))
+        specifier: ^1.0.12
+        version: 1.0.12(vite@7.1.4(@types/node@24.3.1)(jiti@2.5.1)(lightningcss@1.30.1))
       eslint:
         specifier: ^9.35.0
         version: 9.35.0(jiti@2.5.1)
@@ -1745,16 +1745,16 @@ packages:
     resolution: {integrity: sha512-3WbiuzoEowaEn8RSnhJBrxSwX8ULYE9CXaPepS2C2W3NSA5NNIvBaslpBSBElPq0UGr0xVJlXFWOAKIkyylydQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@usehercules/eslint-plugin@1.0.11':
-    resolution: {integrity: sha512-ArB8aIQ7J9+Wgt1p+erEiHapxc6yHAM97jAMzWzHmwfER+JehLt2aEc1mdLKZzRE7bi1VPod8xoQDvQOaUNdNQ==}
+  '@usehercules/eslint-plugin@1.0.12':
+    resolution: {integrity: sha512-h8WPGsq+UjiNfu8vam5khlrkTneXttT+V4JdTlxdSbpjHwvCT9j62ISePaOFK8qln2s70ObBbELBdDpBYxJVYQ==}
     engines: {node: '>=18.18.0'}
     peerDependencies:
       '@typescript-eslint/parser': '>=8.0.0'
       eslint: '>=9.0.0'
       typescript: '>=4.0.0'
 
-  '@usehercules/vite@1.0.11':
-    resolution: {integrity: sha512-vfFCsSRC0bpx/y/dxst/DZYFI8mm9EtCts09OMRY565n0cA8eW4AsILbzh1epZnn/EOYpZdeiMsGa44GQK7Dwg==}
+  '@usehercules/vite@1.0.12':
+    resolution: {integrity: sha512-3FcksNA0JaTZAF+6CiiVR4Qs2ABRmv1TkcrdKSyF2C+7XoS36hLnLeIVsODy/P8ywXaJAPGwUoPzGA1Tgr/Tew==}
     peerDependencies:
       vite: ^6.0.0 || ^7.0.0
 
@@ -4256,7 +4256,7 @@ snapshots:
       '@typescript-eslint/types': 8.42.0
       eslint-visitor-keys: 4.2.1
 
-  '@usehercules/eslint-plugin@1.0.11(@typescript-eslint/parser@8.42.0(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2)':
+  '@usehercules/eslint-plugin@1.0.12(@typescript-eslint/parser@8.42.0(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2))(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2)':
     dependencies:
       '@typescript-eslint/parser': 8.42.0(eslint@9.35.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript-eslint/scope-manager': 8.42.0
@@ -4267,7 +4267,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@usehercules/vite@1.0.11(vite@7.1.4(@types/node@24.3.1)(jiti@2.5.1)(lightningcss@1.30.1))':
+  '@usehercules/vite@1.0.12(vite@7.1.4(@types/node@24.3.1)(jiti@2.5.1)(lightningcss@1.30.1))':
     dependencies:
       '@babel/generator': 7.28.3
       '@babel/parser': 7.28.4
