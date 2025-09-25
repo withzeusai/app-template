@@ -5,3 +5,7 @@ onlyBuiltDependencies:
   - "@swc/core"
   - "@tailwindcss/oxide"
   - esbuild
+
+minimumReleaseAge: 2880
+minimumReleaseAgeExclude:
+  - "@usehercules/*"
