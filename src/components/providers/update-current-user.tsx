@@ -4,24 +4,30 @@ import { useConvexAuth, useMutation } from "convex/react";
 
 import { useAuth } from "@/hooks/use-auth";
 
-function useStoreUserEffect() {
+// This will automatically run and store the user
+function useUpdateCurrentUserEffect() {
   const { isAuthenticated } = useConvexAuth();
   const { user } = useAuth();
   const sub = user?.profile.sub;
-  const storeUser = useMutation(api.users.store);
+  const updateCurrentUser = useMutation(api.users.updateCurrentUser);
   useEffect(() => {
     if (!isAuthenticated) {
       return;
     }
     async function createUser() {
-      await storeUser();
+      await updateCurrentUser();
     }
     createUser();
-  }, [isAuthenticated, storeUser, sub]);
+  }, [isAuthenticated, updateCurrentUser, sub]);
 }
 
 // Component that automatically stores the user when authenticated
-export function UserStoreProvider({ children }: { children: React.ReactNode }) {
-  useStoreUserEffect(); // This will automatically run and store the user
+export function UpdateCurrentUserProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // This will automatically run and store the user
+  useUpdateCurrentUserEffect();
   return children;
 }

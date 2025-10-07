@@ -1,15 +1,15 @@
 import { ConvexError } from "convex/values";
 
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
-export const store = mutation({
+export const updateCurrentUser = mutation({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new ConvexError({
         code: "UNAUTHENTICATED",
-        message: "Called storeUser without authentication present",
+        message: "User not logged in",
       });
     }
 
@@ -29,5 +29,25 @@ export const store = mutation({
       email: identity.email,
       tokenIdentifier: identity.tokenIdentifier,
     });
+  },
+});
+
+export const getCurrentUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new ConvexError({
+        code: "UNAUTHENTICATED",
+        message: "Called getCurrentUser without authentication present",
+      });
+    }
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
+      )
+      .unique();
+    return user;
   },
 });
