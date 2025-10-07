@@ -1,38 +1,65 @@
 import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 import { AlertCircleIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils.ts";
 
-const ErrorState = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div">
->(({ className, ...props }, ref) => {
+function ErrorState({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      ref={ref}
       data-slot="error-state"
       className={cn(
-        "flex min-h-[400px] w-full flex-col items-center justify-center gap-6 rounded-lg border-2 border-dashed border-destructive/50 p-8 text-center",
+        "flex min-w-0 flex-1 flex-col items-center justify-center gap-6 rounded-lg border-2 border-dashed border-destructive/50 p-6 text-center text-balance md:p-12",
         className,
       )}
       {...props}
     />
   );
-});
-ErrorState.displayName = "ErrorState";
+}
 
-function ErrorStateIcon({
+function ErrorStateHeader({
   className,
-  children,
   ...props
 }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="error-state-icon"
+      data-slot="error-state-header"
       className={cn(
-        "text-destructive flex size-12 items-center justify-center [&_svg]:size-full",
+        "flex max-w-sm flex-col items-center gap-2 text-center",
         className,
       )}
+      {...props}
+    />
+  );
+}
+
+const errorStateMediaVariants = cva(
+  "flex shrink-0 items-center justify-center mb-2 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default:
+          "bg-transparent text-destructive [&_svg:not([class*='size-'])]:size-12",
+        icon: "bg-destructive/10 text-destructive flex size-10 shrink-0 items-center justify-center rounded-lg [&_svg:not([class*='size-'])]:size-6",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  },
+);
+
+function ErrorStateMedia({
+  className,
+  variant = "default",
+  children,
+  ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof errorStateMediaVariants>) {
+  return (
+    <div
+      data-slot="error-state-media"
+      data-variant={variant}
+      className={cn(errorStateMediaVariants({ variant, className }))}
       {...props}
     >
       {children ?? <AlertCircleIcon />}
@@ -40,11 +67,11 @@ function ErrorStateIcon({
   );
 }
 
-function ErrorStateTitle({ className, ...props }: React.ComponentProps<"h3">) {
+function ErrorStateTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <h3
+    <div
       data-slot="error-state-title"
-      className={cn("text-lg font-semibold", className)}
+      className={cn("text-lg font-medium tracking-tight", className)}
       {...props}
     />
   );
@@ -53,11 +80,14 @@ function ErrorStateTitle({ className, ...props }: React.ComponentProps<"h3">) {
 function ErrorStateDescription({
   className,
   ...props
-}: React.ComponentProps<"p">) {
+}: React.ComponentProps<"div">) {
   return (
-    <p
+    <div
       data-slot="error-state-description"
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn(
+        "text-muted-foreground [&>a:hover]:text-primary text-sm/relaxed [&>a]:underline [&>a]:underline-offset-4",
+        className,
+      )}
       {...props}
     />
   );
@@ -70,20 +100,10 @@ function ErrorStateContent({
   return (
     <div
       data-slot="error-state-content"
-      className={cn("flex flex-col items-center gap-2", className)}
-      {...props}
-    />
-  );
-}
-
-function ErrorStateAction({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="error-state-action"
-      className={cn("mt-2", className)}
+      className={cn(
+        "flex w-full max-w-sm min-w-0 flex-col items-center gap-4 text-sm text-balance",
+        className,
+      )}
       {...props}
     />
   );
@@ -91,9 +111,9 @@ function ErrorStateAction({
 
 export {
   ErrorState,
-  ErrorStateIcon,
+  ErrorStateHeader,
+  ErrorStateMedia,
   ErrorStateTitle,
   ErrorStateDescription,
   ErrorStateContent,
-  ErrorStateAction,
 };
