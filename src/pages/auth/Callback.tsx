@@ -19,6 +19,12 @@ export default function AuthCallback() {
       console.error("Authentication error:", error);
       navigate("/", { replace: true });
     }
+    // If authentication completes but is not successful and has no explicit error
+    // (e.g., user cancelled, OIDC flow issues), redirect to home
+    else if (!isLoading && !isAuthenticated && !error) {
+      console.warn("Authentication completed without success or explicit error");
+      navigate("/", { replace: true });
+    }
   }, [isLoading, isAuthenticated, error, navigate]);
 
   // Show loading spinner while authentication is in progress
