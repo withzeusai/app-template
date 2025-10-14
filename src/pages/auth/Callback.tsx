@@ -23,8 +23,8 @@ export default function AuthCallback() {
 
   // Show loading spinner while authentication is in progress
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <Spinner className="mx-auto" />
+    <div className="flex items-center justify-center h-[100svh]">
+      <Spinner className="size-8" />
     </div>
   );
 }
