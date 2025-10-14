@@ -11,7 +11,8 @@ const AUTH_CONFIG: AuthProviderProps = {
   response_type: import.meta.env.VITE_HERCULES_OIDC_RESPONSE_TYPE ?? "code",
   scope: import.meta.env.VITE_HERCULES_OIDC_SCOPE ?? "openid profile email",
   redirect_uri:
-    import.meta.env.VITE_HERCULES_OIDC_REDIRECT_URI ?? window.location.origin,
+    import.meta.env.VITE_HERCULES_OIDC_REDIRECT_URI ??
+    `${window.location.origin}/auth/callback`,
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
