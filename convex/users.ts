@@ -1,5 +1,4 @@
 import { ConvexError } from "convex/values";
-
 import { mutation, query } from "./_generated/server";
 
 export const updateCurrentUser = mutation({

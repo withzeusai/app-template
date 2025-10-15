@@ -1,6 +1,5 @@
 import { ConvexProviderWithAuth } from "convex/react";
 import { ThemeProvider } from "next-themes";
-
 import { convex } from "@/lib/convex.ts";
 import { useAuth } from "@/hooks/use-auth.ts";
 import { Toaster } from "@/components/ui/sonner.tsx";

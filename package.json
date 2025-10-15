@@ -73,7 +73,6 @@
   "devDependencies": {
     "@convex-dev/eslint-plugin": "0.0.1-alpha.4",
     "@eslint/js": "^9.37.0",
-    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^24.7.0",
     "@types/react": "^19.2.1",

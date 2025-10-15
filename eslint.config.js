@@ -25,6 +25,7 @@ export default tseslint.config([
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "off",
+      "prefer-const": "off",
     },
     languageOptions: {
       ecmaVersion: 2020,

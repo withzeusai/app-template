@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { useAuth } from "@/hooks/use-auth.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
 

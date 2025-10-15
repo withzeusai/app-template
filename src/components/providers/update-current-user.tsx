@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/convex/_generated/api.js";
 import { useConvexAuth, useMutation } from "convex/react";
-
 import { useAuth } from "@/hooks/use-auth";
-
 import { Spinner } from "../ui/spinner";
 
 // This will automatically run and store the user
