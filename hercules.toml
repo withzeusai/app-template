@@ -1,8 +1,0 @@
-[install]
-command = "pnpm install --frozen-lockfile"
-
-[dev]
-command = "pnpm dev"
-
-[build]
-command = "pnpm vite build"
