@@ -2,7 +2,6 @@ import { forwardRef, useCallback, useEffect } from "react";
 import { type VariantProps } from "class-variance-authority";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils.ts";
 import { useAuth } from "@/hooks/use-auth.ts";
 import { Button, buttonVariants } from "@/components/ui/button.tsx";
 
@@ -119,7 +118,7 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
         disabled={isDisabled}
         variant={variant}
         size={size}
-        className={cn(className)}
+        className={className}
         asChild={asChild}
         aria-label={
           isAuthenticated
