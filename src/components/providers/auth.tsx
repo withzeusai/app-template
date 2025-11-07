@@ -1,37 +1,18 @@
-import { useCallback } from "react";
-import {
-  AuthProvider as ReactAuthProvider,
-  type AuthProviderProps,
-} from "react-oidc-context";
-import { WebStorageStateStore } from "oidc-client-ts";
+import { type AuthProviderProps } from "react-oidc-context";
+import { HerculesAuthProvider } from "@usehercules/auth/react";
 
 const AUTH_CONFIG: AuthProviderProps = {
-  authority: import.meta.env.VITE_HERCULES_OIDC_AUTHORITY!,
-  client_id: import.meta.env.VITE_HERCULES_OIDC_CLIENT_ID!,
-  prompt: import.meta.env.VITE_HERCULES_OIDC_PROMPT ?? "select_account",
-  response_type: import.meta.env.VITE_HERCULES_OIDC_RESPONSE_TYPE ?? "code",
-  scope: import.meta.env.VITE_HERCULES_OIDC_SCOPE ?? "openid profile email offline_access",
-  redirect_uri:
-    import.meta.env.VITE_HERCULES_OIDC_REDIRECT_URI ??
-    `${window.location.origin}/auth/callback`,
-  userStore: new WebStorageStateStore({ store: window.localStorage }),
+  authority:
+    import.meta.env.VITE_HERCULES_OIDC_AUTHORITY ?? "https://hercules.app",
+  client_id: import.meta.env.VITE_HERCULES_OIDC_CLIENT_ID ?? "",
+  prompt: import.meta.env.VITE_HERCULES_OIDC_PROMPT,
+  response_type: import.meta.env.VITE_HERCULES_OIDC_RESPONSE_TYPE,
+  scope: import.meta.env.VITE_HERCULES_OIDC_SCOPE,
+  redirect_uri: import.meta.env.VITE_HERCULES_OIDC_REDIRECT_URI,
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const onSigninCallback = useCallback(() => {
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }, []);
-  const onSignoutCallback = useCallback(() => {
-    window.location.pathname = "";
-  }, []);
-
   return (
-    <ReactAuthProvider
-      {...AUTH_CONFIG}
-      onSigninCallback={onSigninCallback}
-      onSignoutCallback={onSignoutCallback}
-    >
-      {children}
-    </ReactAuthProvider>
+    <HerculesAuthProvider {...AUTH_CONFIG}>{children}</HerculesAuthProvider>
   );
 }
