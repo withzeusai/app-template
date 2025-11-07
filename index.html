@@ -4,20 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Hercules App</title>
-    <meta name="description" content="An app made by https://hercules.app" />
-    <meta name="author" content="Hercules" />
+    <title>%VITE_HERCULES_APP_NAME%</title>
+    <meta name="description" content="%VITE_HERCULES_APP_DESCRIPTION%" />
+    <meta name="author" content="%VITE_HERCULES_APP_AUTHOR%" />
     <link
       rel="icon"
       type="image/svg+xml"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>"
     />
 
-    <meta property="og:title" content="Hercules App" />
-    <meta
-      property="og:description"
-      content="An app made by https://hercules.app"
-    />
+    <meta property="og:title" content="%VITE_HERCULES_APP_NAME%" />
+    <meta property="og:description" content="%VITE_HERCULES_APP_DESCRIPTION%" />
     <meta property="og:type" content="website" />
     <meta
       property="og:image"
@@ -30,7 +27,7 @@
       name="twitter:image"
       content="https://hercules.app/og/app/%VITE_HERCULES_WEBSITE_ID%.png"
     />
-    <meta name="twitter:site" content="@UseHercules" />
+    <meta name="twitter:site" content="%VITE_HERCULES_APP_TWITTER_HANDLE%" />
 
     <!-- Detect dark mode preference and set the class before next-themes loads. This avoids a flash of unstyled content (FOUC) when the page loads. -->
     <script>
