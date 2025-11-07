@@ -1,7 +1,6 @@
-import { type AuthProviderProps } from "react-oidc-context";
-import { HerculesAuthProvider } from "@usehercules/auth/react";
+import { HerculesAuthProvider, type HerculesAuthProviderProps } from "@usehercules/auth/react";
 
-const AUTH_CONFIG: AuthProviderProps = {
+const AUTH_CONFIG: HerculesAuthProviderProps = {
   authority:
     import.meta.env.VITE_HERCULES_OIDC_AUTHORITY ?? "https://hercules.app",
   client_id: import.meta.env.VITE_HERCULES_OIDC_CLIENT_ID ?? "",
