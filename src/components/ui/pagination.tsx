@@ -57,6 +57,7 @@ function PaginationLink({
           variant: isActive ? "outline" : "ghost",
           size,
         }),
+        "cursor-pointer",
         className,
       )}
       {...props}

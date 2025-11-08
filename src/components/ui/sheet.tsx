@@ -8,9 +8,10 @@ function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
 }
 
 function SheetTrigger({
+  className,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
-  return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
+  return <SheetPrimitive.Trigger data-slot="sheet-trigger" className={className} {...props} />;
 }
 
 function SheetClose({
