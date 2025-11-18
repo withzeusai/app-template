@@ -27,7 +27,7 @@ export default function AuthCallback() {
   }, [isLoading, isAuthenticated, error, navigate]);
 
   return (
-    <div className="flex items-center justify-center h-[100svh]">
+    <div className="flex items-center justify-center h-svh">
       <Spinner className="size-8" />
     </div>
   );
