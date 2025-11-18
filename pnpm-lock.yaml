@@ -89,15 +89,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.8
         version: 1.2.8(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@tailwindcss/vite':
-        specifier: ^4.1.17
-        version: 4.1.17(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2))
       '@tanstack/react-query':
         specifier: ^5.90.7
         version: 5.90.7(react@19.2.0)
-      '@vitejs/plugin-react-swc':
-        specifier: ^4.2.1
-        version: 4.2.1(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -108,17 +102,11 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       convex:
-        specifier: ^1.28.2
-        version: 1.28.2(react@19.2.0)
-      convex-helpers:
-        specifier: ^0.1.104
-        version: 0.1.104(convex@1.28.2(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@3.25.76)
+        specifier: ^1.29.0
+        version: 1.29.2(react@19.2.0)
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
-      dotenv:
-        specifier: ^17.2.3
-        version: 17.2.3
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.0)
@@ -167,9 +155,6 @@ importers:
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.4.0
-      tailwindcss:
-        specifier: ^4.1.17
-        version: 4.1.17
       use-debounce:
         specifier: ^10.0.6
         version: 10.0.6(react@19.2.0)
@@ -189,6 +174,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.19
         version: 0.5.19(tailwindcss@4.1.17)
+      '@tailwindcss/vite':
+        specifier: ^4.1.17
+        version: 4.1.17(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2))
       '@types/node':
         specifier: ^24.10.0
         version: 24.10.0
@@ -204,6 +192,9 @@ importers:
       '@usehercules/vite':
         specifier: ^1.0.25
         version: 1.0.25(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2))
+      '@vitejs/plugin-react-swc':
+        specifier: ^4.2.1
+        version: 4.2.1(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2))
       eslint:
         specifier: ^9.39.1
         version: 9.39.1(jiti@2.6.1)
@@ -219,6 +210,9 @@ importers:
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
+      tailwindcss:
+        specifier: ^4.1.17
+        version: 4.1.17
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -1853,30 +1847,8 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  convex-helpers@0.1.104:
-    resolution: {integrity: sha512-7CYvx7T3K6n+McDTK4ZQaQNNGBzq5aWezpjzsKbOxPXx7oNcTP9wrpef3JxeXWFzkByJv5hRCjseh9B7eNJ7Ig==}
-    hasBin: true
-    peerDependencies:
-      '@standard-schema/spec': ^1.0.0
-      convex: ^1.24.0
-      hono: ^4.0.5
-      react: ^17.0.2 || ^18.0.0 || ^19.0.0
-      typescript: ^5.5
-      zod: ^3.22.4 || ^4.0.15
-    peerDependenciesMeta:
-      '@standard-schema/spec':
-        optional: true
-      hono:
-        optional: true
-      react:
-        optional: true
-      typescript:
-        optional: true
-      zod:
-        optional: true
-
-  convex@1.28.2:
-    resolution: {integrity: sha512-KzNsLbcVXb1OhpVQ+vHMgu+hjrsQ1ks5BZwJ2lR8O+nfbeJXE6tHbvsg1H17+ooUDvIDBSMT3vXS+AlodDhTnQ==}
+  convex@1.29.2:
+    resolution: {integrity: sha512-9QCj53/zFV+hHZRP8epU41a3NmOkYDdEtpvSPKjAZp6l60NMN+O3fyOX4r5Y6yzPIhsUpJvMH6xB5xwJTLz92A==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
     hasBin: true
     peerDependencies:
@@ -1981,10 +1953,6 @@ packages:
 
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
-
-  dotenv@17.2.3:
-    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
-    engines: {node: '>=12'}
 
   embla-carousel-react@8.6.0:
     resolution: {integrity: sha512-0/PjqU7geVmo6F734pmPqpyHqiM99olvyecY7zdweCw+6tKEXnrE90pBiBbMMU8s5tICemzpQ3hi5EpxzGW+JA==}
@@ -4268,15 +4236,7 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  convex-helpers@0.1.104(convex@1.28.2(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(zod@3.25.76):
-    dependencies:
-      convex: 1.28.2(react@19.2.0)
-    optionalDependencies:
-      react: 19.2.0
-      typescript: 5.9.3
-      zod: 3.25.76
-
-  convex@1.28.2(react@19.2.0):
+  convex@1.29.2(react@19.2.0):
     dependencies:
       esbuild: 0.25.4
       prettier: 3.6.2
@@ -4353,8 +4313,6 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
       csstype: 3.1.3
-
-  dotenv@17.2.3: {}
 
   embla-carousel-react@8.6.0(react@19.2.0):
     dependencies:
