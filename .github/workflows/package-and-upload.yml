@@ -60,5 +60,5 @@ jobs:
             - name: Cleanup
               if: always()
               run: |
-                  rm -f "${TARBALL_NAME}"
+                  rm -f "${TARBALL_PATH}"
                   echo "Cleaned up tarball"
