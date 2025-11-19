@@ -30,6 +30,7 @@ jobs:
                     --exclude='dist' \
                     --exclude='.env' \
                     --exclude='.env.local' \
+                    --exclude="${TARBALL_NAME}" \
                     .
 
                   echo "TARBALL_NAME=${TARBALL_NAME}" >> $GITHUB_ENV
