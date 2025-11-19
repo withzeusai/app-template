@@ -21,21 +21,21 @@ jobs:
                   BRANCH_NAME="${GITHUB_REF#refs/heads/}"
                   SAFE_BRANCH_NAME=$(echo "${BRANCH_NAME}" | sed 's/\//-/g')
                   TARBALL_NAME="${SAFE_BRANCH_NAME}.tar.gz"
+                  TARBALL_PATH="/tmp/${TARBALL_NAME}"
 
-                  # Create tarball excluding .github, .git, node_modules, and dist
-                  tar -czf "${TARBALL_NAME}" \
+                  # Create tarball in /tmp to avoid "file changed as we read it" error
+                  tar -czf "${TARBALL_PATH}" \
                     --exclude='.github' \
                     --exclude='.git' \
                     --exclude='node_modules' \
                     --exclude='dist' \
                     --exclude='.env' \
                     --exclude='.env.local' \
-                    --exclude="${TARBALL_NAME}" \
                     .
 
-                  echo "TARBALL_NAME=${TARBALL_NAME}" >> $GITHUB_ENV
+                  echo "TARBALL_PATH=${TARBALL_PATH}" >> $GITHUB_ENV
                   echo "Created tarball: ${TARBALL_NAME} from branch: ${BRANCH_NAME}"
-                  ls -lh "${TARBALL_NAME}"
+                  ls -lh "${TARBALL_PATH}"
 
             - name: Configure AWS CLI for Cloudflare R2
               run: |
@@ -47,8 +47,11 @@ jobs:
               env:
                   R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
               run: |
+                  # Extract just the filename from the path
+                  TARBALL_NAME=$(basename "${TARBALL_PATH}")
+                  
                   # Upload to R2 using S3-compatible endpoint
-                  aws s3 cp "${TARBALL_NAME}" \
+                  aws s3 cp "${TARBALL_PATH}" \
                     "s3://hercules-app-templates/${TARBALL_NAME}" \
                     --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
 
