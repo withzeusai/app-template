@@ -92,6 +92,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.10
         version: 5.90.10(react@19.2.0)
+      '@usehercules/auth':
+        specifier: ^1.0.29
+        version: 1.0.29(react@19.2.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1759,6 +1762,11 @@ packages:
   '@typescript-eslint/visitor-keys@8.47.0':
     resolution: {integrity: sha512-SIV3/6eftCy1bNzCQoPmbWsRLujS8t5iDIZ4spZOBHqrM+yfX2ogg8Tt3PDTAVKw3sSCiUgg30uOAvK2r9zGjQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@usehercules/auth@1.0.29':
+    resolution: {integrity: sha512-QBpP2iOLcdXvTHwqyGd3bCgvNzXCZA+gNQ7HMUGXWW1YnRosJC/jAs2ykjwdV3PbwtxqeCqhITKYTlhESqIoaw==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
 
   '@usehercules/eslint-plugin@1.0.26':
     resolution: {integrity: sha512-VbK7MNwoWU08cp+LSmH3VaDSLwiTJ/XdW5LbtYXiJ6BAavYcRKzeAUpmh3KTkM+78K7OHAjw14QmMrJuRyonyg==}
@@ -4136,6 +4144,16 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.47.0
       eslint-visitor-keys: 4.2.1
+
+  '@usehercules/auth@1.0.29(react@19.2.0)':
+    dependencies:
+      convex: 1.29.3(react@19.2.0)
+      oidc-client-ts: 3.4.1
+      react: 19.2.0
+      react-oidc-context: 3.3.0(oidc-client-ts@3.4.1)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@auth0/auth0-react'
+      - '@clerk/clerk-react'
 
   '@usehercules/eslint-plugin@1.0.26(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
