@@ -1,2 +1,1 @@
-import { useAuth, useUser } from "@usehercules/auth/react";
-export { useUser, useAuth };
+export { useUser, useAuth } from "@usehercules/auth/react";
