@@ -11,7 +11,13 @@ function SheetTrigger({
   className,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
-  return <SheetPrimitive.Trigger data-slot="sheet-trigger" className={cn("cursor-pointer", className)} {...props} />;
+  return (
+    <SheetPrimitive.Trigger
+      data-slot="sheet-trigger"
+      className={cn("cursor-pointer", className)}
+      {...props}
+    />
+  );
 }
 
 function SheetClose({

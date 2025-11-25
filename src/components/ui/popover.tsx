@@ -13,7 +13,13 @@ function PopoverTrigger({
   className,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" className={cn("cursor-pointer", className)} {...props} />;
+  return (
+    <PopoverPrimitive.Trigger
+      data-slot="popover-trigger"
+      className={cn("cursor-pointer", className)}
+      {...props}
+    />
+  );
 }
 
 function PopoverContent({

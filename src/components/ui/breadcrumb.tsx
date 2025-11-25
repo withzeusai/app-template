@@ -42,7 +42,10 @@ function BreadcrumbLink({
   return (
     <Comp
       data-slot="breadcrumb-link"
-      className={cn("hover:text-foreground cursor-pointer transition-colors", className)}
+      className={cn(
+        "hover:text-foreground cursor-pointer transition-colors",
+        className,
+      )}
       {...props}
     />
   );
