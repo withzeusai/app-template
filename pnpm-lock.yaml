@@ -93,8 +93,8 @@ importers:
         specifier: ^5.90.10
         version: 5.90.10(react@19.2.0)
       '@usehercules/auth':
-        specifier: ^1.0.29
-        version: 1.0.29(react@19.2.0)
+        specifier: ^1.0.30
+        version: 1.0.30(react@19.2.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -190,11 +190,11 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.6)
       '@usehercules/eslint-plugin':
-        specifier: ^1.0.29
-        version: 1.0.29(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+        specifier: ^1.0.30
+        version: 1.0.30(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@usehercules/vite':
-        specifier: ^1.0.29
-        version: 1.0.29(vite@7.2.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2))
+        specifier: ^1.0.30
+        version: 1.0.30(vite@7.2.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2))
       '@vitejs/plugin-react-swc':
         specifier: ^4.2.2
         version: 4.2.2(vite@7.2.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2))
@@ -1763,21 +1763,21 @@ packages:
     resolution: {integrity: sha512-SIV3/6eftCy1bNzCQoPmbWsRLujS8t5iDIZ4spZOBHqrM+yfX2ogg8Tt3PDTAVKw3sSCiUgg30uOAvK2r9zGjQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@usehercules/auth@1.0.29':
-    resolution: {integrity: sha512-QBpP2iOLcdXvTHwqyGd3bCgvNzXCZA+gNQ7HMUGXWW1YnRosJC/jAs2ykjwdV3PbwtxqeCqhITKYTlhESqIoaw==}
+  '@usehercules/auth@1.0.30':
+    resolution: {integrity: sha512-0mXe1EN6BzyYodKRl7un7AJvJVOtyo4eLXJ35EQDw7xPIi4/PMDW/Pj2TlOITOtyzwLCrwMyYZ44yKDLeYdZqw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
-  '@usehercules/eslint-plugin@1.0.29':
-    resolution: {integrity: sha512-svWOsiD1KDCl2SWBHTZ24DaZ12kwtqeCWXAC/0S+VvQYqgjDOrSAgE/IBTsNGAHA1nW80+K087bF7YgYhHpM1Q==}
+  '@usehercules/eslint-plugin@1.0.30':
+    resolution: {integrity: sha512-mjpHK3bhQPvhpcXDhPZ0h+bkCoCQbd3pZGBqVgONOtmUDRkIogOc4z3zfatjUkt6Lduag7CgLDELEDE+SP8IeQ==}
     engines: {node: '>=18.18.0'}
     peerDependencies:
       '@typescript-eslint/parser': '>=8.0.0'
       eslint: '>=9.0.0'
       typescript: '>=4.0.0'
 
-  '@usehercules/vite@1.0.29':
-    resolution: {integrity: sha512-gEPPDxAgbbUYazk7vJuZoeViZl5TOpinuWn4ltrrCd58EfFqgf0q2Jh58pjxiT0nquMJWnSDyGoLXJGcN2F1Lg==}
+  '@usehercules/vite@1.0.30':
+    resolution: {integrity: sha512-jy9wbFWsMFCuO85r5FdwSC1eF0CvLrkpklIIHtBzibiE2U51L9NgfrCZJx+4PDS/1vUDdv+Qat2FIvvmA1yXbw==}
     peerDependencies:
       vite: ^7.0.0
 
@@ -4145,7 +4145,7 @@ snapshots:
       '@typescript-eslint/types': 8.47.0
       eslint-visitor-keys: 4.2.1
 
-  '@usehercules/auth@1.0.29(react@19.2.0)':
+  '@usehercules/auth@1.0.30(react@19.2.0)':
     dependencies:
       convex: 1.29.3(react@19.2.0)
       oidc-client-ts: 3.4.1
@@ -4155,7 +4155,7 @@ snapshots:
       - '@auth0/auth0-react'
       - '@clerk/clerk-react'
 
-  '@usehercules/eslint-plugin@1.0.29(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
+  '@usehercules/eslint-plugin@1.0.30(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/parser': 8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
       '@typescript-eslint/scope-manager': 8.47.0
@@ -4166,7 +4166,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@usehercules/vite@1.0.29(vite@7.2.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2))':
+  '@usehercules/vite@1.0.30(vite@7.2.2(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2))':
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
