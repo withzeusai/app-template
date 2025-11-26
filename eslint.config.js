@@ -6,8 +6,9 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import { globalIgnores } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint";
 
-export default tseslint.config([
+export default defineConfig([
   globalIgnores(["dist", "**/_generated/*"]),
   {
     files: ["**/*.{ts,tsx}"],
@@ -20,12 +21,13 @@ export default tseslint.config([
       herculesPlugin.configs.recommended,
     ],
     rules: {
+      "@typescript-eslint/ban-ts-comment": ["error", { "ts-ignore": "ban" }],
+      "@typescript-eslint/no-unused-vars": "off",
+      "prefer-const": "off",
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-unused-vars": "off",
-      "prefer-const": "off",
     },
     languageOptions: {
       ecmaVersion: 2020,
