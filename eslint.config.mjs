@@ -6,7 +6,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import { globalIgnores } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import { defineConfig } from "eslint";
+import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   globalIgnores(["dist", "**/_generated/*"]),
@@ -21,7 +21,10 @@ export default defineConfig([
       herculesPlugin.configs.recommended,
     ],
     rules: {
-      "@typescript-eslint/ban-ts-comment": ["error", { "ts-ignore": "ban" }],
+      "@typescript-eslint/ban-ts-comment": [
+        "error",
+        { "ts-ignore": true, "ts-expect-error": true, "ts-nocheck": true },
+      ],
       "@typescript-eslint/no-unused-vars": "off",
       "prefer-const": "off",
       "react-refresh/only-export-components": [
