@@ -88,7 +88,7 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
           // Don't prevent the default here as the auth library handles errors
         }
       },
-      [isAuthenticated, signinRedirect, removeUser, onClick],
+      [isAuthenticated, removeUser, signinRedirect, onClick],
     );
 
     const isDisabled = disabled || isLoading;
