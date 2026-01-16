@@ -12,7 +12,7 @@ export default function AuthCallback() {
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
 
   const onSync = useCallback(async () => {
-    await updateCurrentUser({});
+    await updateCurrentUser();
   }, [updateCurrentUser]);
 
   const navigateHome = useCallback(
