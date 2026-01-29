@@ -1887,6 +1887,7 @@ packages:
   convex@1.31.6:
     resolution: {integrity: sha512-9cIsOzepa3s9DURRF+fZHxbNuzLgilg9XGQCc45v0Xx4FemqeIezpPFSJF9WHC9ckk43TDUUXLecvLVt9djPkw==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
+    deprecated: This version of convex contains a bug when used with React Native. Install the latest version with `npm i convex@latest`
     hasBin: true
     peerDependencies:
       '@auth0/auth0-react': ^2.0.1
