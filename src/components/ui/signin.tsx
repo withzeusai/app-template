@@ -6,7 +6,8 @@ import { useAuth } from "@/hooks/use-auth.ts";
 import { Button, buttonVariants } from "@/components/ui/button.tsx";
 
 export interface SignInButtonProps
-  extends Omit<React.ComponentProps<"button">, "onClick">,
+  extends
+    Omit<React.ComponentProps<"button">, "onClick">,
     VariantProps<typeof buttonVariants> {
   /**
    * Custom onClick handler that runs before authentication action
