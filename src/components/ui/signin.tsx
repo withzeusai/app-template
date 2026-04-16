@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect } from "react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 import { type VariantProps } from "class-variance-authority";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 import { toast } from "sonner";
@@ -61,8 +61,21 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
     },
     ref,
   ) => {
-    const { isAuthenticated, signinRedirect, removeUser, isLoading, error } =
+    const { isAuthenticated, signinRedirect, signoutRedirect, removeUser, isLoading, error } =
       useAuth();
+
+    const [supportsEndSession, setSupportsEndSession] = useState(false);
+
+    useEffect(() => {
+      const authority = import.meta.env.VITE_HERCULES_OIDC_AUTHORITY;
+      if (!authority) return;
+      fetch(`${authority}/.well-known/openid-configuration`)
+        .then((res) => res.json())
+        .then((metadata) =>
+          setSupportsEndSession(!!metadata.end_session_endpoint),
+        )
+        .catch(() => setSupportsEndSession(false));
+    }, []);
 
     useEffect(() => {
       if (error) {
@@ -80,7 +93,11 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
 
         try {
           if (isAuthenticated) {
-            await removeUser();
+            if (supportsEndSession) {
+              await signoutRedirect();
+            } else {
+              await removeUser();
+            }
           } else {
             await signinRedirect();
           }
@@ -89,7 +106,7 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
           // Don't prevent the default here as the auth library handles errors
         }
       },
-      [isAuthenticated, removeUser, signinRedirect, onClick],
+      [isAuthenticated, removeUser, signoutRedirect, signinRedirect, supportsEndSession, onClick],
     );
 
     const isDisabled = disabled || isLoading;
