@@ -20,6 +20,12 @@ export default defineConfig({
       "@/convex": path.resolve(__dirname, "./convex"),
       "@": path.resolve(__dirname, "./src"),
     },
+    dedupe: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "react/jsx-dev-runtime",
+    ],
   },
   build: {
     chunkSizeWarningLimit: 1000,
