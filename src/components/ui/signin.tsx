@@ -2,7 +2,7 @@ import { forwardRef, useCallback, useEffect } from "react";
 import { type VariantProps } from "class-variance-authority";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/use-auth.ts";
+import { useAuth } from "@usehercules/auth/react";
 import { Button, buttonVariants } from "@/components/ui/button.tsx";
 
 export interface SignInButtonProps
@@ -61,8 +61,7 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
     },
     ref,
   ) => {
-    const { isAuthenticated, signinRedirect, signout, isLoading, error } =
-      useAuth();
+    const { isAuthenticated, signin, signout, isLoading, error } = useAuth();
 
     useEffect(() => {
       if (error) {
@@ -82,14 +81,14 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
           if (isAuthenticated) {
             await signout();
           } else {
-            await signinRedirect();
+            await signin();
           }
         } catch (err) {
           console.error("Authentication error:", err);
           // Don't prevent the default here as the auth library handles errors
         }
       },
-      [isAuthenticated, signout, signinRedirect, onClick],
+      [isAuthenticated, signout, signin, onClick],
     );
 
     const isDisabled = disabled || isLoading;
