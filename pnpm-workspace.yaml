@@ -6,4 +6,8 @@ onlyBuiltDependencies:
   - "@tailwindcss/oxide"
   - esbuild
 
+blockExoticSubdeps: true
+
 minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - "@usehercules/*"
