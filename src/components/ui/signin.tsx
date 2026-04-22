@@ -61,7 +61,7 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
     },
     ref,
   ) => {
-    const { isAuthenticated, signinRedirect, removeUser, isLoading, error } =
+    const { isAuthenticated, signinRedirect, signout, isLoading, error } =
       useAuth();
 
     useEffect(() => {
@@ -80,7 +80,7 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
 
         try {
           if (isAuthenticated) {
-            await removeUser();
+            await signout();
           } else {
             await signinRedirect();
           }
@@ -89,7 +89,7 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
           // Don't prevent the default here as the auth library handles errors
         }
       },
-      [isAuthenticated, removeUser, signinRedirect, onClick],
+      [isAuthenticated, signout, signinRedirect, onClick],
     );
 
     const isDisabled = disabled || isLoading;
