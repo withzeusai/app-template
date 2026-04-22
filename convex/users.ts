@@ -21,7 +21,7 @@ export const updateCurrentUser = mutation({
     return await ctx.db.insert("users", {
       name: identity.name,
       email: identity.email,
-      phone: identity.phoneNumber as string | undefined,
+      phone: (identity.phoneNumber ?? identity["phone_number"]) as string | undefined,
       tokenIdentifier: identity.tokenIdentifier,
     });
   },
