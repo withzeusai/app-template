@@ -7,7 +7,9 @@
     "dev": "vite",
     "preview": "vite preview",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint . && hercules-convex-access-check convex",
+    "lint:access": "hercules-convex-access-check convex",
+    "fix:access-authenticated": "hercules-convex-access-check convex --fix-authenticated",
     "prettier-fix": "prettier --write .",
     "prettier-check": "prettier --check ."
   },
