@@ -1,9 +1,11 @@
-import { forwardRef, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { type VariantProps } from "class-variance-authority";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 import { toast } from "sonner";
+
 import { useAuth } from "@usehercules/auth/react";
-import { Button, buttonVariants } from "@/components/ui/button.tsx";
+
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export interface SignInButtonProps
   extends
@@ -44,95 +46,86 @@ export interface SignInButtonProps
  * A button component that handles authentication sign in/out with proper loading states
  * and accessibility features.
  */
-export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
-  (
-    {
-      onClick,
-      disabled,
-      showIcon = true,
-      signInText = "Sign In",
-      signOutText = "Sign Out",
-      loadingText,
-      className,
-      variant,
-      size,
-      asChild = false,
-      ...props
-    },
-    ref,
-  ) => {
-    const { isAuthenticated, signin, signout, isLoading, error } = useAuth();
+export function SignInButton({
+  onClick,
+  disabled,
+  showIcon = true,
+  signInText = "Sign In",
+  signOutText = "Sign Out",
+  loadingText,
+  className,
+  variant = "default",
+  size = "default",
+  asChild = false,
+  ref,
+  ...props
+}: SignInButtonProps) {
+  const { isAuthenticated, signin, signout, isLoading, error } = useAuth();
 
-    useEffect(() => {
-      if (error) {
-        toast.error("Login error", {
-          description: error.message,
-        });
-        console.error("Login error", error);
+  useEffect(() => {
+    if (error) {
+      toast.error("Login error", {
+        description: error.message,
+      });
+      console.error("Login error", error);
+    }
+  }, [error]);
+
+  const handleClick = useCallback(
+    async (event: React.MouseEvent<HTMLButtonElement>) => {
+      // Run custom onClick first
+      onClick?.(event);
+
+      try {
+        if (isAuthenticated) {
+          await signout();
+        } else {
+          await signin();
+        }
+      } catch (err) {
+        console.error("Authentication error:", err);
       }
-    }, [error]);
+    },
+    [isAuthenticated, signout, signin, onClick],
+  );
 
-    const handleClick = useCallback(
-      async (event: React.MouseEvent<HTMLButtonElement>) => {
-        // Run custom onClick first
-        onClick?.(event);
+  const isDisabled = disabled || isLoading;
+  const defaultLoadingText = isAuthenticated
+    ? "Signing Out..."
+    : "Signing In...";
+  const currentLoadingText = loadingText || defaultLoadingText;
 
-        try {
-          if (isAuthenticated) {
-            await signout();
-          } else {
-            await signin();
-          }
-        } catch (err) {
-          console.error("Authentication error:", err);
-          // Don't prevent the default here as the auth library handles errors
-        }
-      },
-      [isAuthenticated, signout, signin, onClick],
-    );
+  const buttonText = isLoading
+    ? currentLoadingText
+    : isAuthenticated
+      ? signOutText
+      : signInText;
 
-    const isDisabled = disabled || isLoading;
-    const defaultLoadingText = isAuthenticated
-      ? "Signing Out..."
-      : "Signing In...";
-    const currentLoadingText = loadingText || defaultLoadingText;
+  const icon = isLoading ? (
+    <Loader2 className="size-4 animate-spin" />
+  ) : isAuthenticated ? (
+    <LogOut className="size-4" />
+  ) : (
+    <LogIn className="size-4" />
+  );
 
-    const buttonText = isLoading
-      ? currentLoadingText
-      : isAuthenticated
-        ? signOutText
-        : signInText;
-
-    const icon = isLoading ? (
-      <Loader2 className="size-4 animate-spin" />
-    ) : isAuthenticated ? (
-      <LogOut className="size-4" />
-    ) : (
-      <LogIn className="size-4" />
-    );
-
-    return (
-      <Button
-        ref={ref}
-        onClick={handleClick}
-        disabled={isDisabled}
-        variant={variant}
-        size={size}
-        className={className}
-        asChild={asChild}
-        aria-label={
-          isAuthenticated
-            ? "Sign out of your account"
-            : "Sign in to your account"
-        }
-        aria-describedby={error ? "auth-error" : undefined}
-        {...props}
-      >
-        {showIcon && icon}
-        {buttonText}
-      </Button>
-    );
-  },
-);
-
-SignInButton.displayName = "SignInButton";
+  return (
+    <Button
+      ref={ref}
+      onClick={handleClick}
+      disabled={isDisabled}
+      variant={variant}
+      size={size}
+      className={className}
+      asChild={asChild}
+      aria-label={
+        isAuthenticated ? "Sign out of your account" : "Sign in to your account"
+      }
+      aria-describedby={error ? "auth-error" : undefined}
+      {...props}
+    >
+      {showIcon && icon}
+      {buttonText}
+    </Button>
+  );
+}
