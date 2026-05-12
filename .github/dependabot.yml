@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: weekly
     cooldown:
-      default-days: 3
+      default-days: 7
     groups:
       actions:
         patterns:
@@ -16,15 +16,16 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
-    # Match the 3-day `minimumReleaseAge` (4320 minutes) in pnpm-workspace.yaml
-    # so freshly published versions sit out the typical window for npm
-    # supply-chain attacks before Dependabot proposes them. First-party
-    # `@usehercules/*` packages are excluded to mirror the pnpm exclude list.
+    # 7-day cooldown so freshly published versions sit out the typical window
+    # for npm supply-chain attacks before Dependabot proposes them. This is
+    # stricter than the 3-day `minimumReleaseAge` in pnpm-workspace.yaml,
+    # which governs ad-hoc installs. First-party `@usehercules/*` packages
+    # are excluded to mirror the pnpm `minimumReleaseAgeExclude` list.
     cooldown:
-      default-days: 3
-      semver-major-days: 3
-      semver-minor-days: 3
-      semver-patch-days: 3
+      default-days: 7
+      semver-major-days: 7
+      semver-minor-days: 7
+      semver-patch-days: 7
       include:
         - "*"
       exclude:
