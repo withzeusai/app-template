@@ -4,6 +4,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 3
     groups:
       actions:
         patterns:
@@ -14,6 +16,19 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    # Match the 3-day `minimumReleaseAge` (4320 minutes) in pnpm-workspace.yaml
+    # so freshly published versions sit out the typical window for npm
+    # supply-chain attacks before Dependabot proposes them. First-party
+    # `@usehercules/*` packages are excluded to mirror the pnpm exclude list.
+    cooldown:
+      default-days: 3
+      semver-major-days: 3
+      semver-minor-days: 3
+      semver-patch-days: 3
+      include:
+        - "*"
+      exclude:
+        - "@usehercules/*"
     groups:
       radix-ui:
         patterns:
