@@ -1824,14 +1824,14 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@usehercules/auth@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@40':
-    resolution: {tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@40}
+    resolution: {integrity: sha512-AEIbhXIjZ0Ui6YM55FIKf7XbinU/7ZxwjrmxYION9EmbG4qFj/qU2kgN2qABTm8L+WbVGQoNKkpL22I6lfoBwg==, tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@40}
     version: 1.0.44
     peerDependencies:
       convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
 
   '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40':
-    resolution: {tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40}
+    resolution: {integrity: sha512-7R5XHL2buuVN/hZzJouiwW6ZS1w4WLMGKAz6kvc8AaYAJ4rx2CPN5fd21qUMgdXrgvFz0O8ajSskl8t+nROA+A==, tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40}
     version: 0.0.0
     hasBin: true
     peerDependencies:
