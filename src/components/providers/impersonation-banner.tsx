@@ -16,8 +16,8 @@ export function ImpersonationBanner() {
         </div>
         <Button
           size="sm"
-          variant="outline"
-          className="h-8 border-amber-300 bg-white text-amber-950 hover:bg-amber-100"
+          variant="secondary"
+          className="h-8"
           onClick={() => void stopImpersonating()}
         >
           Stop impersonating
