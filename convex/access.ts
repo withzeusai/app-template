@@ -12,9 +12,21 @@ export const {
   accessQuery,
   accessMutation,
   accessAction,
+  hasPermission,
+  requirePermission,
+  requireAnyPermission,
+  getEffectivePermissions,
+  listMyMemberships,
+  listMyRoles,
 } = createAccessControl({
   query,
   mutation,
   action,
   components,
 });
+
+export type {
+  AccessResourceRef,
+  Membership as AccessMembership,
+  RoleSummary as AccessRoleSummary,
+} from "@usehercules/convex";
