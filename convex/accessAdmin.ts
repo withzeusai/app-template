@@ -1,9 +1,11 @@
 "use node";
 
 import { createAccessAdminActions } from "@usehercules/convex/access-admin";
-import { accessAction } from "./access";
+import { accessAction, authenticatedAction } from "./access";
 
 export const {
+  createScope,
+  archiveScope,
   assignRole,
   removeRole,
   createOrgCustomRole,
@@ -13,4 +15,4 @@ export const {
   revokeResourceGrant,
   setGrantExpiry,
   setRoleOverride,
-} = createAccessAdminActions({ accessAction });
+} = createAccessAdminActions({ accessAction, authenticatedAction });
