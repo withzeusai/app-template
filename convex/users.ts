@@ -1,7 +1,7 @@
 import { ConvexError } from "convex/values";
-import { authenticatedMutation, authenticatedQuery } from "./access";
+import { authenticatedQuery, publicMutation } from "./access";
 
-export const updateCurrentUser = authenticatedMutation({
+export const updateCurrentUser = publicMutation({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
