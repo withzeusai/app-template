@@ -93,11 +93,11 @@ importers:
         specifier: ^5.100.9
         version: 5.100.9(react@19.2.5)
       '@usehercules/auth':
-        specifier: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@51670d5
-        version: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@51670d5(convex@1.37.0(react@19.2.5))(react@19.2.5)
+        specifier: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@40c8f4e
+        version: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@40c8f4e(convex@1.37.0(react@19.2.5))(react@19.2.5)
       '@usehercules/convex':
-        specifier: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@51670d5
-        version: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@51670d5(convex@1.37.0(react@19.2.5))
+        specifier: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40c8f4e
+        version: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40c8f4e(convex@1.37.0(react@19.2.5))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1823,15 +1823,15 @@ packages:
     resolution: {integrity: sha512-NwjLUnGy8/Zfx23fl50tRC8rYaYnM52xNRYFAXvmiil9yh1+K6aRVQMnzW6gQB/1DLgWt977lYQn7C+wtgXZiA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@usehercules/auth@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@51670d5':
-    resolution: {integrity: sha512-y1GO234ELBaYTsFsMXZ2iyu6Fhw6v8TTFjdM4JbUz2E+Br0JJ/j7Gqywm2uO4RNl9F5ZO/6SNjs7swnIhZWeqA==, tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@51670d5}
+  '@usehercules/auth@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@40c8f4e':
+    resolution: {integrity: sha512-y1GO234ELBaYTsFsMXZ2iyu6Fhw6v8TTFjdM4JbUz2E+Br0JJ/j7Gqywm2uO4RNl9F5ZO/6SNjs7swnIhZWeqA==, tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@40c8f4e}
     version: 1.0.45
     peerDependencies:
       convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
 
-  '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@51670d5':
-    resolution: {integrity: sha512-A6YmB2xqLpvvsImp+fHqaGaVD8baMdAIy7acSQfhWREgknRkhBvoUFebGxJptI02U8llW1C01hnMDxqBOHrhjg==, tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@51670d5}
+  '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40c8f4e':
+    resolution: {integrity: sha512-O3ubrxhQeWvZ8IXs0e97fx74iYKG6XP1itm3+jyJ0s4Eo1jxIAggdAXBY49TshbPvCJsS9XL7lNRgMetMz9CmQ==, tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40c8f4e}
     version: 0.0.0
     hasBin: true
     peerDependencies:
@@ -4213,7 +4213,7 @@ snapshots:
       '@typescript-eslint/types': 8.59.2
       eslint-visitor-keys: 5.0.1
 
-  '@usehercules/auth@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@51670d5(convex@1.37.0(react@19.2.5))(react@19.2.5)':
+  '@usehercules/auth@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@40c8f4e(convex@1.37.0(react@19.2.5))(react@19.2.5)':
     dependencies:
       convex: 1.37.0(react@19.2.5)
       jwt-decode: 4.0.0
@@ -4222,7 +4222,7 @@ snapshots:
       react-oidc-context: 3.3.1(oidc-client-ts@3.5.0)(react@19.2.5)
       zod: 4.4.3
 
-  '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@51670d5(convex@1.37.0(react@19.2.5))':
+  '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40c8f4e(convex@1.37.0(react@19.2.5))':
     dependencies:
       convex: 1.37.0(react@19.2.5)
       standardwebhooks: 1.0.0
