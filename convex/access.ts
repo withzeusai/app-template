@@ -30,3 +30,4 @@ export type {
   Membership as AccessMembership,
   RoleSummary as AccessRoleSummary,
 } from "@usehercules/convex";
+export { scopeFromArg, scopeFromResource } from "@usehercules/convex";
