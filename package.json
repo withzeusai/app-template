@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",
-    "build": "tsc -b && vite build",
+    "build": "hercules-convex-access-check convex && tsc -b && vite build",
     "lint": "eslint . && hercules-convex-access-check convex",
     "lint:access": "hercules-convex-access-check convex",
     "fix:access-authenticated": "hercules-convex-access-check convex --fix-authenticated",
