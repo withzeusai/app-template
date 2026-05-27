@@ -96,8 +96,8 @@ importers:
         specifier: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@31e0a26
         version: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/auth@31e0a26(convex@1.37.0(react@19.2.5))(react@19.2.5)
       '@usehercules/convex':
-        specifier: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@c7c844e
-        version: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@c7c844e(convex@1.37.0(react@19.2.5))
+        specifier: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40
+        version: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40(convex@1.37.0(react@19.2.5))
       '@usehercules/sdk':
         specifier: ^1.14.5
         version: 1.14.5
@@ -1833,8 +1833,8 @@ packages:
       convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
 
-  '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@c7c844e':
-    resolution: {integrity: sha512-QJj5h29ki+sn9slJzk7EbZLrEXeqmUNXrxNe4ufT2sb13Xj8xVzUtN1f9rSHvPUXkYbS4+8ehOXB18DBr1s8Eg==, tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@c7c844e}
+  '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40':
+    resolution: {integrity: sha512-gxtK2rufhIodH385d1eZl1t4tyTYHjAQaMZIrPeoclhxWbAWxKSUP/51VlGT6At3Bv+ZbsVH1a9jiXYcgr9aOg==, tarball: https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40}
     version: 0.0.0
     hasBin: true
     peerDependencies:
@@ -4228,7 +4228,7 @@ snapshots:
       react-oidc-context: 3.3.1(oidc-client-ts@3.5.0)(react@19.2.5)
       zod: 4.4.3
 
-  '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@c7c844e(convex@1.37.0(react@19.2.5))':
+  '@usehercules/convex@https://pkg.pr.new/withzeusai/hercules-js/@usehercules/convex@40(convex@1.37.0(react@19.2.5))':
     dependencies:
       '@usehercules/sdk': 1.14.5
       convex: 1.37.0(react@19.2.5)
