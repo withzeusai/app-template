@@ -5,6 +5,7 @@ import { accessAction } from "./hercules";
 
 export const {
   archiveScope,
+  setDefaultRole,
   assignRole,
   removeRole,
   createOrgCustomRole,
