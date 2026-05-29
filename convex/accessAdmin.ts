@@ -1,7 +1,7 @@
 "use node";
 
 import { createAccessAdminActions } from "@usehercules/convex/access-admin";
-import { accessAction } from "./access";
+import { accessAction } from "./hercules";
 
 export const {
   archiveScope,

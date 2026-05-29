@@ -1,8 +1,8 @@
 import { defineApp } from "convex/server";
-import accessControl from "@usehercules/convex/convex.config.js";
+import hercules from "@usehercules/convex/convex.config.js";
 
 const app = defineApp();
 
-app.use(accessControl, { name: "accessControl" });
+app.use(hercules, { name: "hercules" });
 
 export default app;

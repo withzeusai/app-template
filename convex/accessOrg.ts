@@ -1,5 +1,5 @@
 import { ConvexError } from "convex/values";
-import { getEffectivePermissions, listMyMemberships, type AccessMembership } from "./access";
+import { getEffectivePermissions, listMyMemberships, type AccessMembership } from "./hercules";
 
 export type OrgMembership = AccessMembership & { kind: "org"; status: "active" };
 

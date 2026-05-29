@@ -1,5 +1,5 @@
 import { ConvexError } from "convex/values";
-import { authenticatedMutation, authenticatedQuery } from "./access";
+import { authenticatedMutation, authenticatedQuery } from "./hercules";
 
 export const updateCurrentUser = authenticatedMutation({
   args: {},
