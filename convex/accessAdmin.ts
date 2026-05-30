@@ -12,6 +12,7 @@ export const {
   updateRolePermissions,
   setUserExceptions,
   createResourceGrant,
+  setResourcePermissionRule,
   revokeResourceGrant,
   setGrantExpiry,
   setRoleOverride,
