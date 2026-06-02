@@ -18,16 +18,17 @@ export const {
   getEffectivePermissions,
   listMyMemberships,
   listMyRoles,
-} = createAccessControl({
-  query,
-  mutation,
-  action,
-  components,
-});
+  listScopeMembers,
+  listScopeRoles,
+  listScopePermissions,
+} = createAccessControl({ query, mutation, action, components });
 
 export type {
   AccessResourceRef,
   Membership as AccessMembership,
   RoleSummary as AccessRoleSummary,
+  ScopeMember as AccessScopeMember,
+  ScopeRoleSummary as AccessScopeRoleSummary,
+  ScopePermissionSummary as AccessScopePermissionSummary,
 } from "@usehercules/convex";
 export { scopeFromArg, scopeFromResource } from "@usehercules/convex";
