@@ -7,15 +7,15 @@
 
   "roles": {
     "owner": {
-      "type": "built_in"
+      "type": "built_in",
     },
     "admin": {
-      "type": "built_in"
+      "type": "built_in",
     },
     "member": {
-      "type": "built_in"
-    }
+      "type": "built_in",
+    },
   },
 
-  "rolePermissions": {}
+  "rolePermissions": {},
 }
