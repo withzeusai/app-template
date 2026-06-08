@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schemas.hercules.app/iam/v1.json",
+  "version": "v1",
+
+  "permissions": {},
+  "orgAdminGrantablePermissions": [],
+
+  "roles": {
+    "owner": {
+      "type": "built_in"
+    },
+    "admin": {
+      "type": "built_in"
+    },
+    "member": {
+      "type": "built_in"
+    }
+  },
+
+  "rolePermissions": {}
+}

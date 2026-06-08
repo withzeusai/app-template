@@ -12,15 +12,12 @@ export type CreateOrgScopeArgs = {
 export async function createOrgScope(
   ctx: Pick<ActionCtx, "auth">,
   args: CreateOrgScopeArgs,
-): Promise<{ accessScopeId: string; accessScopeAppId?: string }> {
+): Promise<{ accessScopeId: string }> {
   const result = await createAccessScope(ctx, {
     name: args.name,
     defaultRoleKey: args.defaultRoleKey ?? "member",
     accountEntryMode: args.accountEntryMode ?? "allowlisted_only",
   });
 
-  return {
-    accessScopeId: result.accessScopeId,
-    accessScopeAppId: result.accessScopeAppId,
-  };
+  return { accessScopeId: result.accessScopeId };
 }
