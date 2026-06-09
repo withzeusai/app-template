@@ -4,6 +4,7 @@ import { createAccessUserActions } from "@usehercules/convex/access-admin";
 import { authenticatedAction } from "./hercules";
 
 export const {
+  enterDeployment,
   setDefaultRole,
   createInvitation,
   revokeInvitation,
