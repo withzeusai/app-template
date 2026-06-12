@@ -21,7 +21,9 @@ type EntryState =
 const entryRequests = new Map<string, Promise<EntryDecision>>();
 const ENTRY_TIMEOUT_MS = 15_000;
 
-function withEntryTimeout(request: Promise<EntryDecision>): Promise<EntryDecision> {
+function withEntryTimeout(
+  request: Promise<EntryDecision>,
+): Promise<EntryDecision> {
   return new Promise((resolve, reject) => {
     const timeout = window.setTimeout(
       () => reject(new Error("Deployment entry timed out")),
@@ -34,7 +36,9 @@ function withEntryTimeout(request: Promise<EntryDecision>): Promise<EntryDecisio
       },
       (error: unknown) => {
         window.clearTimeout(timeout);
-        reject(error instanceof Error ? error : new Error("Deployment entry failed"));
+        reject(
+          error instanceof Error ? error : new Error("Deployment entry failed"),
+        );
       },
     );
   });

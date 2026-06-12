@@ -181,7 +181,9 @@ describe("DeploymentEntryProvider", () => {
     expect(await screen.findByText("Access pending approval")).not.toBeNull();
     expect(screen.queryByText("Access denied")).toBeNull();
     expect(screen.queryByText("Protected content")).toBeNull();
-    expect(screen.queryByRole("button", { name: "Check again" })).not.toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Check again" }),
+    ).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Sign out" })).not.toBeNull();
   });
 
@@ -267,8 +269,9 @@ describe("DeploymentEntryProvider", () => {
       isAuthenticated: true,
       isLoading: false,
     };
-    let resolveEntry: ((value: ReturnType<typeof allowedResult>) => void) | null =
-      null;
+    let resolveEntry:
+      | ((value: ReturnType<typeof allowedResult>) => void)
+      | null = null;
     enterDeployment.mockReturnValueOnce(
       new Promise((resolve) => {
         resolveEntry = resolve;
