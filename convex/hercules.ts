@@ -16,11 +16,14 @@ export const {
   requirePermission,
   requireAnyPermission,
   getEffectivePermissions,
+  filterAuthorizedResources,
   listMyMemberships,
   listMyRoles,
   listScopeMembers,
+  listScopeMemberDirectory,
   listScopeRoles,
   listScopePermissions,
+  listDirectSubjectsForResource,
 } = createAccessControl({ query, mutation, action, components });
 
 export type {
@@ -28,7 +31,13 @@ export type {
   Membership as AccessMembership,
   RoleSummary as AccessRoleSummary,
   ScopeMember as AccessScopeMember,
+  ScopeMemberDirectoryEntry as AccessScopeMemberDirectoryEntry,
+  ScopeMemberDirectoryPage as AccessScopeMemberDirectoryPage,
   ScopeRoleSummary as AccessScopeRoleSummary,
   ScopePermissionSummary as AccessScopePermissionSummary,
 } from "@usehercules/convex";
-export { scopeFromArg, scopeFromResource } from "@usehercules/convex";
+export {
+  scopeFromArg,
+  scopeFromParentResource,
+  scopeFromResource,
+} from "@usehercules/convex";
