@@ -16,6 +16,7 @@ export const {
   createResourceGrant,
   createResourceInvitation,
   setResourcePermissionRule,
+  setResourcePermissionRules,
   revokeResourceGrant,
   setGrantExpiry,
   setRoleOverride,
