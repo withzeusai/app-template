@@ -5,7 +5,12 @@ import { api } from "@/convex/_generated/api.js";
 import { Button } from "@/components/ui/button.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
-type EntryStatus = "active" | "blocked" | "suspended" | "pending_approval";
+type EntryStatus =
+  | "active"
+  | "blocked"
+  | "suspended"
+  | "pending_approval"
+  | "removed";
 
 type EntryDecision = {
   allowed: boolean;
@@ -206,9 +211,8 @@ export function DeploymentEntryProvider({
 
 function EntryLoadingState() {
   return (
-    <div className="flex h-svh flex-col items-center justify-center gap-4">
+    <div className="flex h-svh items-center justify-center">
       <Spinner className="size-8" />
-      <p className="text-sm text-muted-foreground">Checking access...</p>
     </div>
   );
 }

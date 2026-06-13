@@ -16,6 +16,7 @@ export const {
   requirePermission,
   requireAnyPermission,
   getEffectivePermissions,
+  getDeploymentEntryStatus,
   filterAuthorizedResources,
   listMyMemberships,
   listMyRoles,

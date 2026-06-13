@@ -120,7 +120,8 @@ describe("DeploymentEntryProvider", () => {
 
     renderGate();
 
-    expect(screen.queryByText("Checking access...")).not.toBeNull();
+    expect(screen.queryByText("Checking access...")).toBeNull();
+    expect(screen.queryByRole("status", { name: "Loading" })).not.toBeNull();
     expect(screen.queryByText("Protected content")).toBeNull();
     expect(enterDeployment).not.toHaveBeenCalled();
   });
