@@ -39,6 +39,8 @@ export type {
 } from "@usehercules/convex";
 export {
   scopeFromArg,
+  scopeFromDefaultParentResource,
+  scopeFromDefaultResource,
   scopeFromParentResource,
   scopeFromResource,
 } from "@usehercules/convex";
