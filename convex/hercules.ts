@@ -17,6 +17,7 @@ export const {
   requireAnyPermission,
   getEffectivePermissions,
   checkPermissions,
+  getCurrentHerculesAuthUserId,
   getDeploymentEntryStatus,
   filterAuthorizedResources,
   listMyMemberships,
