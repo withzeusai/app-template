@@ -16,12 +16,14 @@ export const {
   requirePermission,
   requireAnyPermission,
   getEffectivePermissions,
+  checkPermissions,
   getDeploymentEntryStatus,
   filterAuthorizedResources,
   listMyMemberships,
   listMyRoles,
   listScopeMembers,
   listScopeMemberDirectory,
+  getScopeMemberDirectoryEntry,
   listScopeRoles,
   listScopePermissions,
   listDirectSubjectsForResource,
@@ -29,6 +31,8 @@ export const {
 
 export type {
   AccessResourceRef,
+  AuthorizationDecision as AccessAuthorizationDecision,
+  DirectResourceSubject as AccessDirectResourceSubject,
   Membership as AccessMembership,
   RoleSummary as AccessRoleSummary,
   ScopeMember as AccessScopeMember,

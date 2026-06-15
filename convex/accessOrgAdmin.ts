@@ -6,7 +6,11 @@ import type { ActionCtx } from "./_generated/server.js";
 export type CreateOrgScopeArgs = {
   name: string;
   defaultRoleKey?: string;
-  accountEntryMode?: "open" | "allowlisted_only";
+  accountEntryMode?:
+    | "open"
+    | "allowlisted_only"
+    | "invite_only"
+    | "approval_required";
 };
 
 export async function createOrgScope(
