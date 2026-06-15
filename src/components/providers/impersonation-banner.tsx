@@ -8,19 +8,23 @@ export function ImpersonationBanner() {
   if (!isImpersonating) return null;
 
   return (
-    <div className="sticky inset-x-0 top-0 z-50 border-b bg-amber-50 px-4 py-2 text-amber-950 shadow-sm">
-      <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-3 text-sm">
-        <div className="flex min-w-0 items-center gap-2">
-          <ShieldAlert className="size-4 shrink-0" />
-          <span className="font-medium">You are impersonating a user.</span>
-        </div>
+    <div
+      role="region"
+      aria-label="Impersonation controls"
+      className="pointer-events-none fixed inset-x-0 top-3 z-50 flex justify-center px-3"
+    >
+      <div className="pointer-events-auto flex max-w-full items-center gap-2 rounded-full border border-amber-300 bg-amber-50/95 py-1 pr-1 pl-3 text-sm text-amber-950 shadow-lg backdrop-blur">
+        <ShieldAlert className="size-4 shrink-0" />
+        <span role="status" className="truncate font-medium">
+          Viewing as another user
+        </span>
         <Button
           size="sm"
           variant="secondary"
-          className="h-8"
+          className="h-7 rounded-full px-3"
           onClick={() => void stopImpersonating()}
         >
-          Stop impersonating
+          Stop
         </Button>
       </div>
     </div>

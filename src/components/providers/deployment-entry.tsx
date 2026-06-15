@@ -17,11 +17,19 @@ type EntryDecision = {
   status?: EntryStatus;
 };
 
-type EntryState =
-  | { identityKey: string; status: "allowed" }
-  | { identityKey: string; status: "pending" }
-  | { identityKey: string; status: "denied" }
-  | { identityKey: string; status: "error" };
+type EntryStateStatus =
+  | "allowed"
+  | "blocked"
+  | "suspended"
+  | "pending_approval"
+  | "removed"
+  | "denied"
+  | "error";
+
+type EntryState = {
+  identityKey: string;
+  status: EntryStateStatus;
+};
 
 const entryRequests = new Map<string, Promise<EntryDecision>>();
 const ENTRY_TIMEOUT_MS = 15_000;
@@ -117,13 +125,10 @@ export function DeploymentEntryProvider({
         if (!active) {
           return;
         }
-        // `pending_approval` (e.g. a not-yet-allowlisted user) is NOT a hard
-        // denial: an admin may still approve them. Surface it distinctly rather
-        // than collapsing it into "Access denied".
-        const resolved = decision.allowed
+        const resolved: EntryStateStatus = decision.allowed
           ? "allowed"
-          : decision.status === "pending_approval"
-            ? "pending"
+          : decision.status && decision.status !== "active"
+            ? decision.status
             : "denied";
         setEntryState({ identityKey, status: resolved });
       },
@@ -159,7 +164,7 @@ export function DeploymentEntryProvider({
   ) {
     return (
       <EntryFailureState
-        title="Unable to check access"
+        title="We couldn't check your access"
         retryLabel="Sign in again"
         onRetry={reauthenticate}
         onSignOut={auth.signout}
@@ -174,11 +179,11 @@ export function DeploymentEntryProvider({
     return children;
   }
 
-  if (currentState === "pending") {
+  if (currentState === "pending_approval") {
     return (
       <EntryFailureState
-        title="Access pending approval"
-        description="Your access to this deployment is awaiting approval. Check back after it has been reviewed."
+        title="Approval pending"
+        description="Your request is waiting for approval. Check again after an administrator reviews it."
         retryLabel="Check again"
         onRetry={retry}
         onSignOut={auth.signout}
@@ -186,10 +191,33 @@ export function DeploymentEntryProvider({
     );
   }
 
-  if (currentState === "denied") {
+  if (currentState === "blocked" || currentState === "denied") {
     return (
       <EntryFailureState
-        title="Access denied"
+        title="You don't have access"
+        description="This account is not allowed to access this app."
+        onRetry={retry}
+        onSignOut={auth.signout}
+      />
+    );
+  }
+
+  if (currentState === "suspended") {
+    return (
+      <EntryFailureState
+        title="Your access is suspended"
+        description="Contact an administrator if you think this is a mistake."
+        onRetry={retry}
+        onSignOut={auth.signout}
+      />
+    );
+  }
+
+  if (currentState === "removed") {
+    return (
+      <EntryFailureState
+        title="You no longer have access"
+        description="Contact an administrator if you need access again."
         onRetry={retry}
         onSignOut={auth.signout}
       />
@@ -199,7 +227,7 @@ export function DeploymentEntryProvider({
   if (currentState === "error") {
     return (
       <EntryFailureState
-        title="Unable to check access"
+        title="We couldn't check your access"
         onRetry={retry}
         onSignOut={auth.signout}
       />
@@ -219,9 +247,9 @@ function EntryLoadingState() {
 
 function EntryFailureState({
   title,
-  description = "Your access could not be confirmed for this deployment.",
+  description = "Try again. If the problem continues, sign in again.",
   onRetry,
-  retryLabel = "Retry",
+  retryLabel = "Try again",
   onSignOut,
 }: {
   title: string;
@@ -251,7 +279,7 @@ function EntryFailureState({
         <p className="text-sm text-muted-foreground">{description}</p>
         {signOutFailed ? (
           <p className="text-sm text-destructive" role="alert">
-            Unable to sign out.
+            We couldn't sign you out. Try again.
           </p>
         ) : null}
       </div>

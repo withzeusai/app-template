@@ -143,7 +143,7 @@ describe("DeploymentEntryProvider", () => {
     });
   });
 
-  it("blocks children when deployment entry is denied", async () => {
+  it("explains when the account does not have access", async () => {
     authState = authenticatedUser("denied");
     convexAuthState = {
       isAuthenticated: true,
@@ -158,11 +158,48 @@ describe("DeploymentEntryProvider", () => {
 
     renderGate();
 
-    expect(await screen.findByText("Access denied")).not.toBeNull();
+    expect(await screen.findByText("You don't have access")).not.toBeNull();
+    expect(
+      screen.queryByText("This account is not allowed to access this app."),
+    ).not.toBeNull();
     expect(screen.queryByText("Protected content")).toBeNull();
-    expect(screen.queryByRole("button", { name: "Retry" })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Try again" })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Sign out" })).not.toBeNull();
   });
+
+  it.each([
+    {
+      status: "suspended" as const,
+      title: "Your access is suspended",
+      description: "Contact an administrator if you think this is a mistake.",
+    },
+    {
+      status: "removed" as const,
+      title: "You no longer have access",
+      description: "Contact an administrator if you need access again.",
+    },
+  ])(
+    "explains when access is $status",
+    async ({ status, title, description }) => {
+      authState = authenticatedUser(status);
+      convexAuthState = {
+        isAuthenticated: true,
+        isLoading: false,
+      };
+      enterDeployment.mockResolvedValueOnce({
+        ...allowedResult(),
+        allowed: false,
+        reason: status,
+        status,
+      });
+
+      renderGate();
+
+      expect(await screen.findByText(title)).not.toBeNull();
+      expect(screen.queryByText(description)).not.toBeNull();
+      expect(screen.queryByText("Protected content")).toBeNull();
+    },
+  );
 
   it("surfaces pending approval distinctly from a hard denial", async () => {
     authState = authenticatedUser("pending");
@@ -179,8 +216,13 @@ describe("DeploymentEntryProvider", () => {
 
     renderGate();
 
-    expect(await screen.findByText("Access pending approval")).not.toBeNull();
-    expect(screen.queryByText("Access denied")).toBeNull();
+    expect(await screen.findByText("Approval pending")).not.toBeNull();
+    expect(
+      screen.queryByText(
+        "Your request is waiting for approval. Check again after an administrator reviews it.",
+      ),
+    ).not.toBeNull();
+    expect(screen.queryByText("You don't have access")).toBeNull();
     expect(screen.queryByText("Protected content")).toBeNull();
     expect(
       screen.queryByRole("button", { name: "Check again" }),
@@ -198,7 +240,12 @@ describe("DeploymentEntryProvider", () => {
 
     renderGate();
 
-    expect(await screen.findByText("Unable to check access")).not.toBeNull();
+    expect(
+      await screen.findByText("We couldn't check your access"),
+    ).not.toBeNull();
+    expect(
+      screen.queryByText("Try again. If the problem continues, sign in again."),
+    ).not.toBeNull();
     expect(screen.queryByText("Protected content")).toBeNull();
   });
 
@@ -211,7 +258,9 @@ describe("DeploymentEntryProvider", () => {
 
     renderGate();
 
-    expect(await screen.findByText("Unable to check access")).not.toBeNull();
+    expect(
+      await screen.findByText("We couldn't check your access"),
+    ).not.toBeNull();
     expect(screen.queryByText("Protected content")).toBeNull();
     expect(enterDeployment).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Sign in again" }));
@@ -233,8 +282,8 @@ describe("DeploymentEntryProvider", () => {
       await vi.advanceTimersByTimeAsync(15_000);
     });
 
-    expect(screen.queryByText("Unable to check access")).not.toBeNull();
-    expect(screen.queryByRole("button", { name: "Retry" })).not.toBeNull();
+    expect(screen.queryByText("We couldn't check your access")).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Try again" })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Sign out" })).not.toBeNull();
   });
 
@@ -348,14 +397,14 @@ describe("DeploymentEntryProvider", () => {
         <div>Protected content</div>
       </DeploymentEntryProvider>,
     );
-    await screen.findByText("Access denied");
+    await screen.findByText("You don't have access");
 
     await act(async () => {
       resolveAlice?.(allowedResult());
     });
 
     expect(screen.queryByText("Protected content")).toBeNull();
-    expect(screen.queryByText("Access denied")).not.toBeNull();
+    expect(screen.queryByText("You don't have access")).not.toBeNull();
   });
 
   it("clears only the current cached decision when retrying", async () => {
@@ -374,9 +423,9 @@ describe("DeploymentEntryProvider", () => {
       .mockResolvedValueOnce(allowedResult());
 
     renderGate();
-    await screen.findByText("Access denied");
+    await screen.findByText("You don't have access");
 
-    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
 
     expect(await screen.findByText("Protected content")).not.toBeNull();
     expect(enterDeployment).toHaveBeenCalledTimes(2);
@@ -399,7 +448,7 @@ describe("DeploymentEntryProvider", () => {
         <div>Protected content</div>
       </DeploymentEntryProvider>,
     );
-    await screen.findByText("Unable to check access");
+    await screen.findByText("We couldn't check your access");
     fireEvent.click(screen.getByRole("button", { name: "Sign in again" }));
     expect(signin).toHaveBeenCalledTimes(1);
 
@@ -433,10 +482,12 @@ describe("DeploymentEntryProvider", () => {
     signout.mockRejectedValueOnce(new Error("signout failed"));
 
     renderGate();
-    await screen.findByText("Access denied");
+    await screen.findByText("You don't have access");
     fireEvent.click(screen.getByRole("button", { name: "Sign out" }));
 
-    expect(await screen.findByText("Unable to sign out.")).not.toBeNull();
+    expect(
+      await screen.findByText("We couldn't sign you out. Try again."),
+    ).not.toBeNull();
     expect(screen.queryByText("Protected content")).toBeNull();
   });
 });
