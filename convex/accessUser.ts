@@ -8,6 +8,7 @@ export const {
   setDefaultRole,
   createInvitation,
   revokeInvitation,
+  listGrantableRoles,
   assignRole,
   removeRole,
   replaceMemberRoles,
