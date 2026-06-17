@@ -32,15 +32,15 @@ export const {
 
 export type {
   AccessResourceRef,
-  AuthorizationDecision as AccessAuthorizationDecision,
-  DirectResourceSubject as AccessDirectResourceSubject,
-  Membership as AccessMembership,
-  RoleSummary as AccessRoleSummary,
-  ScopeMember as AccessScopeMember,
-  ScopeMemberDirectoryEntry as AccessScopeMemberDirectoryEntry,
-  ScopeMemberDirectoryPage as AccessScopeMemberDirectoryPage,
-  ScopeRoleSummary as AccessScopeRoleSummary,
-  ScopePermissionSummary as AccessScopePermissionSummary,
+  AuthorizationDecision,
+  DirectResourceSubject,
+  Membership,
+  RoleSummary,
+  ScopeMember,
+  ScopeMemberDirectoryEntry,
+  ScopeMemberDirectoryPage,
+  ScopePermissionSummary,
+  ScopeRoleSummary,
 } from "@usehercules/convex";
 export {
   scopeFromArg,

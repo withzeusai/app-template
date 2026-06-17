@@ -2,16 +2,16 @@ import { ConvexError } from "convex/values";
 import {
   getEffectivePermissions,
   listMyMemberships,
-  type AccessMembership,
+  type Membership,
 } from "./hercules";
 
-export type OrgMembership = AccessMembership & {
+export type OrgMembership = Membership & {
   kind: "org";
   status: "active";
 };
 
 export function activeOrgMemberships(
-  memberships: AccessMembership[],
+  memberships: Membership[],
 ): OrgMembership[] {
   return memberships.filter(
     (membership): membership is OrgMembership =>
@@ -20,7 +20,7 @@ export function activeOrgMemberships(
 }
 
 export function findActiveOrgMembership(
-  memberships: AccessMembership[],
+  memberships: Membership[],
   scopeId: string,
 ): OrgMembership | undefined {
   return activeOrgMemberships(memberships).find(
