@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
 
 permissions:
   contents: read
@@ -12,6 +11,10 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [legacy, managed-v1]
 
     steps:
       - name: Checkout repository
@@ -29,21 +32,42 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            .github/template-variants/managed-v1/pnpm-lock.yaml
+
+      - name: Test template materialization
+        if: matrix.variant == 'legacy'
+        run: node --test .github/scripts/materialize-template-variants.test.mjs
+
+      - name: Materialize template variants
+        run: |
+          node .github/scripts/materialize-template-variants.mjs \
+            --output-dir /tmp/app-template-variants
 
       - name: Install dependencies
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm install --frozen-lockfile
 
       - name: Lint
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm lint
 
       - name: Format check
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm prettier-check
 
       - name: Type check & build
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm build
 
       - name: Type check Convex
-        run: npx tsc -p convex/tsconfig.json
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
+        run: pnpm exec tsc -p convex/tsconfig.json
+
+      - name: Test
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
+        run: pnpm run --if-present test
 
   dependency-review:
     runs-on: ubuntu-latest

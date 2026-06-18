@@ -1,0 +1,43 @@
+"use node";
+
+import { createAccessAdminActions } from "@usehercules/convex/access-admin";
+import { internalAction } from "./_generated/server";
+
+// Service-authority actions stay internal. Public app flows must use the
+// authenticated actions in accessUser.ts.
+export const {
+  archiveScope,
+  setDefaultRole,
+  createInvitation,
+  revokeInvitation,
+  assignRole,
+  removeRole,
+  replaceMemberRoles,
+  createOrgCustomRole,
+  updateRolePermissions,
+  setUserExceptions,
+  createResourceGrant,
+  replaceResourceGrants,
+  createResourceInvitation,
+  setResourcePermissionRule,
+  setResourcePermissionRules,
+  revokeResourceGrant,
+  setGrantExpiry,
+  setRoleOverride,
+  addMember,
+  setMemberStatus,
+  removeMember,
+  approveMember,
+  upsertAdmissionRule,
+  archiveAdmissionRule,
+  setAccountEntryMode,
+  createGroup,
+  renameGroup,
+  archiveGroup,
+  listGroups,
+  addGroupMember,
+  removeGroupMember,
+  listResourceInvitations,
+  getRoleOverrides,
+  getUserExceptions,
+} = createAccessAdminActions({ internalAction });
