@@ -93,8 +93,8 @@ importers:
         specifier: ^5.100.9
         version: 5.100.9(react@19.2.5)
       '@usehercules/auth':
-        specifier: ^1.0.42
-        version: 1.0.42(convex@1.37.0(react@19.2.5))(react@19.2.5)
+        specifier: ^1.0.44
+        version: 1.0.44(convex@1.37.0(react@19.2.5))(react@19.2.5)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1954,8 +1954,8 @@ packages:
     resolution: {integrity: sha512-NwjLUnGy8/Zfx23fl50tRC8rYaYnM52xNRYFAXvmiil9yh1+K6aRVQMnzW6gQB/1DLgWt977lYQn7C+wtgXZiA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@usehercules/auth@1.0.42':
-    resolution: {integrity: sha512-jLQUxLX0G1BbCwihryVdshFsuoxS5eTNKUSj3GkEbJkW3Cd3h0js9bu4dCV0kpybARksKxcXu+OOq6VK6L75HA==}
+  '@usehercules/auth@1.0.44':
+    resolution: {integrity: sha512-E1tC/HfAr57DmR+NVZCsYWRuRZpMOcHEd14AQPSZHxuCQ0dQ/GEnYZ+Xz8NVH/L9TDAQnvCp7ecbXl/gh1htXQ==}
     peerDependencies:
       convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
@@ -4708,9 +4708,10 @@ snapshots:
       '@typescript-eslint/types': 8.59.2
       eslint-visitor-keys: 5.0.1
 
-  '@usehercules/auth@1.0.42(convex@1.37.0(react@19.2.5))(react@19.2.5)':
+  '@usehercules/auth@1.0.44(convex@1.37.0(react@19.2.5))(react@19.2.5)':
     dependencies:
       convex: 1.37.0(react@19.2.5)
+      jwt-decode: 4.0.0
       oidc-client-ts: 3.5.0
       react: 19.2.5
       react-oidc-context: 3.3.1(oidc-client-ts@3.5.0)(react@19.2.5)
