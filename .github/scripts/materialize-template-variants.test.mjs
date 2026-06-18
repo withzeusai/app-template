@@ -32,10 +32,12 @@ test("materializes the legacy template without managed access control", async ()
     path.join(legacyRoot, "src/components/providers/default.tsx"),
     "utf8",
   );
+  const app = await readFile(path.join(legacyRoot, "src/App.tsx"), "utf8");
 
   assert.equal(packageJson.dependencies["@usehercules/convex"], undefined);
   assert.equal(packageJson.scripts.build, "tsc -b && vite build");
   assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
+  assert.doesNotMatch(app, /DeploymentEntryProvider/);
   await assert.rejects(readFile(path.join(legacyRoot, "hercules/iam.jsonc")));
   await assert.rejects(readFile(path.join(legacyRoot, "convex/accessUser.ts")));
 });
@@ -49,6 +51,7 @@ test("materializes the managed template with the access control overlay", async 
     path.join(managedRoot, "src/components/providers/default.tsx"),
     "utf8",
   );
+  const app = await readFile(path.join(managedRoot, "src/App.tsx"), "utf8");
   const users = await readFile(
     path.join(managedRoot, "convex/users.ts"),
     "utf8",
@@ -56,7 +59,9 @@ test("materializes the managed template with the access control overlay", async 
 
   assert.ok(packageJson.dependencies["@usehercules/convex"]);
   assert.match(packageJson.scripts.build, /hercules-convex-access-check/);
-  assert.match(defaultProviders, /DeploymentEntryProvider/);
+  assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
+  assert.match(app, /DeploymentEntryProvider/);
+  assert.match(app, /path="\/auth\/callback"/);
   assert.match(users, /authenticatedMutation/);
   await readFile(path.join(managedRoot, "hercules/iam.jsonc"));
   await readFile(path.join(managedRoot, "convex/accessUser.ts"));
