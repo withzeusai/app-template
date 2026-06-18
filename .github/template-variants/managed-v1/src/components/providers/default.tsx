@@ -11,17 +11,15 @@ export function DefaultProviders({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
       <ConvexProvider>
-        <DeploymentEntryProvider>
-          <QueryClientProvider>
-            <TooltipProvider>
-              <ThemeProvider>
-                <ImpersonationBanner />
-                <Toaster />
-                {children}
-              </ThemeProvider>
-            </TooltipProvider>
-          </QueryClientProvider>
-        </DeploymentEntryProvider>
+        <QueryClientProvider>
+          <TooltipProvider>
+            <ThemeProvider>
+              <ImpersonationBanner />
+              <Toaster />
+              <DeploymentEntryProvider>{children}</DeploymentEntryProvider>
+            </ThemeProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
       </ConvexProvider>
     </AuthProvider>
   );
