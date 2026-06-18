@@ -368,6 +368,60 @@ describe("DeploymentEntryProvider", () => {
     expect(enterDeployment).toHaveBeenCalledWith({ idToken: "first-token" });
   });
 
+  it("rechecks entry after the same subject signs out and back in", async () => {
+    authState = authenticatedUser("returning");
+    convexAuthState = {
+      isAuthenticated: true,
+      isLoading: false,
+    };
+    enterDeployment
+      .mockResolvedValueOnce(allowedResult())
+      .mockResolvedValueOnce({
+        ...allowedResult(),
+        allowed: false,
+        reason: "suspended",
+        status: "suspended",
+      });
+
+    const view = renderGate();
+    await screen.findByText("Protected content");
+
+    authState = {
+      isAuthenticated: false,
+      isLoading: false,
+      signout,
+      signin,
+      user: undefined,
+    };
+    convexAuthState = {
+      isAuthenticated: false,
+      isLoading: false,
+    };
+    view.rerender(
+      <DeploymentEntryProvider>
+        <div>Protected content</div>
+      </DeploymentEntryProvider>,
+    );
+
+    authState = authenticatedUser("returning", "new-session-token");
+    convexAuthState = {
+      isAuthenticated: true,
+      isLoading: false,
+    };
+    view.rerender(
+      <DeploymentEntryProvider>
+        <div>Protected content</div>
+      </DeploymentEntryProvider>,
+    );
+
+    expect(await screen.findByText("Your access is suspended")).not.toBeNull();
+    expect(screen.queryByText("Protected content")).toBeNull();
+    expect(enterDeployment).toHaveBeenCalledTimes(2);
+    expect(enterDeployment).toHaveBeenLastCalledWith({
+      idToken: "new-session-token",
+    });
+  });
+
   it("ignores a late decision after the authenticated subject changes", async () => {
     authState = authenticatedUser("late-alice");
     convexAuthState = {

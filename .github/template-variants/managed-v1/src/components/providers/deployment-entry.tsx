@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@usehercules/auth/react";
 import { useAction, useConvexAuth } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
@@ -66,8 +66,19 @@ function getOrCreateEntryRequest(
     return existing;
   }
 
-  const pending = request();
+  let pending: Promise<EntryDecision>;
+  try {
+    pending = Promise.resolve(request());
+  } catch (error) {
+    pending = Promise.reject(error);
+  }
   entryRequests.set(identityKey, pending);
+  const clearPending = () => {
+    if (entryRequests.get(identityKey) === pending) {
+      entryRequests.delete(identityKey);
+    }
+  };
+  void pending.then(clearPending, clearPending);
   return pending;
 }
 
@@ -81,6 +92,7 @@ export function DeploymentEntryProvider({
   const enterDeployment = useAction(api.accessUser.enterDeployment);
   const [entryState, setEntryState] = useState<EntryState | null>(null);
   const [retryVersion, setRetryVersion] = useState(0);
+  const checkedIdentityKey = useRef<string | null>(null);
 
   const identityKey = useMemo(() => {
     const issuer = auth.user?.profile.iss;
@@ -101,6 +113,7 @@ export function DeploymentEntryProvider({
     if (identityKey !== null) {
       entryRequests.delete(identityKey);
     }
+    checkedIdentityKey.current = null;
     setEntryState(null);
     setRetryVersion((version) => version + 1);
   };
@@ -111,7 +124,17 @@ export function DeploymentEntryProvider({
   };
 
   useEffect(() => {
-    if (!canCheckEntry || identityKey === null) {
+    if (!auth.isAuthenticated) {
+      checkedIdentityKey.current = null;
+    }
+  }, [auth.isAuthenticated]);
+
+  useEffect(() => {
+    if (
+      !canCheckEntry ||
+      identityKey === null ||
+      checkedIdentityKey.current === identityKey
+    ) {
       return;
     }
 
@@ -130,12 +153,14 @@ export function DeploymentEntryProvider({
           : decision.status && decision.status !== "active"
             ? decision.status
             : "denied";
+        checkedIdentityKey.current = identityKey;
         setEntryState({ identityKey, status: resolved });
       },
       () => {
         if (!active) {
           return;
         }
+        checkedIdentityKey.current = identityKey;
         setEntryState({ identityKey, status: "error" });
       },
     );
@@ -173,7 +198,10 @@ export function DeploymentEntryProvider({
   }
 
   const currentState =
-    entryState?.identityKey === identityKey ? entryState.status : null;
+    checkedIdentityKey.current === identityKey &&
+    entryState?.identityKey === identityKey
+      ? entryState.status
+      : null;
 
   if (currentState === "allowed") {
     return children;
