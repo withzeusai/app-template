@@ -31,8 +31,14 @@ vi.mock("./impersonation-banner.tsx", () => ({
   ImpersonationBanner: () => <button type="button">Stop impersonating</button>,
 }));
 
+vi.mock("./iam-access-boundary.tsx", () => ({
+  IamAccessBoundary: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="iam-access-boundary">{children}</div>
+  ),
+}));
+
 describe("DefaultProviders", () => {
-  it("renders the shared providers and routed content", () => {
+  it("renders routed content inside the managed IAM boundary", () => {
     render(
       <DefaultProviders>
         <div>Routed content</div>
@@ -42,6 +48,7 @@ describe("DefaultProviders", () => {
     expect(
       screen.getByRole("button", { name: "Stop impersonating" }),
     ).not.toBeNull();
+    expect(screen.getByTestId("iam-access-boundary")).not.toBeNull();
     expect(screen.getByText("Routed content")).not.toBeNull();
   });
 });

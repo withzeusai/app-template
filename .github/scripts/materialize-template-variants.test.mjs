@@ -37,7 +37,9 @@ test("materializes the legacy template without managed IAM", async () => {
   assert.equal(packageJson.dependencies["@usehercules/convex"], undefined);
   assert.equal(packageJson.scripts.build, "tsc -b && vite build");
   assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
+  assert.match(defaultProviders, /BrowserRouter/);
   assert.doesNotMatch(app, /DeploymentEntryProvider/);
+  assert.doesNotMatch(app, /BrowserRouter/);
   await assert.rejects(readFile(path.join(legacyRoot, "hercules/iam.jsonc")));
   await assert.rejects(readFile(path.join(legacyRoot, "convex/iam.ts")));
 });
@@ -69,14 +71,20 @@ test("materializes the managed template with the IAM overlay", async () => {
   assert.ok(packageJson.dependencies["@usehercules/convex"]);
   assert.match(packageJson.scripts.build, /hercules-convex-iam-check/);
   assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
+  assert.match(defaultProviders, /BrowserRouter/);
+  assert.match(defaultProviders, /IamAccessBoundary/);
   assert.match(authCallback, /api\.iam\.enterDeployment/);
   assert.match(authCallback, /Promise\.all/);
+  assert.match(authCallback, /IamAccessStateView/);
   assert.doesNotMatch(app, /DeploymentEntryProvider/);
+  assert.doesNotMatch(app, /BrowserRouter/);
   assert.match(app, /path="\/auth\/callback"/);
   assert.match(users, /authenticatedMutation/);
   assert.match(users, /from "\.\/iam"/);
   assert.match(iam, /createIam/);
   assert.match(iam, /createDeploymentEntryAction/);
+  assert.match(iam, /getDeploymentEntryStatusFromMirror/);
+  assert.match(iam, /publicQuery/);
   assert.doesNotMatch(iam, /^\s*["']use node["'];?/m);
   assert.match(generatedApi, /iam: typeof iam/);
   assert.doesNotMatch(
@@ -103,6 +111,10 @@ test("materializes the managed template with the IAM overlay", async () => {
       path.join(managedRoot, "src/components/providers/deployment-entry.tsx"),
     ),
   );
+  await readFile(
+    path.join(managedRoot, "src/components/providers/iam-access-boundary.tsx"),
+  );
+  await readFile(path.join(managedRoot, "src/components/iam/access-state.tsx"));
 });
 
 test("keeps repository and build-only files out of both templates", async () => {

@@ -4,53 +4,21 @@ import { useAuth, useAuthCallback } from "@usehercules/auth/react";
 import type { IamDeploymentEntryResult } from "@usehercules/convex/iam-management";
 import { useAction, useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { Button } from "@/components/ui/button.tsx";
+import {
+  IamAccessStateView,
+  type IamAccessState,
+} from "@/components/iam/access-state.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
-type EntryState = "pending" | "denied" | null;
-
-interface EntryActionsProps {
-  actionFailed: boolean;
-  isChecking: boolean;
-  isSigningOut: boolean;
-  onCheckAgain: () => Promise<void>;
-  onSignOut: () => Promise<void>;
-}
-
-function EntryActions({
-  actionFailed,
-  isChecking,
-  isSigningOut,
-  onCheckAgain,
-  onSignOut,
-}: EntryActionsProps) {
-  const isBusy = isChecking || isSigningOut;
-
-  return (
-    <>
-      {actionFailed && (
-        <p className="text-sm text-destructive" role="alert">
-          We couldn't complete that action. Please try again.
-        </p>
-      )}
-      <div className="flex flex-wrap justify-center gap-3">
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={isBusy}
-          onClick={onSignOut}
-        >
-          {isSigningOut && <Spinner />}
-          {isSigningOut ? "Signing out..." : "Sign out"}
-        </Button>
-        <Button type="button" disabled={isBusy} onClick={onCheckAgain}>
-          {isChecking && <Spinner />}
-          {isChecking ? "Checking..." : "Check again"}
-        </Button>
-      </div>
-    </>
-  );
-}
+type EntryState = Extract<
+  IamAccessState,
+  | "pending_approval"
+  | "blocked"
+  | "suspended"
+  | "removed"
+  | "missing"
+  | "access_denied"
+> | null;
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -84,7 +52,9 @@ export default function AuthCallback() {
       }
 
       setEntryState(
-        result.status === "pending_approval" ? "pending" : "denied",
+        result.status && result.status !== "active"
+          ? result.status
+          : "access_denied",
       );
     },
     [navigateHome],
@@ -131,92 +101,32 @@ export default function AuthCallback() {
     }
   }, [signout]);
 
-  if (entryState === "pending") {
+  if (entryState) {
     return (
-      <main className="flex min-h-svh items-center justify-center px-6 py-12">
-        <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Your access request is pending
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              An app administrator needs to approve your request before you can
-              continue.
-            </p>
-          </div>
-          <EntryActions
-            actionFailed={actionFailed}
-            isChecking={isChecking}
-            isSigningOut={isSigningOut}
-            onCheckAgain={handleCheckAgain}
-            onSignOut={handleSignOut}
-          />
-        </div>
-      </main>
-    );
-  }
-
-  if (entryState === "denied") {
-    return (
-      <main className="flex min-h-svh items-center justify-center px-6 py-12">
-        <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              You don't have access
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Your account cannot access this app.
-            </p>
-          </div>
-          <EntryActions
-            actionFailed={actionFailed}
-            isChecking={isChecking}
-            isSigningOut={isSigningOut}
-            onCheckAgain={handleCheckAgain}
-            onSignOut={handleSignOut}
-          />
-        </div>
-      </main>
+      <IamAccessStateView
+        state={entryState}
+        actionFailed={actionFailed}
+        isChecking={isChecking}
+        isSigningOut={isSigningOut}
+        onCheckAgain={
+          entryState === "pending_approval" || entryState === "missing"
+            ? handleCheckAgain
+            : undefined
+        }
+        onSignOut={handleSignOut}
+      />
     );
   }
 
   if (status === "error") {
     return (
-      <main className="flex min-h-svh items-center justify-center px-6 py-12">
-        <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Something went wrong
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              We couldn't finish signing you in. Please try again.
-            </p>
-          </div>
-          {actionFailed && (
-            <p className="text-sm text-destructive" role="alert">
-              We couldn't sign you out. Please try again.
-            </p>
-          )}
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={isSigningOut}
-              onClick={handleSignOut}
-            >
-              {isSigningOut && <Spinner />}
-              {isSigningOut ? "Signing out..." : "Sign out"}
-            </Button>
-            <Button
-              type="button"
-              disabled={isSigningOut}
-              onClick={() => void retry()}
-            >
-              Try again
-            </Button>
-          </div>
-        </div>
-      </main>
+      <IamAccessStateView
+        state="error"
+        actionFailed={actionFailed}
+        isSigningOut={isSigningOut}
+        onRetry={retry}
+        onSignOut={handleSignOut}
+      />
     );
   }
 

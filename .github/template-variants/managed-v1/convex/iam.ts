@@ -19,7 +19,7 @@ export const {
   getEffectivePermissions,
   checkPermissions,
   getCurrentHerculesAuthUserId,
-  getDeploymentEntryStatus,
+  getDeploymentEntryStatus: getDeploymentEntryStatusFromMirror,
   filterAuthorizedResources,
   listMyMemberships,
   listMyRoles,
@@ -31,9 +31,14 @@ export const {
   listDirectSubjectsForResource,
 } = createIam({ query, mutation, action, components });
 
+export const getDeploymentEntryStatus = publicQuery({
+  args: {},
+  handler: async (ctx) => await getDeploymentEntryStatusFromMirror(ctx),
+});
+
 export const enterDeployment = createDeploymentEntryAction({
   authenticatedAction,
-  getDeploymentEntryStatus,
+  getDeploymentEntryStatus: getDeploymentEntryStatusFromMirror,
 });
 
 export type {
