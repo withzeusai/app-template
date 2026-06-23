@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useAuthCallback } from "@usehercules/auth/react";
-import type { AccessDeploymentEntryResult } from "@usehercules/convex/access-management";
+import type { IamDeploymentEntryResult } from "@usehercules/convex/iam-management";
 import { useAction, useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { Button } from "@/components/ui/button.tsx";
@@ -57,7 +57,7 @@ export default function AuthCallback() {
   const { signout, user } = useAuth();
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
-  const enterDeployment = useAction(api.access.enterDeployment);
+  const enterDeployment = useAction(api.iam.enterDeployment);
   const [entryState, setEntryState] = useState<EntryState>(null);
   const [isChecking, setIsChecking] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -77,7 +77,7 @@ export default function AuthCallback() {
   }, [user?.id_token]);
 
   const handleEntryResult = useCallback(
-    (result: AccessDeploymentEntryResult) => {
+    (result: IamDeploymentEntryResult) => {
       if (result.allowed) {
         navigateHome();
         return;

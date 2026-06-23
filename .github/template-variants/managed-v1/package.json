@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",
-    "build": "hercules-convex-access-check convex && tsc -b && vite build",
-    "lint": "eslint . && hercules-convex-access-check convex",
-    "lint:access": "hercules-convex-access-check convex",
+    "build": "hercules-convex-iam-check convex && tsc -b && vite build",
+    "lint": "eslint . && hercules-convex-iam-check convex",
+    "lint:iam": "hercules-convex-iam-check convex",
     "test": "vitest run",
-    "fix:access-authenticated": "hercules-convex-access-check convex --fix-authenticated",
+    "fix:iam-authenticated": "hercules-convex-iam-check convex --fix-authenticated",
     "prettier-fix": "prettier --write .",
     "prettier-check": "prettier --check ."
   },

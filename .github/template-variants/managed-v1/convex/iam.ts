@@ -1,5 +1,5 @@
-import { createAccessControl } from "@usehercules/convex";
-import { createDeploymentEntryAction } from "@usehercules/convex/access-management";
+import { createIam } from "@usehercules/convex";
+import { createDeploymentEntryAction } from "@usehercules/convex/iam-management";
 import { components } from "./_generated/api.js";
 import { action, mutation, query } from "./_generated/server.js";
 
@@ -10,9 +10,9 @@ export const {
   authenticatedQuery,
   authenticatedMutation,
   authenticatedAction,
-  accessQuery,
-  accessMutation,
-  accessAction,
+  iamQuery,
+  iamMutation,
+  iamAction,
   hasPermission,
   requirePermission,
   requireAnyPermission,
@@ -29,7 +29,7 @@ export const {
   listScopeRoles,
   listScopePermissions,
   listDirectSubjectsForResource,
-} = createAccessControl({ query, mutation, action, components });
+} = createIam({ query, mutation, action, components });
 
 export const enterDeployment = createDeploymentEntryAction({
   authenticatedAction,
@@ -37,7 +37,7 @@ export const enterDeployment = createDeploymentEntryAction({
 });
 
 export type {
-  AccessResourceRef,
+  IamResourceRef,
   AuthorizationDecision,
   DirectResourceSubject,
   Membership,

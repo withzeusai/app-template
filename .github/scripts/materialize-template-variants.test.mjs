@@ -23,7 +23,7 @@ after(async () => {
   await rm(outputRoot, { force: true, recursive: true });
 });
 
-test("materializes the legacy template without managed access control", async () => {
+test("materializes the legacy template without managed IAM", async () => {
   const legacyRoot = path.join(outputRoot, "legacy");
   const packageJson = JSON.parse(
     await readFile(path.join(legacyRoot, "package.json"), "utf8"),
@@ -39,10 +39,10 @@ test("materializes the legacy template without managed access control", async ()
   assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
   assert.doesNotMatch(app, /DeploymentEntryProvider/);
   await assert.rejects(readFile(path.join(legacyRoot, "hercules/iam.jsonc")));
-  await assert.rejects(readFile(path.join(legacyRoot, "convex/access.ts")));
+  await assert.rejects(readFile(path.join(legacyRoot, "convex/iam.ts")));
 });
 
-test("materializes the managed template with the access control overlay", async () => {
+test("materializes the managed template with the IAM overlay", async () => {
   const managedRoot = path.join(outputRoot, "managed-v1");
   const packageJson = JSON.parse(
     await readFile(path.join(managedRoot, "package.json"), "utf8"),
@@ -60,39 +60,39 @@ test("materializes the managed template with the access control overlay", async 
     path.join(managedRoot, "convex/users.ts"),
     "utf8",
   );
-  const access = await readFile(
-    path.join(managedRoot, "convex/access.ts"),
-    "utf8",
-  );
+  const iam = await readFile(path.join(managedRoot, "convex/iam.ts"), "utf8");
   const generatedApi = await readFile(
     path.join(managedRoot, "convex/_generated/api.d.ts"),
     "utf8",
   );
 
   assert.ok(packageJson.dependencies["@usehercules/convex"]);
-  assert.match(packageJson.scripts.build, /hercules-convex-access-check/);
+  assert.match(packageJson.scripts.build, /hercules-convex-iam-check/);
   assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
-  assert.match(authCallback, /api\.access\.enterDeployment/);
+  assert.match(authCallback, /api\.iam\.enterDeployment/);
   assert.match(authCallback, /Promise\.all/);
   assert.doesNotMatch(app, /DeploymentEntryProvider/);
   assert.match(app, /path="\/auth\/callback"/);
   assert.match(users, /authenticatedMutation/);
-  assert.match(users, /from "\.\/access"/);
-  assert.match(access, /createAccessControl/);
-  assert.match(access, /createDeploymentEntryAction/);
-  assert.doesNotMatch(access, /^\s*["']use node["'];?/m);
-  assert.match(generatedApi, /access: typeof access/);
+  assert.match(users, /from "\.\/iam"/);
+  assert.match(iam, /createIam/);
+  assert.match(iam, /createDeploymentEntryAction/);
+  assert.doesNotMatch(iam, /^\s*["']use node["'];?/m);
+  assert.match(generatedApi, /iam: typeof iam/);
   assert.doesNotMatch(
     generatedApi,
-    /accessAdmin|accessOrg|accessOrgAdmin|accessUser|hercules: typeof hercules/,
+    /accessAdmin|accessOrg|accessOrgAdmin|accessUser|access: typeof access|hercules: typeof hercules/,
   );
   await readFile(path.join(managedRoot, "hercules/iam.jsonc"));
   for (const file of [
+    "access.ts",
     "accessAdmin.ts",
     "accessManagement.ts",
+    "iamManagement.ts",
     "accessOrg.ts",
     "accessOrgAdmin.ts",
     "accessService.ts",
+    "iamService.ts",
     "accessUser.ts",
     "hercules.ts",
   ]) {
