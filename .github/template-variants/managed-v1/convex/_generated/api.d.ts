@@ -8,11 +8,7 @@
  * @module
  */
 
-import type * as accessAdmin from "../accessAdmin.js";
-import type * as accessOrg from "../accessOrg.js";
-import type * as accessOrgAdmin from "../accessOrgAdmin.js";
-import type * as accessUser from "../accessUser.js";
-import type * as hercules from "../hercules.js";
+import type * as access from "../access.js";
 import type * as http from "../http.js";
 import type * as users from "../users.js";
 
@@ -23,11 +19,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  accessAdmin: typeof accessAdmin;
-  accessOrg: typeof accessOrg;
-  accessOrgAdmin: typeof accessOrgAdmin;
-  accessUser: typeof accessUser;
-  hercules: typeof hercules;
+  access: typeof access;
   http: typeof http;
   users: typeof users;
 }>;
