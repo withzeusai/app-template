@@ -44,7 +44,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tanstack/react-query": "^5.100.9",
     "@usehercules/auth": "^1.1.0",
-    "@usehercules/convex": "https://pkg.pr.new/@usehercules/convex@732813f",
+    "@usehercules/convex": "https://pkg.pr.new/@usehercules/convex@720b3df",
     "@usehercules/sdk": "^1.14.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
