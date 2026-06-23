@@ -51,6 +51,10 @@ test("materializes the managed template with the access control overlay", async 
     path.join(managedRoot, "src/components/providers/default.tsx"),
     "utf8",
   );
+  const authCallback = await readFile(
+    path.join(managedRoot, "src/pages/auth/Callback.tsx"),
+    "utf8",
+  );
   const app = await readFile(path.join(managedRoot, "src/App.tsx"), "utf8");
   const users = await readFile(
     path.join(managedRoot, "convex/users.ts"),
@@ -71,7 +75,9 @@ test("materializes the managed template with the access control overlay", async 
 
   assert.ok(packageJson.dependencies["@usehercules/convex"]);
   assert.match(packageJson.scripts.build, /hercules-convex-access-check/);
-  assert.match(defaultProviders, /DeploymentEntryProvider/);
+  assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
+  assert.match(authCallback, /enterDeployment/);
+  assert.match(authCallback, /Promise\.all/);
   assert.doesNotMatch(app, /DeploymentEntryProvider/);
   assert.match(app, /path="\/auth\/callback"/);
   assert.match(users, /authenticatedMutation/);
@@ -79,6 +85,11 @@ test("materializes the managed template with the access control overlay", async 
     assert.doesNotMatch(source, /^\s*["']use node["'];?/m);
   }
   await readFile(path.join(managedRoot, "hercules/iam.jsonc"));
+  await assert.rejects(
+    readFile(
+      path.join(managedRoot, "src/components/providers/deployment-entry.tsx"),
+    ),
+  );
 });
 
 test("keeps repository and build-only files out of both templates", async () => {
