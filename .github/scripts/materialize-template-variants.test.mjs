@@ -71,8 +71,8 @@ test("materializes the managed template with the access control overlay", async 
 
   assert.ok(packageJson.dependencies["@usehercules/convex"]);
   assert.match(packageJson.scripts.build, /hercules-convex-access-check/);
-  assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
-  assert.match(app, /DeploymentEntryProvider/);
+  assert.match(defaultProviders, /DeploymentEntryProvider/);
+  assert.doesNotMatch(app, /DeploymentEntryProvider/);
   assert.match(app, /path="\/auth\/callback"/);
   assert.match(users, /authenticatedMutation/);
   for (const source of [accessAdmin, accessOrgAdmin, accessUser]) {

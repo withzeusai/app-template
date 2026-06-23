@@ -31,8 +31,17 @@ vi.mock("./impersonation-banner.tsx", () => ({
   ImpersonationBanner: () => <button type="button">Stop impersonating</button>,
 }));
 
+vi.mock("./deployment-entry.tsx", () => ({
+  DeploymentEntryProvider: ({ children }: { children: React.ReactNode }) => (
+    <>
+      <div>Deployment entry initialized</div>
+      {children}
+    </>
+  ),
+}));
+
 describe("DefaultProviders", () => {
-  it("renders global controls alongside routed content", () => {
+  it("initializes deployment entry alongside routed content", () => {
     render(
       <DefaultProviders>
         <div>Routed content</div>
@@ -41,7 +50,8 @@ describe("DefaultProviders", () => {
 
     expect(
       screen.getByRole("button", { name: "Stop impersonating" }),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Routed content")).toBeInTheDocument();
+    ).not.toBeNull();
+    expect(screen.getByText("Deployment entry initialized")).not.toBeNull();
+    expect(screen.getByText("Routed content")).not.toBeNull();
   });
 });
