@@ -1,5 +1,3 @@
-"use node";
-
 import { createAccessAdminActions } from "@usehercules/convex/access-admin";
 import { internalAction } from "./_generated/server";
 

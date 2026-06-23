@@ -1,5 +1,3 @@
-"use node";
-
 import { createAccessUserActions } from "@usehercules/convex/access-admin";
 import { authenticatedAction, getDeploymentEntryStatus } from "./hercules";
 

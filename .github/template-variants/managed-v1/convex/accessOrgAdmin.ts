@@ -1,5 +1,3 @@
-"use node";
-
 import { createAccessScope } from "@usehercules/convex/access-admin";
 import type { ActionCtx } from "./_generated/server.js";
 

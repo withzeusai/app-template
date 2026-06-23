@@ -56,6 +56,18 @@ test("materializes the managed template with the access control overlay", async 
     path.join(managedRoot, "convex/users.ts"),
     "utf8",
   );
+  const accessAdmin = await readFile(
+    path.join(managedRoot, "convex/accessAdmin.ts"),
+    "utf8",
+  );
+  const accessOrgAdmin = await readFile(
+    path.join(managedRoot, "convex/accessOrgAdmin.ts"),
+    "utf8",
+  );
+  const accessUser = await readFile(
+    path.join(managedRoot, "convex/accessUser.ts"),
+    "utf8",
+  );
 
   assert.ok(packageJson.dependencies["@usehercules/convex"]);
   assert.match(packageJson.scripts.build, /hercules-convex-access-check/);
@@ -63,8 +75,10 @@ test("materializes the managed template with the access control overlay", async 
   assert.match(app, /DeploymentEntryProvider/);
   assert.match(app, /path="\/auth\/callback"/);
   assert.match(users, /authenticatedMutation/);
+  for (const source of [accessAdmin, accessOrgAdmin, accessUser]) {
+    assert.doesNotMatch(source, /^\s*["']use node["'];?/m);
+  }
   await readFile(path.join(managedRoot, "hercules/iam.jsonc"));
-  await readFile(path.join(managedRoot, "convex/accessUser.ts"));
 });
 
 test("keeps repository and build-only files out of both templates", async () => {
