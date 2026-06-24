@@ -85,6 +85,12 @@ test("materializes the managed template with the IAM overlay", async () => {
   assert.match(iam, /createDeploymentEntryAction/);
   assert.match(iam, /getDeploymentEntryStatusFromMirror/);
   assert.match(iam, /publicQuery/);
+  assert.match(iam, /listMyTenants/);
+  assert.match(iam, /getTenantRole/);
+  assert.match(iam, /getResourcePermissionOverrides/);
+  assert.match(iam, /explainAccess/);
+  assert.match(iam, /tenantFromResource/);
+  assert.doesNotMatch(iam, /listMyMemberships|listScope|scopeFrom/);
   assert.doesNotMatch(iam, /^\s*["']use node["'];?/m);
   assert.match(generatedApi, /iam: typeof iam/);
   assert.doesNotMatch(

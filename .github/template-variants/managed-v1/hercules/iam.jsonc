@@ -3,7 +3,7 @@
   "version": "v1",
 
   "permissions": {},
-  "orgAdminGrantablePermissions": [],
+  "tenantAdminGrantablePermissions": [],
 
   "roles": {
     // Owner and Admin are platform-owned. Declare them, but do not add them to
