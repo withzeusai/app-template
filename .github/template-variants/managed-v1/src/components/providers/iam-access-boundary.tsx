@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ErrorInfo,
   type ReactNode,
@@ -85,7 +86,7 @@ function IamAdmissionGate({ children }: { children: ReactNode }) {
     if (tenantAccessStatus.status === "active") return children;
     state = tenantAccessStatus.status;
   } else if (tenantAccessStatus.reason === "principal_missing") {
-    state = "missing";
+    return <MissingPrincipalAdmission onSignOut={auth.signout} />;
   } else if (
     tenantAccessStatus.reason === "mirror_not_ready" ||
     tenantAccessStatus.reason === "default_tenant_missing"
@@ -96,6 +97,59 @@ function IamAdmissionGate({ children }: { children: ReactNode }) {
   }
 
   return <IamAccessStateView state={state} onSignOut={auth.signout} />;
+}
+
+function MissingPrincipalAdmission({
+  onSignOut,
+}: {
+  onSignOut: () => Promise<void> | void;
+}) {
+  const evaluateAccess = useAction(api.iam.evaluateAccess);
+  const evaluationInFlight = useRef(false);
+  const [state, setState] = useState<IamAccessState | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
+
+  const handleCheckAccess = useCallback(async () => {
+    if (evaluationInFlight.current) return;
+
+    evaluationInFlight.current = true;
+    setIsChecking(true);
+    try {
+      const result = await evaluateAccess({});
+      if (result.allowed || result.status === "active") {
+        setState(null);
+      } else {
+        setState(result.status ?? "access_denied");
+      }
+    } catch {
+      setState("error");
+    } finally {
+      evaluationInFlight.current = false;
+      setIsChecking(false);
+    }
+  }, [evaluateAccess]);
+
+  useEffect(() => {
+    void handleCheckAccess();
+  }, [handleCheckAccess]);
+
+  if (state === null) {
+    return <IamAccessLoadingState />;
+  }
+
+  return (
+    <IamAccessStateView
+      state={state}
+      isChecking={isChecking}
+      onCheckAgain={
+        state === "pending_approval" || state === "missing"
+          ? handleCheckAccess
+          : undefined
+      }
+      onRetry={state === "error" ? handleCheckAccess : undefined}
+      onSignOut={onSignOut}
+    />
+  );
 }
 
 function IamAccessLoadingState() {
