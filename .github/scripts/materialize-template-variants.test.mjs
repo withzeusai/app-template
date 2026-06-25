@@ -80,6 +80,7 @@ test("materializes the managed template with the IAM overlay", async () => {
   assert.match(authCallback, /IamAccessStateView/);
   assert.doesNotMatch(authCallback, /iam-management|idToken|id_token/);
   assert.match(iamAccessBoundary, /evaluateAccess\(\{\}\)/);
+  assert.doesNotMatch(iamAccessBoundary, /IamAdmissionGate|useConvexAuth/);
   assert.doesNotMatch(iamAccessBoundary, /idToken|id_token/);
   assert.doesNotMatch(app, /BrowserRouter/);
   assert.match(app, /path="\/auth\/callback"/);

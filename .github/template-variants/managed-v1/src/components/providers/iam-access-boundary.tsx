@@ -4,7 +4,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
   type ErrorInfo,
   type ReactNode,
@@ -14,7 +13,7 @@ import {
   classifyIamError,
   type IamErrorClassification,
 } from "@usehercules/convex";
-import { useAction, useConvexAuth, useQuery } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { api } from "@/convex/_generated/api.js";
@@ -48,107 +47,8 @@ export function IamAccessBoundary({ children }: { children: ReactNode }) {
 
   return (
     <IamRenderErrorBoundary resetKey={resetKey}>
-      {location.pathname === "/auth/callback" ? (
-        children
-      ) : (
-        <IamAdmissionGate>{children}</IamAdmissionGate>
-      )}
+      {children}
     </IamRenderErrorBoundary>
-  );
-}
-
-function IamAdmissionGate({ children }: { children: ReactNode }) {
-  const auth = useAuth();
-  const convexAuth = useConvexAuth();
-  const tenantAccessStatus = useQuery(
-    api.iam.getTenantAccessStatus,
-    auth.isAuthenticated && convexAuth.isAuthenticated ? {} : "skip",
-  );
-
-  if (
-    auth.isLoading ||
-    (auth.isAuthenticated &&
-      (convexAuth.isLoading ||
-        (convexAuth.isAuthenticated && tenantAccessStatus === undefined)))
-  ) {
-    return <IamAccessLoadingState />;
-  }
-  if (!auth.isAuthenticated) return children;
-  if (!convexAuth.isAuthenticated) {
-    return <IamAccessStateView state="error" onSignOut={auth.signout} />;
-  }
-  if (tenantAccessStatus === undefined) {
-    return <IamAccessLoadingState />;
-  }
-
-  let state: IamAccessState;
-  if (tenantAccessStatus.kind === "principal") {
-    if (tenantAccessStatus.status === "active") return children;
-    state = tenantAccessStatus.status;
-  } else if (tenantAccessStatus.reason === "principal_missing") {
-    return <MissingPrincipalAdmission onSignOut={auth.signout} />;
-  } else if (
-    tenantAccessStatus.reason === "mirror_not_ready" ||
-    tenantAccessStatus.reason === "default_tenant_missing"
-  ) {
-    return <IamAccessLoadingState />;
-  } else {
-    state = "error";
-  }
-
-  return <IamAccessStateView state={state} onSignOut={auth.signout} />;
-}
-
-function MissingPrincipalAdmission({
-  onSignOut,
-}: {
-  onSignOut: () => Promise<void> | void;
-}) {
-  const evaluateAccess = useAction(api.iam.evaluateAccess);
-  const evaluationInFlight = useRef(false);
-  const [state, setState] = useState<IamAccessState | null>(null);
-  const [isChecking, setIsChecking] = useState(false);
-
-  const handleCheckAccess = useCallback(async () => {
-    if (evaluationInFlight.current) return;
-
-    evaluationInFlight.current = true;
-    setIsChecking(true);
-    try {
-      const result = await evaluateAccess({});
-      if (result.allowed || result.status === "active") {
-        setState(null);
-      } else {
-        setState(result.status ?? "access_denied");
-      }
-    } catch {
-      setState("error");
-    } finally {
-      evaluationInFlight.current = false;
-      setIsChecking(false);
-    }
-  }, [evaluateAccess]);
-
-  useEffect(() => {
-    void handleCheckAccess();
-  }, [handleCheckAccess]);
-
-  if (state === null) {
-    return <IamAccessLoadingState />;
-  }
-
-  return (
-    <IamAccessStateView
-      state={state}
-      isChecking={isChecking}
-      onCheckAgain={
-        state === "pending_approval" || state === "missing"
-          ? handleCheckAccess
-          : undefined
-      }
-      onRetry={state === "error" ? handleCheckAccess : undefined}
-      onSignOut={onSignOut}
-    />
   );
 }
 
