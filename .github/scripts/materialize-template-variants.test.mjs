@@ -36,9 +36,7 @@ test("materializes the legacy template without managed IAM", async () => {
 
   assert.equal(packageJson.dependencies["@usehercules/convex"], undefined);
   assert.equal(packageJson.scripts.build, "tsc -b && vite build");
-  assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
   assert.match(defaultProviders, /BrowserRouter/);
-  assert.doesNotMatch(app, /DeploymentEntryProvider/);
   assert.doesNotMatch(app, /BrowserRouter/);
   await assert.rejects(readFile(path.join(legacyRoot, "hercules/iam.jsonc")));
   await assert.rejects(readFile(path.join(legacyRoot, "convex/iam.ts")));
@@ -74,17 +72,15 @@ test("materializes the managed template with the IAM overlay", async () => {
 
   assert.ok(packageJson.dependencies["@usehercules/convex"]);
   assert.match(packageJson.scripts.build, /hercules-convex-iam-check/);
-  assert.doesNotMatch(defaultProviders, /DeploymentEntryProvider/);
   assert.match(defaultProviders, /BrowserRouter/);
   assert.match(defaultProviders, /IamAccessBoundary/);
-  assert.match(authCallback, /api\.iam\.enterDeployment/);
-  assert.match(authCallback, /enterDeployment\(\{\}\)/);
+  assert.match(authCallback, /api\.iam\.evaluateAccess/);
+  assert.match(authCallback, /evaluateAccess\(\{\}\)/);
   assert.match(authCallback, /Promise\.all/);
   assert.match(authCallback, /IamAccessStateView/);
   assert.doesNotMatch(authCallback, /iam-management|idToken|id_token/);
-  assert.match(iamAccessBoundary, /enterDeployment\(\{\}\)/);
+  assert.match(iamAccessBoundary, /evaluateAccess\(\{\}\)/);
   assert.doesNotMatch(iamAccessBoundary, /idToken|id_token/);
-  assert.doesNotMatch(app, /DeploymentEntryProvider/);
   assert.doesNotMatch(app, /BrowserRouter/);
   assert.match(app, /path="\/auth\/callback"/);
   assert.match(users, /authenticatedMutation/);
@@ -98,7 +94,7 @@ test("materializes the managed template with the IAM overlay", async () => {
     iam,
     /iam\.tenants\.evaluateAccess\("default", \{\s*user_token_identifier: tokenIdentifier,/s,
   );
-  assert.match(iam, /getDeploymentEntryStatusFromMirror/);
+  assert.match(iam, /getTenantAccessStatusFromMirror/);
   assert.match(iam, /state_version: mirror\.stateVersion/);
   assert.doesNotMatch(iam, /user_id: mirror\.principalId/);
   assert.match(iam, /publicQuery/);
@@ -109,7 +105,7 @@ test("materializes the managed template with the IAM overlay", async () => {
   assert.match(iam, /tenantFromResource/);
   assert.doesNotMatch(iam, /listMyMemberships|listScope|scopeFrom/);
   assert.doesNotMatch(iam, /@usehercules\/convex\/iam-management/);
-  assert.doesNotMatch(iam, /createDeploymentEntryAction|idToken|id_token/);
+  assert.doesNotMatch(iam, /idToken|id_token/);
   assert.doesNotMatch(iam, /actor/);
   assert.doesNotMatch(iam, /^\s*["']use node["'];?/m);
   assert.match(generatedApi, /iam: typeof iam/);
@@ -132,11 +128,6 @@ test("materializes the managed template with the IAM overlay", async () => {
   ]) {
     await assert.rejects(readFile(path.join(managedRoot, "convex", file)));
   }
-  await assert.rejects(
-    readFile(
-      path.join(managedRoot, "src/components/providers/deployment-entry.tsx"),
-    ),
-  );
   await readFile(path.join(managedRoot, "src/components/iam/access-state.tsx"));
 });
 

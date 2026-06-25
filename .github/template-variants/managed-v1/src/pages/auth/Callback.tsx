@@ -9,7 +9,7 @@ import {
 } from "@/components/iam/access-state.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
-type EntryState = Extract<
+type CallbackAccessState = Extract<
   IamAccessState,
   | "pending_approval"
   | "blocked"
@@ -24,8 +24,8 @@ export default function AuthCallback() {
   const { signout } = useAuth();
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
-  const enterDeployment = useAction(api.iam.enterDeployment);
-  const [entryState, setEntryState] = useState<EntryState>(null);
+  const evaluateAccess = useAction(api.iam.evaluateAccess);
+  const [accessState, setAccessState] = useState<CallbackAccessState>(null);
   const [isChecking, setIsChecking] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [actionFailed, setActionFailed] = useState(false);
@@ -35,14 +35,14 @@ export default function AuthCallback() {
     [navigate],
   );
 
-  const handleEntryResult = useCallback(
-    (result: Awaited<ReturnType<typeof enterDeployment>>) => {
+  const handleAccessResult = useCallback(
+    (result: Awaited<ReturnType<typeof evaluateAccess>>) => {
       if (result.allowed) {
         navigateHome();
         return;
       }
 
-      setEntryState(
+      setAccessState(
         result.status && result.status !== "active"
           ? result.status
           : "access_denied",
@@ -52,12 +52,12 @@ export default function AuthCallback() {
   );
 
   const onSync = useCallback(async () => {
-    const [, entryResult] = await Promise.all([
+    const [, accessResult] = await Promise.all([
       updateCurrentUser(),
-      enterDeployment({}),
+      evaluateAccess({}),
     ]);
-    handleEntryResult(entryResult);
-  }, [enterDeployment, handleEntryResult, updateCurrentUser]);
+    handleAccessResult(accessResult);
+  }, [evaluateAccess, handleAccessResult, updateCurrentUser]);
 
   const { status, retry } = useAuthCallback({
     isBackendAuthenticated: isConvexAuthenticated,
@@ -70,14 +70,14 @@ export default function AuthCallback() {
     setActionFailed(false);
 
     try {
-      const entryResult = await enterDeployment({});
-      handleEntryResult(entryResult);
+      const accessResult = await evaluateAccess({});
+      handleAccessResult(accessResult);
     } catch {
       setActionFailed(true);
     } finally {
       setIsChecking(false);
     }
-  }, [enterDeployment, handleEntryResult]);
+  }, [evaluateAccess, handleAccessResult]);
 
   const handleSignOut = useCallback(async () => {
     setIsSigningOut(true);
@@ -91,15 +91,15 @@ export default function AuthCallback() {
     }
   }, [signout]);
 
-  if (entryState) {
+  if (accessState) {
     return (
       <IamAccessStateView
-        state={entryState}
+        state={accessState}
         actionFailed={actionFailed}
         isChecking={isChecking}
         isSigningOut={isSigningOut}
         onCheckAgain={
-          entryState === "pending_approval" || entryState === "missing"
+          accessState === "pending_approval" || accessState === "missing"
             ? handleCheckAgain
             : undefined
         }

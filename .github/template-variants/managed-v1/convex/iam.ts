@@ -8,7 +8,7 @@ import { action, mutation, query } from "./_generated/server.js";
 const DEFAULT_API_VERSION = "2025-12-09";
 const HERCULES_API_KEY_ENV_VAR = "HERCULES_API_KEY";
 
-type ActiveMirrorDeploymentEntryResult = {
+type ActiveMirrorTenantAccessResult = {
   allowed: true;
   changed: false;
   reason: "existing_active";
@@ -16,9 +16,9 @@ type ActiveMirrorDeploymentEntryResult = {
   status: "active";
 };
 
-export type IamDeploymentEntryResult =
+export type IamAccessEvaluationResult =
   | TenantEvaluateAccessResponse
-  | ActiveMirrorDeploymentEntryResult;
+  | ActiveMirrorTenantAccessResult;
 
 let iamClient: Hercules | undefined;
 
@@ -38,7 +38,7 @@ export const {
   getEffectivePermissions,
   checkPermissions,
   getCurrentHerculesAuthUserId,
-  getDeploymentEntryStatus: getDeploymentEntryStatusFromMirror,
+  getTenantAccessStatus: getTenantAccessStatusFromMirror,
   filterAuthorizedResources,
   listMyTenants,
   listMyRoles,
@@ -57,15 +57,15 @@ export const {
   listDirectSubjectsForResource,
 } = createIam({ query, mutation, action, components });
 
-export const getDeploymentEntryStatus = publicQuery({
+export const getTenantAccessStatus = publicQuery({
   args: {},
-  handler: async (ctx) => await getDeploymentEntryStatusFromMirror(ctx),
+  handler: async (ctx) => await getTenantAccessStatusFromMirror(ctx),
 });
 
-export const enterDeployment = authenticatedAction({
+export const evaluateAccess = authenticatedAction({
   args: {},
-  handler: async (ctx): Promise<IamDeploymentEntryResult> => {
-    const mirror = await getDeploymentEntryStatusFromMirror(ctx);
+  handler: async (ctx): Promise<IamAccessEvaluationResult> => {
+    const mirror = await getTenantAccessStatusFromMirror(ctx);
     if (mirror.kind === "principal" && mirror.status === "active") {
       return {
         allowed: true,

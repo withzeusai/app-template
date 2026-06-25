@@ -134,35 +134,35 @@ function ClassifiedIamFallback({
 }) {
   const navigate = useNavigate();
   const { signout } = useAuth();
-  const enterDeployment = useAction(api.iam.enterDeployment);
-  const entryStatus = useQuery(api.iam.getDeploymentEntryStatus);
-  const [checkedEntryState, setCheckedEntryState] =
+  const evaluateAccess = useAction(api.iam.evaluateAccess);
+  const tenantAccessStatus = useQuery(api.iam.getTenantAccessStatus);
+  const [checkedAccessState, setCheckedAccessState] =
     useState<IamAdmissionStatus | null>(null);
   const [isChecking, setIsChecking] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [actionFailed, setActionFailed] = useState(false);
-  const mirrorState = stateFromMirror(entryStatus);
+  const mirrorState = stateFromTenantAccessStatus(tenantAccessStatus);
   const missingMirrorState =
-    entryStatus?.kind === "fallback" &&
-    entryStatus.reason === "principal_missing" &&
+    tenantAccessStatus?.kind === "fallback" &&
+    tenantAccessStatus.reason === "principal_missing" &&
     (classification.kind !== "admission" || classification.status === "missing")
       ? "missing"
       : null;
   const displayState =
     mirrorState ??
-    checkedEntryState ??
+    checkedAccessState ??
     missingMirrorState ??
     stateFromClassification(classification);
 
   useEffect(() => {
-    if (!entryStatus) return;
+    if (!tenantAccessStatus) return;
 
-    if (entryStatus.kind === "principal") {
-      if (entryStatus.status === "active") {
+    if (tenantAccessStatus.kind === "principal") {
+      if (tenantAccessStatus.status === "active") {
         if (
           classification.kind !== "permission" ||
           (classification.sourceVersion !== undefined &&
-            entryStatus.stateVersion !== classification.sourceVersion)
+            tenantAccessStatus.stateVersion !== classification.sourceVersion)
         ) {
           onReset();
         }
@@ -173,29 +173,29 @@ function ClassifiedIamFallback({
 
     if (
       classification.kind === "temporary" &&
-      entryStatus.reason !== "mirror_not_ready"
+      tenantAccessStatus.reason !== "mirror_not_ready"
     ) {
       onReset();
       return;
     }
-  }, [classification, entryStatus, onReset]);
+  }, [classification, tenantAccessStatus, onReset]);
 
   const handleCheckAgain = useCallback(async () => {
     setIsChecking(true);
     setActionFailed(false);
     try {
-      const result = await enterDeployment({});
+      const result = await evaluateAccess({});
       if (result.allowed || result.status === "active") {
         onReset();
       } else {
-        setCheckedEntryState(entryStateFromStatus(result.status));
+        setCheckedAccessState(accessStateFromStatus(result.status));
       }
     } catch {
       setActionFailed(true);
     } finally {
       setIsChecking(false);
     }
-  }, [enterDeployment, onReset]);
+  }, [evaluateAccess, onReset]);
 
   const handleSignOut = useCallback(async () => {
     setIsSigningOut(true);
@@ -269,8 +269,8 @@ function stateFromClassification(
   return "mirror_not_ready";
 }
 
-function stateFromMirror(
-  entryStatus:
+function stateFromTenantAccessStatus(
+  accessStatus:
     | {
         kind: "principal";
         status: IamPrincipalStatus;
@@ -281,11 +281,11 @@ function stateFromMirror(
       }
     | undefined,
 ): IamAdmissionStatus | null {
-  if (!entryStatus || entryStatus.kind !== "principal") return null;
-  return entryStatus.status === "active" ? null : entryStatus.status;
+  if (!accessStatus || accessStatus.kind !== "principal") return null;
+  return accessStatus.status === "active" ? null : accessStatus.status;
 }
 
-function entryStateFromStatus(
+function accessStateFromStatus(
   status: IamAdmissionStatus | "active" | undefined,
 ): IamAdmissionStatus {
   return status && status !== "active" ? status : "missing";
