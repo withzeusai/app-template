@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useAuthCallback } from "@usehercules/auth/react";
-import type { IamDeploymentEntryResult } from "@usehercules/convex/iam-management";
 import { useAction, useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import {
@@ -22,7 +21,7 @@ type EntryState = Extract<
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const { signout, user } = useAuth();
+  const { signout } = useAuth();
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
   const enterDeployment = useAction(api.iam.enterDeployment);
@@ -36,16 +35,8 @@ export default function AuthCallback() {
     [navigate],
   );
 
-  const getIdToken = useCallback(() => {
-    const idToken = user?.id_token?.trim();
-    if (!idToken) {
-      throw new Error("Your sign-in session is incomplete. Please try again.");
-    }
-    return idToken;
-  }, [user?.id_token]);
-
   const handleEntryResult = useCallback(
-    (result: IamDeploymentEntryResult) => {
+    (result: Awaited<ReturnType<typeof enterDeployment>>) => {
       if (result.allowed) {
         navigateHome();
         return;
@@ -61,13 +52,12 @@ export default function AuthCallback() {
   );
 
   const onSync = useCallback(async () => {
-    const idToken = getIdToken();
     const [, entryResult] = await Promise.all([
       updateCurrentUser(),
-      enterDeployment({ idToken }),
+      enterDeployment({}),
     ]);
     handleEntryResult(entryResult);
-  }, [enterDeployment, getIdToken, handleEntryResult, updateCurrentUser]);
+  }, [enterDeployment, handleEntryResult, updateCurrentUser]);
 
   const { status, retry } = useAuthCallback({
     isBackendAuthenticated: isConvexAuthenticated,
@@ -80,14 +70,14 @@ export default function AuthCallback() {
     setActionFailed(false);
 
     try {
-      const entryResult = await enterDeployment({ idToken: getIdToken() });
+      const entryResult = await enterDeployment({});
       handleEntryResult(entryResult);
     } catch {
       setActionFailed(true);
     } finally {
       setIsChecking(false);
     }
-  }, [enterDeployment, getIdToken, handleEntryResult]);
+  }, [enterDeployment, handleEntryResult]);
 
   const handleSignOut = useCallback(async () => {
     setIsSigningOut(true);

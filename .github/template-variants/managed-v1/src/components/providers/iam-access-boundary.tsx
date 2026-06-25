@@ -11,7 +11,6 @@ import {
 import { useAuth } from "@usehercules/auth/react";
 import {
   classifyIamError,
-  type IamAdmissionStatus,
   type IamErrorClassification,
 } from "@usehercules/convex";
 import { useAction, useQuery } from "convex/react";
@@ -24,6 +23,13 @@ import {
 } from "@/components/iam/access-state.tsx";
 
 type IamOperationErrorHandler = (error: unknown) => boolean;
+type IamAdmissionStatus =
+  | "pending_approval"
+  | "blocked"
+  | "suspended"
+  | "removed"
+  | "missing";
+type IamPrincipalStatus = Exclude<IamAdmissionStatus, "missing"> | "active";
 
 const IamOperationErrorContext = createContext<IamOperationErrorHandler>(
   () => false,
@@ -127,7 +133,7 @@ function ClassifiedIamFallback({
   onReset: () => void;
 }) {
   const navigate = useNavigate();
-  const { signout, user } = useAuth();
+  const { signout } = useAuth();
   const enterDeployment = useAction(api.iam.enterDeployment);
   const entryStatus = useQuery(api.iam.getDeploymentEntryStatus);
   const [checkedEntryState, setCheckedEntryState] =
@@ -175,16 +181,10 @@ function ClassifiedIamFallback({
   }, [classification, entryStatus, onReset]);
 
   const handleCheckAgain = useCallback(async () => {
-    const idToken = user?.id_token?.trim();
-    if (!idToken) {
-      setActionFailed(true);
-      return;
-    }
-
     setIsChecking(true);
     setActionFailed(false);
     try {
-      const result = await enterDeployment({ idToken });
+      const result = await enterDeployment({});
       if (result.allowed || result.status === "active") {
         onReset();
       } else {
@@ -195,7 +195,7 @@ function ClassifiedIamFallback({
     } finally {
       setIsChecking(false);
     }
-  }, [enterDeployment, onReset, user?.id_token]);
+  }, [enterDeployment, onReset]);
 
   const handleSignOut = useCallback(async () => {
     setIsSigningOut(true);
@@ -273,7 +273,7 @@ function stateFromMirror(
   entryStatus:
     | {
         kind: "principal";
-        status: IamAdmissionStatus | "active";
+        status: IamPrincipalStatus;
       }
     | {
         kind: "fallback";
@@ -286,7 +286,7 @@ function stateFromMirror(
 }
 
 function entryStateFromStatus(
-  status: Exclude<IamAdmissionStatus, "missing"> | "active" | undefined,
+  status: IamAdmissionStatus | "active" | undefined,
 ): IamAdmissionStatus {
   return status && status !== "active" ? status : "missing";
 }
