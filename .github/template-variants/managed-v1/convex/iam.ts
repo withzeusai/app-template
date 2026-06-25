@@ -102,7 +102,6 @@ export type {
   TenantDetail,
   TenantGroup,
   TenantGroupsPage,
-  TenantKind,
   TenantPermissionSummary,
   TenantRoleDetail,
   TenantRolePermission,
