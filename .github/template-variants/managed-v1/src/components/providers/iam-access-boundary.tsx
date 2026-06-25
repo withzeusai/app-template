@@ -13,7 +13,7 @@ import {
   classifyIamError,
   type IamErrorClassification,
 } from "@usehercules/convex";
-import { useAction, useQuery } from "convex/react";
+import { useAction, useConvexAuth, useQuery } from "convex/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { api } from "@/convex/_generated/api.js";
@@ -21,6 +21,7 @@ import {
   IamAccessStateView,
   type IamAccessState,
 } from "@/components/iam/access-state.tsx";
+import { Spinner } from "@/components/ui/spinner.tsx";
 
 type IamOperationErrorHandler = (error: unknown) => boolean;
 type IamAdmissionStatus =
@@ -46,8 +47,62 @@ export function IamAccessBoundary({ children }: { children: ReactNode }) {
 
   return (
     <IamRenderErrorBoundary resetKey={resetKey}>
-      {children}
+      {location.pathname === "/auth/callback" ? (
+        children
+      ) : (
+        <IamAdmissionGate>{children}</IamAdmissionGate>
+      )}
     </IamRenderErrorBoundary>
+  );
+}
+
+function IamAdmissionGate({ children }: { children: ReactNode }) {
+  const auth = useAuth();
+  const convexAuth = useConvexAuth();
+  const tenantAccessStatus = useQuery(
+    api.iam.getTenantAccessStatus,
+    auth.isAuthenticated && convexAuth.isAuthenticated ? {} : "skip",
+  );
+
+  if (
+    auth.isLoading ||
+    (auth.isAuthenticated &&
+      (convexAuth.isLoading ||
+        (convexAuth.isAuthenticated && tenantAccessStatus === undefined)))
+  ) {
+    return <IamAccessLoadingState />;
+  }
+  if (!auth.isAuthenticated) return children;
+  if (!convexAuth.isAuthenticated) {
+    return <IamAccessStateView state="error" onSignOut={auth.signout} />;
+  }
+  if (tenantAccessStatus === undefined) {
+    return <IamAccessLoadingState />;
+  }
+
+  let state: IamAccessState;
+  if (tenantAccessStatus.kind === "principal") {
+    if (tenantAccessStatus.status === "active") return children;
+    state = tenantAccessStatus.status;
+  } else if (tenantAccessStatus.reason === "principal_missing") {
+    state = "missing";
+  } else if (
+    tenantAccessStatus.reason === "mirror_not_ready" ||
+    tenantAccessStatus.reason === "default_tenant_missing"
+  ) {
+    return <IamAccessLoadingState />;
+  } else {
+    state = "error";
+  }
+
+  return <IamAccessStateView state={state} onSignOut={auth.signout} />;
+}
+
+function IamAccessLoadingState() {
+  return (
+    <main className="flex min-h-svh items-center justify-center">
+      <Spinner className="size-8" />
+    </main>
   );
 }
 
@@ -216,6 +271,10 @@ function ClassifiedIamFallback({
     }
   }, [navigate]);
 
+  if (displayState === "mirror_not_ready") {
+    return <IamAccessLoadingState />;
+  }
+
   return (
     <IamAccessStateView
       state={displayState}
@@ -228,7 +287,6 @@ function ClassifiedIamFallback({
           : undefined
       }
       onGoBack={displayState === "permission_denied" ? handleGoBack : undefined}
-      onRetry={displayState === "mirror_not_ready" ? onReset : undefined}
       onSignOut={handleSignOut}
     />
   );
