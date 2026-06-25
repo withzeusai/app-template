@@ -3,21 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth, useAuthCallback } from "@usehercules/auth/react";
 import { useAction, useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import {
-  IamAccessStateView,
-  type IamAccessState,
-} from "@/components/iam/access-state.tsx";
+import { IamAccessStateView } from "@/components/iam/access-state.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
-
-type CallbackAccessState = Extract<
-  IamAccessState,
-  | "pending_approval"
-  | "blocked"
-  | "suspended"
-  | "removed"
-  | "missing"
-  | "access_denied"
-> | null;
+import { getAuthAccessRoute } from "./access-routes.ts";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -25,8 +13,6 @@ export default function AuthCallback() {
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
   const evaluateAccess = useAction(api.iam.evaluateAccess);
-  const [accessState, setAccessState] = useState<CallbackAccessState>(null);
-  const [isChecking, setIsChecking] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [actionFailed, setActionFailed] = useState(false);
 
@@ -41,14 +27,9 @@ export default function AuthCallback() {
         navigateHome();
         return;
       }
-
-      setAccessState(
-        result.status && result.status !== "active"
-          ? result.status
-          : "access_denied",
-      );
+      navigate(getAuthAccessRoute(result.status), { replace: true });
     },
-    [navigateHome],
+    [navigate, navigateHome],
   );
 
   const onSync = useCallback(async () => {
@@ -65,20 +46,6 @@ export default function AuthCallback() {
     onNoAuthParams: navigateHome,
   });
 
-  const handleCheckAgain = useCallback(async () => {
-    setIsChecking(true);
-    setActionFailed(false);
-
-    try {
-      const accessResult = await evaluateAccess({});
-      handleAccessResult(accessResult);
-    } catch {
-      setActionFailed(true);
-    } finally {
-      setIsChecking(false);
-    }
-  }, [evaluateAccess, handleAccessResult]);
-
   const handleSignOut = useCallback(async () => {
     setIsSigningOut(true);
     setActionFailed(false);
@@ -90,23 +57,6 @@ export default function AuthCallback() {
       setIsSigningOut(false);
     }
   }, [signout]);
-
-  if (accessState) {
-    return (
-      <IamAccessStateView
-        state={accessState}
-        actionFailed={actionFailed}
-        isChecking={isChecking}
-        isSigningOut={isSigningOut}
-        onCheckAgain={
-          accessState === "pending_approval" || accessState === "missing"
-            ? handleCheckAgain
-            : undefined
-        }
-        onSignOut={handleSignOut}
-      />
-    );
-  }
 
   if (status === "error") {
     return (

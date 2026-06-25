@@ -14,7 +14,7 @@ import {
   type IamErrorClassification,
 } from "@usehercules/convex";
 import { useAction, useQuery } from "convex/react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { api } from "@/convex/_generated/api.js";
 import {
@@ -22,6 +22,7 @@ import {
   type IamAccessState,
 } from "@/components/iam/access-state.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
+import { getAuthAccessRoute } from "@/pages/auth/access-routes.ts";
 
 type IamOperationErrorHandler = (error: unknown) => boolean;
 type IamAdmissionStatus =
@@ -103,10 +104,17 @@ class IamRenderErrorBoundary extends Component<
       <IamOperationErrorContext.Provider value={this.handleOperationError}>
         {this.state.hasError ? (
           this.state.classification ? (
-            <ClassifiedIamFallback
-              classification={this.state.classification}
-              onReset={this.reset}
-            />
+            this.state.classification.kind === "admission" ? (
+              <Navigate
+                to={getAuthAccessRoute(this.state.classification.status)}
+                replace
+              />
+            ) : (
+              <ClassifiedIamFallback
+                classification={this.state.classification}
+                onReset={this.reset}
+              />
+            )
           ) : (
             <GenericErrorFallback onReset={this.reset} />
           )

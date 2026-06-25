@@ -38,6 +38,7 @@ test("materializes the legacy template without managed IAM", async () => {
   assert.equal(packageJson.scripts.build, "tsc -b && vite build");
   assert.match(defaultProviders, /BrowserRouter/);
   assert.doesNotMatch(app, /BrowserRouter/);
+  assert.doesNotMatch(app, /\/auth\/pending-approval/);
   await assert.rejects(readFile(path.join(legacyRoot, "hercules/iam.jsonc")));
   await assert.rejects(readFile(path.join(legacyRoot, "convex/iam.ts")));
 });
@@ -69,6 +70,10 @@ test("materializes the managed template with the IAM overlay", async () => {
     path.join(managedRoot, "src/components/providers/iam-access-boundary.tsx"),
     "utf8",
   );
+  const accessRoutes = await readFile(
+    path.join(managedRoot, "src/pages/auth/access-routes.ts"),
+    "utf8",
+  );
 
   assert.ok(packageJson.dependencies["@usehercules/convex"]);
   assert.match(packageJson.scripts.build, /hercules-convex-iam-check/);
@@ -84,6 +89,17 @@ test("materializes the managed template with the IAM overlay", async () => {
   assert.doesNotMatch(iamAccessBoundary, /idToken|id_token/);
   assert.doesNotMatch(app, /BrowserRouter/);
   assert.match(app, /path="\/auth\/callback"/);
+  for (const path of [
+    "/auth/pending-approval",
+    "/auth/blocked",
+    "/auth/suspended",
+    "/auth/removed",
+    "/auth/missing",
+    "/auth/access-denied",
+  ]) {
+    assert.match(app, new RegExp(`path="${path}"`));
+  }
+  assert.match(accessRoutes, /getAuthAccessRoute/);
   assert.match(users, /authenticatedMutation/);
   assert.match(users, /from "\.\/iam"/);
   assert.match(iam, /createIam/);
@@ -130,6 +146,7 @@ test("materializes the managed template with the IAM overlay", async () => {
     await assert.rejects(readFile(path.join(managedRoot, "convex", file)));
   }
   await readFile(path.join(managedRoot, "src/components/iam/access-state.tsx"));
+  await readFile(path.join(managedRoot, "src/pages/auth/AccessStatus.tsx"));
 });
 
 test("keeps repository and build-only files out of both templates", async () => {
