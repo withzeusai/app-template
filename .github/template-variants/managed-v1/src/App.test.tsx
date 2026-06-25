@@ -12,9 +12,7 @@ vi.mock("./pages/auth/Callback.tsx", () => ({
 }));
 
 vi.mock("./pages/auth/AccessStatus.tsx", () => ({
-  AuthAccessStatus: ({ state }: { state: string }) => (
-    <div>Access state: {state}</div>
-  ),
+  AuthAccessStatus: () => <div>Access status</div>,
 }));
 
 vi.mock("./pages/Index.tsx", () => ({
@@ -27,20 +25,20 @@ vi.mock("./pages/NotFound.tsx", () => ({
 
 describe("managed app routes", () => {
   it.each([
-    ["/auth/pending-approval", "pending_approval"],
-    ["/auth/blocked", "blocked"],
-    ["/auth/suspended", "suspended"],
-    ["/auth/removed", "removed"],
-    ["/auth/missing", "missing"],
-    ["/auth/access-denied", "access_denied"],
-  ])("renders %s as the %s access state", (path, state) => {
+    "/auth/pending-approval",
+    "/auth/blocked",
+    "/auth/suspended",
+    "/auth/removed",
+    "/auth/missing",
+    "/auth/access-denied",
+  ])("renders %s with the access status route", (path) => {
     render(
       <MemoryRouter initialEntries={[path]}>
         <App />
       </MemoryRouter>,
     );
 
-    expect(screen.getByText(`Access state: ${state}`)).toBeInTheDocument();
+    expect(screen.getByText("Access status")).toBeInTheDocument();
     expect(screen.queryByText("Not found")).not.toBeInTheDocument();
   });
 });

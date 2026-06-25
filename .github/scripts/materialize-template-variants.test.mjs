@@ -89,17 +89,10 @@ test("materializes the managed template with the IAM overlay", async () => {
   assert.doesNotMatch(iamAccessBoundary, /idToken|id_token/);
   assert.doesNotMatch(app, /BrowserRouter/);
   assert.match(app, /path="\/auth\/callback"/);
-  for (const path of [
-    "/auth/pending-approval",
-    "/auth/blocked",
-    "/auth/suspended",
-    "/auth/removed",
-    "/auth/missing",
-    "/auth/access-denied",
-  ]) {
-    assert.match(app, new RegExp(`path="${path}"`));
-  }
+  assert.match(app, /path="\/auth\/\*"/);
+  assert.doesNotMatch(app, /path="\/auth\/pending-approval"/);
   assert.match(accessRoutes, /getAuthAccessRoute/);
+  assert.match(accessRoutes, /getAuthAccessState/);
   assert.match(users, /authenticatedMutation/);
   assert.match(users, /from "\.\/iam"/);
   assert.match(iam, /createIam/);

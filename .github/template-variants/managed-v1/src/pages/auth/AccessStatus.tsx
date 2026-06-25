@@ -1,12 +1,23 @@
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@usehercules/auth/react";
 import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { IamAccessStateView } from "@/components/iam/access-state.tsx";
-import { getAuthAccessRoute, type AuthAccessState } from "./access-routes.ts";
+import NotFound from "../NotFound.tsx";
+import {
+  getAuthAccessRoute,
+  getAuthAccessState,
+  type AuthAccessState,
+} from "./access-routes.ts";
 
-export function AuthAccessStatus({ state }: { state: AuthAccessState }) {
+export function AuthAccessStatus() {
+  const state = getAuthAccessState(useParams<"*">()["*"]);
+
+  return state ? <ResolvedAuthAccessStatus state={state} /> : <NotFound />;
+}
+
+function ResolvedAuthAccessStatus({ state }: { state: AuthAccessState }) {
   const navigate = useNavigate();
   const { signout } = useAuth();
   const evaluateAccess = useAction(api.iam.evaluateAccess);

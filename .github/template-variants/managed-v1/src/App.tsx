@@ -11,30 +11,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route
-          path="/auth/pending-approval"
-          element={<AuthAccessStatus state="pending_approval" />}
-        />
-        <Route
-          path="/auth/blocked"
-          element={<AuthAccessStatus state="blocked" />}
-        />
-        <Route
-          path="/auth/suspended"
-          element={<AuthAccessStatus state="suspended" />}
-        />
-        <Route
-          path="/auth/removed"
-          element={<AuthAccessStatus state="removed" />}
-        />
-        <Route
-          path="/auth/missing"
-          element={<AuthAccessStatus state="missing" />}
-        />
-        <Route
-          path="/auth/access-denied"
-          element={<AuthAccessStatus state="access_denied" />}
-        />
+        <Route path="/auth/*" element={<AuthAccessStatus />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

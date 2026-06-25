@@ -37,10 +37,7 @@ describe("AuthAccessStatus", () => {
     render(
       <MemoryRouter initialEntries={["/auth/pending-approval"]}>
         <Routes>
-          <Route
-            path="/auth/pending-approval"
-            element={<AuthAccessStatus state="pending_approval" />}
-          />
+          <Route path="/auth/*" element={<AuthAccessStatus />} />
           <Route path="/" element={<div>App home</div>} />
         </Routes>
       </MemoryRouter>,
@@ -69,14 +66,7 @@ describe("AuthAccessStatus", () => {
     render(
       <MemoryRouter initialEntries={["/auth/pending-approval"]}>
         <Routes>
-          <Route
-            path="/auth/pending-approval"
-            element={<AuthAccessStatus state="pending_approval" />}
-          />
-          <Route
-            path="/auth/blocked"
-            element={<div>Blocked access route</div>}
-          />
+          <Route path="/auth/*" element={<AuthAccessStatus />} />
         </Routes>
       </MemoryRouter>,
     );
@@ -84,7 +74,9 @@ describe("AuthAccessStatus", () => {
     fireEvent.click(screen.getByRole("button", { name: "Check again" }));
 
     await waitFor(() => {
-      expect(screen.getByText("Blocked access route")).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: "Your access is blocked" }),
+      ).toBeInTheDocument();
     });
   });
 });
