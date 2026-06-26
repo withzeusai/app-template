@@ -75,7 +75,7 @@ export const evaluateAccess = authenticatedAction({
       });
     }
     const tokenIdentifier = identity.tokenIdentifier;
-    const result = await getIamClient().iam.tenants.evaluateAccess("default", {
+    const result = await getIamClient().iam.tenants.evaluateAccess("root", {
       actor_token_identifier: tokenIdentifier,
     });
     return {
@@ -110,10 +110,10 @@ export type {
   RoleSummary,
 } from "@usehercules/convex";
 export {
-  defaultTenant,
+  rootTenant,
   tenantFromArg,
-  tenantFromDefaultParentResource,
-  tenantFromDefaultResource,
+  tenantFromRootParentResource,
+  tenantFromRootResource,
   tenantFromParentResource,
   tenantFromResource,
 } from "@usehercules/convex";
