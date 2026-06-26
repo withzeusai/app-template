@@ -30,7 +30,7 @@ export const {
   requireAnyPermission,
   getEffectivePermissions,
   checkPermissions,
-  getCurrentHerculesAuthUserId,
+  getCurrentUserId,
   getTenantAccessStatus: getTenantAccessStatusFromMirror,
   filterAuthorizedResources,
   listMyTenants,
@@ -111,11 +111,11 @@ export type {
 } from "@usehercules/convex";
 export {
   rootTenant,
-  tenantFromArg,
-  tenantFromRootParentResource,
-  tenantFromRootResource,
-  tenantFromParentResource,
-  tenantFromResource,
+  tenantArg,
+  rootParentResource,
+  rootResource,
+  parentResource,
+  resource,
 } from "@usehercules/convex";
 
 function getIamClient() {
