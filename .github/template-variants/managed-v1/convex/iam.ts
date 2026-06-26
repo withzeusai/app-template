@@ -8,17 +8,10 @@ import { action, mutation, query } from "./_generated/server.js";
 const DEFAULT_API_VERSION = "2025-12-09";
 const HERCULES_API_KEY_ENV_VAR = "HERCULES_API_KEY";
 
-type ActiveMirrorTenantAccessResult = {
-  allowed: true;
-  changed: false;
-  reason: "existing_active";
-  state_version: number;
-  status: "active";
-};
-
-export type IamAccessEvaluationResult =
-  | TenantEvaluateAccessResponse
-  | ActiveMirrorTenantAccessResult;
+export type IamAccessEvaluationResult = Pick<
+  TenantEvaluateAccessResponse,
+  "allowed" | "reason" | "status"
+>;
 
 let iamClient: Hercules | undefined;
 
@@ -69,9 +62,7 @@ export const evaluateAccess = authenticatedAction({
     if (mirror.kind === "principal" && mirror.status === "active") {
       return {
         allowed: true,
-        changed: false,
-        reason: "existing_active",
-        state_version: mirror.stateVersion,
+        reason: "user_active",
         status: "active",
       };
     }
@@ -84,9 +75,14 @@ export const evaluateAccess = authenticatedAction({
       });
     }
     const tokenIdentifier = identity.tokenIdentifier;
-    return await getIamClient().iam.tenants.evaluateAccess("default", {
-      user_token_identifier: tokenIdentifier,
+    const result = await getIamClient().iam.tenants.evaluateAccess("default", {
+      actor_token_identifier: tokenIdentifier,
     });
+    return {
+      allowed: result.allowed,
+      reason: result.reason,
+      status: result.status,
+    };
   },
 });
 

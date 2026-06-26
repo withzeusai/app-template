@@ -102,10 +102,11 @@ test("materializes the managed template with the IAM overlay", async () => {
   assert.match(iam, /if \(!identity\?\.tokenIdentifier\)/);
   assert.match(
     iam,
-    /iam\.tenants\.evaluateAccess\("default", \{\s*user_token_identifier: tokenIdentifier,/s,
+    /iam\.tenants\.evaluateAccess\("default", \{\s*actor_token_identifier: tokenIdentifier,/s,
   );
   assert.match(iam, /getTenantAccessStatusFromMirror/);
-  assert.match(iam, /state_version: mirror\.stateVersion/);
+  assert.match(iam, /reason: "user_active"/);
+  assert.doesNotMatch(iam, /state_version/);
   assert.doesNotMatch(iam, /user_id: mirror\.principalId/);
   assert.match(iam, /publicQuery/);
   assert.match(iam, /listMyTenants/);
@@ -116,7 +117,7 @@ test("materializes the managed template with the IAM overlay", async () => {
   assert.doesNotMatch(iam, /listMyMemberships|listScope|scopeFrom/);
   assert.doesNotMatch(iam, /@usehercules\/convex\/iam-management/);
   assert.doesNotMatch(iam, /idToken|id_token/);
-  assert.doesNotMatch(iam, /actor/);
+  assert.doesNotMatch(iam, /\bactor\s*:/);
   assert.doesNotMatch(iam, /^\s*["']use node["'];?/m);
   assert.match(generatedApi, /iam: typeof iam/);
   assert.doesNotMatch(
