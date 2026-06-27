@@ -2,7 +2,6 @@ packages:
   - .
 
 onlyBuiltDependencies:
-  - "@swc/core"
   - "@tailwindcss/oxide"
   - esbuild
 
@@ -12,5 +11,4 @@ minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - "@usehercules/*"
 allowBuilds:
-  "@swc/core": true
   esbuild: true

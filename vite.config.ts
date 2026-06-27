@@ -1,7 +1,9 @@
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
+import { devtools } from "@tanstack/devtools-vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import hercules from "@usehercules/vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // https://vite.dev/config/
@@ -14,7 +16,9 @@ export default defineConfig({
       overlay: false,
     },
   },
-  plugins: [react(), tailwindcss(), hercules()],
+  // `devtools()` must stay first. `tanstackStart()` owns the client/server
+  // entry and route generation; `hercules()` adds the dev workspace tooling.
+  plugins: [devtools(), tailwindcss(), tanstackStart(), react(), hercules()],
   resolve: {
     alias: {
       "@/convex": path.resolve(__dirname, "./convex"),

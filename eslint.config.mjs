@@ -9,7 +9,13 @@ import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist", "**/_generated/*"]),
+  globalIgnores([
+    "dist",
+    ".output",
+    ".tanstack",
+    "**/_generated/*",
+    "src/routeTree.gen.ts",
+  ]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [

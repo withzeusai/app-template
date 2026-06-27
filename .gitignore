@@ -15,6 +15,13 @@ node_modules
 .eslintcache
 tsconfig.tsbuildinfo
 
+# TanStack Start
+.output
+.nitro
+.tanstack
+.vinxi
+src/routeTree.gen.ts
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

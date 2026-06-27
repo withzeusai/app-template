@@ -1,12 +1,19 @@
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuthCallback } from "@usehercules/auth/react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { Spinner } from "@/components/ui/spinner.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { Spinner } from "@/components/ui/spinner.tsx";
 
-export default function AuthCallback() {
+// The OIDC redirect handler is browser-only (reads auth params from the URL,
+// uses the client-side UserManager), so this route opts out of SSR.
+export const Route = createFileRoute("/auth/callback")({
+  ssr: false,
+  component: AuthCallback,
+});
+
+function AuthCallback() {
   const navigate = useNavigate();
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
@@ -16,7 +23,7 @@ export default function AuthCallback() {
   }, [updateCurrentUser]);
 
   const navigateHome = useCallback(
-    () => navigate("/", { replace: true }),
+    () => navigate({ to: "/", replace: true }),
     [navigate],
   );
 
