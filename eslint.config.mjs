@@ -13,6 +13,7 @@ export default defineConfig([
     "dist",
     ".output",
     ".tanstack",
+    ".github",
     "**/_generated/*",
     "src/routeTree.gen.ts",
   ]),
@@ -21,7 +22,7 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
-      reactHooks.configs["recommended-latest"],
+      reactHooks.configs.flat["recommended-latest"],
       reactRefresh.configs.vite,
       convexPlugin.configs.recommended,
       herculesPlugin.configs.recommended,
@@ -37,6 +38,9 @@ export default defineConfig([
         "warn",
         { allowConstantExport: true },
       ],
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/purity": "warn",
+      "react-hooks/refs": "warn",
     },
     languageOptions: {
       ecmaVersion: 2020,

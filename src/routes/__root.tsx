@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import type { QueryClient } from "@tanstack/react-query";
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import {
   HeadContent,
   Link,
@@ -8,7 +7,6 @@ import {
   createRootRouteWithContext,
   useLocation,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "@/components/providers/theme.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
@@ -82,17 +80,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             {children}
           </TooltipProvider>
         </ThemeProvider>
-        {import.meta.env.DEV ? (
-          <TanStackDevtools
-            config={{ position: "bottom-right" }}
-            plugins={[
-              {
-                name: "TanStack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
-        ) : null}
         <Scripts />
       </body>
     </html>

@@ -16,9 +16,7 @@ export default defineConfig({
       overlay: false,
     },
   },
-  // `devtools()` must stay first. `tanstackStart()` owns the client/server
-  // entry and route generation; `hercules()` adds the dev workspace tooling.
-  plugins: [devtools(), tailwindcss(), tanstackStart(), react(), hercules()],
+  plugins: [devtools(), tailwindcss(), hercules(), tanstackStart(), react()],
   resolve: {
     alias: {
       "@/convex": path.resolve(__dirname, "./convex"),
