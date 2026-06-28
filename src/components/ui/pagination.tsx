@@ -4,8 +4,9 @@ import {
   ChevronRightIcon,
   MoreHorizontalIcon,
 } from "lucide-react";
-import { cn } from "@/lib/utils.ts";
-import { Button, buttonVariants } from "@/components/ui/button.tsx";
+
+import { cn } from "@/lib/utils";
+import { buttonVariants, type Button } from "@/components/ui/button";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -57,7 +58,6 @@ function PaginationLink({
           variant: isActive ? "outline" : "ghost",
           size,
         }),
-        "cursor-pointer",
         className,
       )}
       {...props}
