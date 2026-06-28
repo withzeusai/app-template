@@ -5,6 +5,7 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import hercules from "@usehercules/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { cloudflare } from "@cloudflare/vite-plugin";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,7 +17,7 @@ export default defineConfig({
       overlay: false,
     },
   },
-  plugins: [devtools(), tailwindcss(), hercules(), tanstackStart(), react()],
+  plugins: [devtools(), tailwindcss(), hercules(), cloudflare({ viteEnvironment: { name: "ssr" } }), tanstackStart(), react()],
   resolve: {
     alias: {
       "@/convex": path.resolve(__dirname, "./convex"),

@@ -1,14 +1,18 @@
-packages:
-  - .
+allowBuilds:
+  esbuild: true
+  sharp: true
+  workerd: true
+
+blockExoticSubdeps: true
+
+minimumReleaseAge: 4320
+
+minimumReleaseAgeExclude:
+  - "@usehercules/*"
 
 onlyBuiltDependencies:
   - "@tailwindcss/oxide"
   - esbuild
 
-blockExoticSubdeps: true
-
-minimumReleaseAge: 4320
-minimumReleaseAgeExclude:
-  - "@usehercules/*"
-allowBuilds:
-  esbuild: true
+packages:
+  - .

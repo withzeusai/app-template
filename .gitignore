@@ -35,3 +35,6 @@ src/routeTree.gen.ts
 
 # Environment variables
 .env*
+
+# Cloudflare
+.wrangler
