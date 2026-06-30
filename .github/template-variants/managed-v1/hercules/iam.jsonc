@@ -2,22 +2,31 @@
   "$schema": "https://schemas.hercules.app/iam/v1.json",
   "version": "v1",
 
-  "permissions": {},
-  "tenantAdminGrantablePermissions": [],
+  // App permissions. Use concrete actions (no wildcards), keyed as
+  // app.<type>:<action>. These are the keys you check at runtime.
+  "permissions": {
+    "app.document:read": { "name": "Read documents" },
+    "app.document:manage": { "name": "Manage documents" },
+  },
 
+  // Resource types for the ReBAC graph. Nest a type under another with
+  // "parent"; a role granted on a parent applies to its descendants.
+  "resourceTypes": {
+    "app.project": { "name": "Project" },
+    "app.document": { "name": "Document", "parent": "app.project" },
+  },
+
+  // Custom roles only. The platform seeds the "owner" role, so do not declare
+  // it here.
   "roles": {
-    // Owner and Admin are platform-owned. Declare them, but do not add them to
-    // app-authored rolePermissions.
-    "owner": {
-      "type": "built_in",
-    },
-    "admin": {
-      "type": "built_in",
-    },
-    "member": {
-      "type": "built_in",
+    "editor": {
+      "name": "Editor",
+      "description": "Can read and manage documents",
     },
   },
 
-  "rolePermissions": {},
+  // Map each role to the permission keys it grants.
+  "rolePermissions": {
+    "editor": ["app.document:read", "app.document:manage"],
+  },
 }

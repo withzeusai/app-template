@@ -6,7 +6,7 @@ import { IamAccessBoundary } from "./iam-access-boundary.tsx";
 const { classifyIamError } = vi.hoisted(() => ({
   classifyIamError: vi.fn(() => ({
     kind: "admission" as const,
-    reasonCode: "principal_blocked",
+    reasonCode: "membership_blocked",
     status: "blocked" as const,
     sourceVersion: 1,
   })),

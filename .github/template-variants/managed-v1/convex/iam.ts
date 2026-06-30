@@ -1,138 +1,73 @@
 import { createIam } from "@usehercules/convex";
-import { Hercules } from "@usehercules/sdk";
-import type { TenantEvaluateAccessResponse } from "@usehercules/sdk/resources/iam";
-import { ConvexError } from "convex/values";
+import type { MembershipStatus } from "@usehercules/convex";
 import { components } from "./_generated/api.js";
-import { action, mutation, query } from "./_generated/server.js";
+import {
+  action as rawAction,
+  mutation as rawMutation,
+  query as rawQuery,
+} from "./_generated/server.js";
 
-const DEFAULT_API_VERSION = "2025-12-09";
-const HERCULES_API_KEY_ENV_VAR = "HERCULES_API_KEY";
-
-export type IamAccessEvaluationResult = Pick<
-  TenantEvaluateAccessResponse,
-  "allowed" | "reason" | "status"
->;
-
-let iamClient: Hercules | undefined;
+// Wire Hercules managed IAM into this Convex app. Call createIam once here and
+// re-export the builders and helpers the rest of the app uses.
+const hercules = createIam({
+  query: rawQuery,
+  mutation: rawMutation,
+  action: rawAction,
+  components,
+});
 
 export const {
+  // Raw builders, no auth. Use these only for explicitly public functions.
   publicQuery,
   publicMutation,
   publicAction,
-  authenticatedQuery,
-  authenticatedMutation,
-  authenticatedAction,
-  iamQuery,
-  iamMutation,
-  iamAction,
-  hasPermission,
-  requirePermission,
-  requireAnyPermission,
-  getEffectivePermissions,
-  checkPermissions,
+  // Auth-aware builders. They require a verified identity and, when the
+  // definition includes { permission, tenant?, resource? }, enforce that
+  // permission before the handler runs.
+  query,
+  mutation,
+  action,
+  // The verified Hercules Auth user id. Link app rows to this.
   getCurrentUserId,
-  getTenantAccessStatus: getTenantAccessStatusFromMirror,
-  filterAuthorizedResources,
-  listMyTenants,
-  listMyRoles,
-  getTenant,
-  listTenantUsers,
-  listTenantGroups,
-  listTenantUserDirectory,
-  getTenantUserDirectoryEntry,
-  listGroupMembers,
-  listUserGroups,
-  listTenantRoles,
-  getTenantRole,
-  listTenantPermissions,
-  getResourcePermissionOverrides,
-  explainAccess,
-  listDirectSubjectsForResource,
-} = createIam({ query, mutation, action, components });
+  // In-handler authorization: iam.can returns a boolean, iam.require throws.
+  iam,
+  // Component-owned resource nodes. The app owns their lifecycle through
+  // resource.write / resource.delete and reads them with resource.get /
+  // resource.list, which can filter by a permission.
+  resource,
+} = hercules;
 
+// The access result the auth pages consume. It is derived entirely from the
+// local access mirror, so it stays in sync with control-plane changes as they
+// project into Convex.
+export type IamAccessEvaluationResult = {
+  allowed: boolean;
+  status: MembershipStatus | "missing";
+  reason: string;
+};
+
+// getTenantAccessStatus — the reactive query the access boundary subscribes to.
+// It returns the caller's membership status in the primary tenant straight from
+// the mirror.
 export const getTenantAccessStatus = publicQuery({
   args: {},
-  handler: async (ctx) => await getTenantAccessStatusFromMirror(ctx),
+  handler: async (ctx) => await hercules.me.accessStatus(ctx),
 });
 
-export const evaluateAccess = authenticatedAction({
+// evaluateAccess — an imperative access re-check used by the auth pages. It
+// reads the same mirror and normalizes it into an allowed/status result.
+export const evaluateAccess = action({
   args: {},
   handler: async (ctx): Promise<IamAccessEvaluationResult> => {
-    const mirror = await getTenantAccessStatusFromMirror(ctx);
-    if (mirror.kind === "principal" && mirror.status === "active") {
+    const status = await hercules.me.accessStatus(ctx);
+    if (status.kind === "principal") {
       return {
-        allowed: true,
-        reason: "user_active",
-        status: "active",
+        allowed: status.status === "active",
+        status: status.status,
+        reason:
+          status.status === "active" ? "membership_active" : status.status,
       };
     }
-
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity?.tokenIdentifier) {
-      throw new ConvexError({
-        code: "UNAUTHENTICATED",
-        message: "Authentication required",
-      });
-    }
-    const tokenIdentifier = identity.tokenIdentifier;
-    const result = await getIamClient().iam.tenants.evaluateAccess("root", {
-      actor_token_identifier: tokenIdentifier,
-    });
-    return {
-      allowed: result.allowed,
-      reason: result.reason,
-      status: result.status,
-    };
+    return { allowed: false, status: "missing", reason: status.reason };
   },
 });
-
-export type {
-  IamResourceRef,
-  AuthorizationDecision,
-  DirectResourceSubject,
-  ExplainAccessResult,
-  ExplainAccessTarget,
-  ResourcePermissionOverrideSubject,
-  ResourcePermissionOverridesResult,
-  ResourcePermissionOverrideTarget,
-  TenantDetail,
-  TenantGroup,
-  TenantGroupsPage,
-  TenantPermissionSummary,
-  TenantRoleDetail,
-  TenantRolePermission,
-  TenantRoleSummary,
-  TenantSummary,
-  TenantUser,
-  TenantUserDirectoryEntry,
-  TenantUserDirectoryPage,
-  TenantUsersPage,
-  RoleSummary,
-} from "@usehercules/convex";
-export {
-  rootTenant,
-  tenantArg,
-  rootParentResource,
-  rootResource,
-  parentResource,
-  resource,
-} from "@usehercules/convex";
-
-function getIamClient() {
-  iamClient ??= createIamClient();
-  return iamClient;
-}
-
-function createIamClient() {
-  const apiKey = process.env[HERCULES_API_KEY_ENV_VAR];
-  if (!apiKey) {
-    throw new Error(
-      `${HERCULES_API_KEY_ENV_VAR} is required for Hercules IAM API calls.`,
-    );
-  }
-
-  return new Hercules({
-    apiKey,
-    apiVersion: DEFAULT_API_VERSION,
-  });
-}

@@ -161,7 +161,7 @@ function ClassifiedIamFallback({
   const mirrorState = stateFromTenantAccessStatus(tenantAccessStatus);
   const missingMirrorState =
     tenantAccessStatus?.kind === "fallback" &&
-    tenantAccessStatus.reason === "principal_missing" &&
+    tenantAccessStatus.reason === "membership_missing" &&
     (classification.kind !== "admission" || classification.status === "missing")
       ? "missing"
       : null;
