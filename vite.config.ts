@@ -17,7 +17,14 @@ export default defineConfig({
       overlay: false,
     },
   },
-  plugins: [devtools(), tailwindcss(), hercules(), cloudflare({ viteEnvironment: { name: "ssr" } }), tanstackStart(), react()],
+  plugins: [
+    devtools(),
+    tailwindcss(),
+    hercules(),
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
+    tanstackStart(),
+    react(),
+  ],
   resolve: {
     alias: {
       "@/convex": path.resolve(__dirname, "./convex"),

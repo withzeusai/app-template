@@ -1,15 +1,47 @@
-import { ConvexProviderWithHerculesAuth } from "@usehercules/auth/convex-react";
-import { ConvexProvider, type ConvexReactClient } from "convex/react";
+import { useCallback, useMemo } from "react";
+import {
+  ConvexProvider,
+  ConvexProviderWithAuth,
+  type ConvexReactClient,
+} from "convex/react";
+import { useIdToken, useAuth } from "@usehercules/auth-tanstack/client";
 import { AuthProvider } from "./auth.tsx";
+
+/**
+ * Bridge Hercules auth into Convex's generic auth integration.
+ *
+ * `ConvexProviderWithAuth` expects `{ isLoading, isAuthenticated,
+ * fetchAccessToken }`.
+ */
+function useConvexHerculesAuth() {
+  const { user, loading } = useAuth();
+  const { getAccessToken, refresh } = useIdToken();
+  const isAuthenticated = user !== null;
+
+  const fetchAccessToken = useCallback(
+    async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
+      const token = forceRefreshToken
+        ? await refresh()
+        : await getAccessToken();
+      return token ?? null;
+    },
+    // Re-create when auth flips so Convex re-runs the fetcher on sign-in/out.
+    [getAccessToken, refresh, isAuthenticated],
+  );
+
+  return useMemo(
+    () => ({ isLoading: loading, isAuthenticated, fetchAccessToken }),
+    [loading, isAuthenticated, fetchAccessToken],
+  );
+}
 
 /**
  * Wires the Convex client into the app.
  *
- * Hercules auth is client-only: OIDC tokens live in the browser and the
- * underlying UserManager touches `window` at construction. So on the server we
- * render a plain `ConvexProvider` (public/unauthenticated queries can still
- * SSR), and the auth wiring only mounts on the client. The same Convex client
- * instance is used in both environments, so hydration is seamless.
+ * The access token is only available in the browser, so on the server we render
+ * a plain `ConvexProvider` (public/unauthenticated queries can still SSR) and
+ * mount the authenticated wiring on the client. The same Convex client instance
+ * is used in both environments, so hydration is seamless.
  */
 export function ConvexAppProvider({
   client,
@@ -18,15 +50,15 @@ export function ConvexAppProvider({
   client: ConvexReactClient;
   children: React.ReactNode;
 }) {
-  if (typeof window === "undefined") {
-    return <ConvexProvider client={client}>{children}</ConvexProvider>;
-  }
-
   return (
     <AuthProvider>
-      <ConvexProviderWithHerculesAuth client={client}>
-        {children}
-      </ConvexProviderWithHerculesAuth>
+      {typeof window === "undefined" ? (
+        <ConvexProvider client={client}>{children}</ConvexProvider>
+      ) : (
+        <ConvexProviderWithAuth client={client} useAuth={useConvexHerculesAuth}>
+          {children}
+        </ConvexProviderWithAuth>
+      )}
     </AuthProvider>
   );
 }

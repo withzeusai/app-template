@@ -26,12 +26,9 @@ importers:
       '@tanstack/react-start':
         specifier: ^1.168.26
         version: 1.168.26(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.3)(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0))
-      '@usehercules/auth':
-        specifier: ^1.1.0
-        version: 1.1.0(convex@1.42.0(react@19.2.7))(react@19.2.7)
       '@usehercules/auth-tanstack':
-        specifier: ^0.0.1
-        version: 0.0.1(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.3)(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0))
+        specifier: ^0.2.0
+        version: 0.2.0(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.3)(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -62,9 +59,6 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      oidc-client-ts:
-        specifier: ^3.5.0
-        version: 3.5.0
       radix-ui:
         specifier: ^1.6.0
         version: 1.6.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -2436,13 +2430,9 @@ packages:
     resolution: {integrity: sha512-CY3uyFSRbcQv3nnSv8S0+lDftMVz6P963PoRlxrV7ew/Md564g9ut60PYzdLM5qW4jFn93GBF+Soi90ISAN+GQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@usehercules/auth-tanstack@0.0.1':
-    resolution: {integrity: sha512-wpcYlMipz1faOz0Z4k6sTQKdCtO9L06lLUtFSP1AyM/T9Jp4oujwbO/F7JJ6nN685yg9c8Rar+KcI09573RgTA==}
-
-  '@usehercules/auth@1.1.0':
-    resolution: {integrity: sha512-JMfUE7Oe+VHe3QAboaFOcG5wztW9ptuBJTDTOeO2tpe+8YvnESLlGFEpEvbexIwgV04842p37SigI1E7oSHwAQ==}
+  '@usehercules/auth-tanstack@0.2.0':
+    resolution: {integrity: sha512-dv1e/oxDbEa0/cP5LbBwyOWfGgMeH1jmqS++gIDm+bcPrCyBU9zwxbqpvJ5NCs1gR/SVTu599KUketwUYT7AJg==}
     peerDependencies:
-      convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
 
   '@usehercules/eslint-plugin@1.0.41':
@@ -3070,10 +3060,6 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  jwt-decode@4.0.0:
-    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
-    engines: {node: '>=18'}
-
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -3249,10 +3235,6 @@ packages:
     resolution: {integrity: sha512-9miFgM2OFba7hB+pRgvtV84pYTBaoTHohvmIgiRt6dRIzbwEOIaNaP+dIlGs2fNFoB0SeISs0Jz5WFVRid6Xyg==}
     engines: {node: '>=12.20.0'}
 
-  oidc-client-ts@3.5.0:
-    resolution: {integrity: sha512-l2q8l9CTCTOlbX+AnK4p3M+4CEpKpyQhle6blQkdFhm0IsBqsxm15bYaSa11G7pWdsYr6epdsRZxJpCyCRbT8A==}
-    engines: {node: '>=18'}
-
   openid-client@6.8.4:
     resolution: {integrity: sha512-QSw0BA08piujetEwfZsHoTrDpMEha7GDZDicQqVwX4u0ChCjefvjDB++TZ8BTg76UpwhzIQgdvvfgfl3HpCSAw==}
 
@@ -3360,13 +3342,6 @@ packages:
 
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
-
-  react-oidc-context@3.3.1:
-    resolution: {integrity: sha512-/Azvm9W4DhhOtSDBE73kFInh1b6zZRRfILKbgmk2syExMF0PCYJOn/dGdOOi2BFX8x0rCeUe45NXHU+/+xDcrQ==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      oidc-client-ts: ^3.1.0
-      react: '>=16.14.0'
 
   react-redux@9.3.0:
     resolution: {integrity: sha512-KQopgqFo/p/fgmAs5qz6p5RWaNAzq40WAu7fJIXnQpYxFPbJYtsJPWvGeF2rOBaY/kEuV77AVsX8TsQzKm+A/g==}
@@ -6017,12 +5992,13 @@ snapshots:
       '@typescript-eslint/types': 8.62.0
       eslint-visitor-keys: 5.0.1
 
-  '@usehercules/auth-tanstack@0.0.1(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.3)(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0))':
+  '@usehercules/auth-tanstack@0.2.0(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.3)(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0))':
     dependencies:
       '@tanstack/react-router': 1.170.16(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tanstack/react-start': 1.168.26(esbuild@0.28.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(rolldown@1.1.3)(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0))
       oauth4webapi: 3.8.6
       openid-client: 6.8.4
+      react: 19.2.7
     transitivePeerDependencies:
       - '@farmfe/core'
       - '@rsbuild/core'
@@ -6031,7 +6007,6 @@ snapshots:
       - bun-types-no-globals
       - crossws
       - esbuild
-      - react
       - react-dom
       - react-server-dom-rspack
       - rolldown
@@ -6041,15 +6016,6 @@ snapshots:
       - vite
       - vite-plugin-solid
       - webpack
-
-  '@usehercules/auth@1.1.0(convex@1.42.0(react@19.2.7))(react@19.2.7)':
-    dependencies:
-      convex: 1.42.0(react@19.2.7)
-      jwt-decode: 4.0.0
-      oidc-client-ts: 3.5.0
-      react: 19.2.7
-      react-oidc-context: 3.3.1(oidc-client-ts@3.5.0)(react@19.2.7)
-      zod: 4.4.3
 
   '@usehercules/eslint-plugin@1.0.41(@typescript-eslint/parser@8.62.0(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.5.0(jiti@2.7.0))(typescript@6.0.3)':
     dependencies:
@@ -6667,8 +6633,6 @@ snapshots:
 
   json5@2.2.3: {}
 
-  jwt-decode@4.0.0: {}
-
   keyv@4.5.4:
     dependencies:
       json-buffer: 3.0.1
@@ -6804,10 +6768,6 @@ snapshots:
   oauth4webapi@3.8.6: {}
 
   obug@2.1.3: {}
-
-  oidc-client-ts@3.5.0:
-    dependencies:
-      jwt-decode: 4.0.0
 
   openid-client@6.8.4:
     dependencies:
@@ -6981,11 +6941,6 @@ snapshots:
   react-is@17.0.2: {}
 
   react-is@18.3.1: {}
-
-  react-oidc-context@3.3.1(oidc-client-ts@3.5.0)(react@19.2.7):
-    dependencies:
-      oidc-client-ts: 3.5.0
-      react: 19.2.7
 
   react-redux@9.3.0(@types/react@19.2.17)(react@19.2.7)(redux@5.0.1):
     dependencies:

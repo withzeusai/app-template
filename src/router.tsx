@@ -27,9 +27,6 @@ export function getRouter() {
     scrollRestoration: true,
     defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
-    // `Wrap` wraps the entire router tree on both server and client. The auth
-    // wiring lives inside ConvexAppProvider, which only mounts auth on the
-    // client (Hercules OIDC is browser-only).
     Wrap: ({ children }) => (
       <ConvexAppProvider client={convexQueryClient.convexClient}>
         {children}
