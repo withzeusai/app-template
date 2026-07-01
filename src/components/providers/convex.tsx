@@ -15,18 +15,16 @@ import { AuthProvider } from "./auth.tsx";
  */
 function useConvexHerculesAuth() {
   const { user, loading } = useAuth();
-  const { getAccessToken, refresh } = useIdToken();
+  const { getIdToken, refresh } = useIdToken();
   const isAuthenticated = user !== null;
 
   const fetchAccessToken = useCallback(
     async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
-      const token = forceRefreshToken
-        ? await refresh()
-        : await getAccessToken();
+      const token = forceRefreshToken ? await refresh() : await getIdToken();
       return token ?? null;
     },
     // Re-create when auth flips so Convex re-runs the fetcher on sign-in/out.
-    [getAccessToken, refresh, isAuthenticated],
+    [getIdToken, refresh, isAuthenticated],
   );
 
   return useMemo(
