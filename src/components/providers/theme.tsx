@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import * as React from "react"
 import { ScriptOnce } from "@tanstack/react-router"
 
 type Theme = "dark" | "light" | "system"
@@ -21,7 +21,7 @@ function getThemeScript(storageKey: string, defaultTheme: Theme) {
   return `(function(){try{var t=localStorage.getItem(${key});if(t!=='light'&&t!=='dark'&&t!=='system'){t=${fallback}}var d=matchMedia('(prefers-color-scheme: dark)').matches;var r=t==='system'?(d?'dark':'light'):t;var e=document.documentElement;e.classList.add(r);e.style.colorScheme=r}catch(e){}})();`
 }
 
-const ThemeProviderContext = createContext<ThemeProviderState>({
+const ThemeProviderContext = React.createContext<ThemeProviderState>({
   theme: "system",
   setTheme: () => { },
 })
@@ -46,10 +46,10 @@ export function ThemeProvider({
   defaultTheme = "system",
   storageKey = "theme",
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme)
-  const [mounted, setMounted] = useState(false)
+  const [theme, setThemeState] = React.useState<Theme>(defaultTheme)
+  const [mounted, setMounted] = React.useState(false)
 
-  useEffect(() => {
+  React.useEffect(() => {
     const stored = localStorage.getItem(storageKey)
     setThemeState(
       stored === "light" || stored === "dark" || stored === "system"
@@ -59,12 +59,12 @@ export function ThemeProvider({
     setMounted(true)
   }, [defaultTheme, storageKey])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!mounted) return
     applyTheme(theme)
   }, [theme, mounted])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!mounted || theme !== "system") return
 
     const media = window.matchMedia("(prefers-color-scheme: dark)")
@@ -87,7 +87,7 @@ export function ThemeProvider({
 }
 
 export function useTheme() {
-  const context = useContext(ThemeProviderContext)
+  const context = React.useContext(ThemeProviderContext)
   if (context === undefined)
     throw new Error("useTheme must be used within a ThemeProvider")
   return context
