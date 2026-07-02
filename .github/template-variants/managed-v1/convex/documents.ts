@@ -2,26 +2,27 @@
 // Hercules ReBAC resource path end to end:
 //
 //   - createDocument authorizes "app.document:manage" on the parent project,
-//     then registers the new document as a resource node under that project.
+//     then registers the new document as a resource node under that project and
+//     stores its title in the documents table.
 //   - updateDocumentTitle authorizes "app.document:manage" on the document
-//     itself with iam.require, demonstrating the in-handler check.
+//     itself with requirePermissions, demonstrating the in-handler check.
 //   - getDocument / listProjectDocuments read through resource.get /
 //     resource.list with "app.document:read", so the component returns only the
-//     resources the caller is allowed to see.
+//     resources the caller is allowed to see; the title comes from the table.
 //
-// The document's own data lives on the resource node (data field), so this
-// feature needs no extra app table. The permissions, resource types, and the
-// "editor" role it relies on are declared in hercules/iam.jsonc.
+// Resource nodes model only the access graph, so the document's own data lives
+// in the documents table. The permissions, resource types, and the "editor"
+// role it relies on are declared in .hercules/iam.jsonc.
 import { v } from "convex/values";
-import { iam, mutation, query, resource } from "./iam.js";
+import type { QueryCtx } from "./_generated/server.js";
+import { mutation, query, requirePermissions, resource } from "./iam.js";
 
-type DocumentData = { title: string };
-
-type DocumentNode = { externalId: string; data?: unknown };
-
-function toDocument(node: DocumentNode) {
-  const data = node.data as Partial<DocumentData> | undefined;
-  return { id: node.externalId, title: data?.title ?? "Untitled" };
+async function readTitle(ctx: QueryCtx, documentId: string): Promise<string> {
+  const row = await ctx.db
+    .query("documents")
+    .withIndex("by_documentId", (q) => q.eq("documentId", documentId))
+    .unique();
+  return row?.title ?? "Untitled";
 }
 
 export const createDocument = mutation({
@@ -40,9 +41,13 @@ export const createDocument = mutation({
       type: "app.document",
       externalId: args.documentId,
       parent: { type: "app.project", externalId: args.projectId },
-      data: { title: args.title } satisfies DocumentData,
     });
-    return node ? toDocument(node) : null;
+    if (!node) return null;
+    await ctx.db.insert("documents", {
+      documentId: args.documentId,
+      title: args.title,
+    });
+    return { id: node.externalId, title: args.title };
   },
 });
 
@@ -53,15 +58,22 @@ export const updateDocumentTitle = mutation({
   },
   handler: async (ctx, args) => {
     const target = { type: "app.document", externalId: args.documentId };
-    await iam.require(ctx, "app.document:manage", { resource: target });
+    await requirePermissions(ctx, "app.document:manage", { resource: target });
     const existing = await resource.get(ctx, target);
     if (!existing) return null;
-    const node = await resource.write(ctx, {
-      ...target,
-      ...(existing.parent === undefined ? {} : { parent: existing.parent }),
-      data: { title: args.title } satisfies DocumentData,
-    });
-    return node ? toDocument(node) : null;
+    const row = await ctx.db
+      .query("documents")
+      .withIndex("by_documentId", (q) => q.eq("documentId", args.documentId))
+      .unique();
+    if (row) {
+      await ctx.db.patch(row._id, { title: args.title });
+    } else {
+      await ctx.db.insert("documents", {
+        documentId: args.documentId,
+        title: args.title,
+      });
+    }
+    return { id: existing.externalId, title: args.title };
   },
 });
 
@@ -73,7 +85,8 @@ export const getDocument = query({
       externalId: args.documentId,
       permission: "app.document:read",
     });
-    return node ? toDocument(node) : null;
+    if (!node) return null;
+    return { id: node.externalId, title: await readTitle(ctx, node.externalId) };
   },
 });
 
@@ -85,6 +98,13 @@ export const listProjectDocuments = query({
       parent: { type: "app.project", externalId: args.projectId },
       permission: "app.document:read",
     });
-    return page.resources.map(toDocument);
+    const documents: Array<{ id: string; title: string }> = [];
+    for (const node of page.resources) {
+      documents.push({
+        id: node.externalId,
+        title: await readTitle(ctx, node.externalId),
+      });
+    }
+    return documents;
   },
 });

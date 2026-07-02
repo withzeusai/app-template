@@ -10,8 +10,8 @@ import {
 } from "react";
 import { useAuth } from "@usehercules/auth/react";
 import {
-  classifyIamError,
-  type IamErrorClassification,
+  classifyAccessError,
+  type AccessErrorClassification,
 } from "@usehercules/convex";
 import { useAction, useQuery } from "convex/react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -67,7 +67,7 @@ interface IamRenderErrorBoundaryProps {
 }
 
 interface IamRenderErrorBoundaryState {
-  classification: IamErrorClassification | null;
+  classification: AccessErrorClassification | null;
   hasError: boolean;
 }
 
@@ -82,7 +82,7 @@ class IamRenderErrorBoundary extends Component<
 
   static getDerivedStateFromError(error: unknown): IamRenderErrorBoundaryState {
     return {
-      classification: classifyIamError(error),
+      classification: classifyAccessError(error),
       hasError: true,
     };
   }
@@ -94,7 +94,7 @@ class IamRenderErrorBoundary extends Component<
   }
 
   override componentDidCatch(error: unknown, info: ErrorInfo) {
-    if (!classifyIamError(error)) {
+    if (!classifyAccessError(error)) {
       console.error("Unhandled application error", error, info);
     }
   }
@@ -126,7 +126,7 @@ class IamRenderErrorBoundary extends Component<
   }
 
   private handleOperationError = (error: unknown) => {
-    const classification = classifyIamError(error);
+    const classification = classifyAccessError(error);
     if (!classification) return false;
 
     if (classification.kind === "permission") {
@@ -146,7 +146,7 @@ function ClassifiedIamFallback({
   classification,
   onReset,
 }: {
-  classification: IamErrorClassification;
+  classification: AccessErrorClassification;
   onReset: () => void;
 }) {
   const navigate = useNavigate();
@@ -282,7 +282,7 @@ function GenericErrorFallback({ onReset }: { onReset: () => void }) {
 }
 
 function stateFromClassification(
-  classification: IamErrorClassification,
+  classification: AccessErrorClassification,
 ): IamAccessState {
   if (classification.kind === "admission") return classification.status;
   if (classification.kind === "permission") return "permission_denied";
