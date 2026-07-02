@@ -96,8 +96,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(convex@1.37.0(react@19.2.5))(react@19.2.5)
       '@usehercules/convex':
-        specifier: https://pkg.pr.new/@usehercules/convex@cfdab56
-        version: https://pkg.pr.new/@usehercules/convex@cfdab56(@standard-schema/spec@1.1.0)(convex@1.37.0(react@19.2.5))(react@19.2.5)
+        specifier: https://pkg.pr.new/@usehercules/convex@f5945a5
+        version: https://pkg.pr.new/@usehercules/convex@f5945a5(@standard-schema/spec@1.1.0)(convex@1.37.0(react@19.2.5))(react@19.2.5)
       '@usehercules/sdk':
         specifier: ^1.15.7
         version: 1.15.7
@@ -1969,8 +1969,8 @@ packages:
       convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
 
-  '@usehercules/convex@https://pkg.pr.new/@usehercules/convex@cfdab56':
-    resolution: {integrity: sha512-NtOm4Q6bAYgZkKvP4ZRJ6bFTh7AMTxY/ryKqnOuBMBh027Jaf0uvbLgwtPKdOQWMvOGjS190D6SAlLYvo4Jd6A==, tarball: https://pkg.pr.new/@usehercules/convex@cfdab56}
+  '@usehercules/convex@https://pkg.pr.new/@usehercules/convex@f5945a5':
+    resolution: {integrity: sha512-YmQWVLCTay92yBkLAntOz+iXepI6I1ghK7ubLBMs3sSFwmwLYkhwKYY5dXN3RMgKFC+ET8POV6Fc/ur9xaVn7w==, tarball: https://pkg.pr.new/@usehercules/convex@f5945a5}
     version: 1.0.1
     hasBin: true
     peerDependencies:
@@ -4767,7 +4767,7 @@ snapshots:
       react-oidc-context: 3.3.1(oidc-client-ts@3.5.0)(react@19.2.5)
       zod: 4.4.3
 
-  '@usehercules/convex@https://pkg.pr.new/@usehercules/convex@cfdab56(@standard-schema/spec@1.1.0)(convex@1.37.0(react@19.2.5))(react@19.2.5)':
+  '@usehercules/convex@https://pkg.pr.new/@usehercules/convex@f5945a5(@standard-schema/spec@1.1.0)(convex@1.37.0(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@usehercules/sdk': 1.15.7
       convex: 1.37.0(react@19.2.5)
