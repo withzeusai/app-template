@@ -1,42 +1,22 @@
 import { createAccess } from "@usehercules/convex";
 import type { MembershipStatus } from "@usehercules/convex";
 import { components } from "./_generated/api.js";
-import {
-  action as rawAction,
-  mutation as rawMutation,
-  query as rawQuery,
-} from "./_generated/server.js";
+import { action, mutation, query } from "./_generated/server.js";
 
 // Wire Hercules managed access control into this Convex app. Call createAccess
-// once here and re-export the builders and helpers the rest of the app uses.
-const access = createAccess({
-  query: rawQuery,
-  mutation: rawMutation,
-  action: rawAction,
-  components,
-});
+// once here and export the access object plus the permission-aware builders.
+//
+// Use protectedQuery / protectedMutation / protectedAction for
+// permission-enforced handlers. For unauthenticated public endpoints, import
+// the raw query / mutation / action from ./_generated/server directly.
+//
+// Everything else is reached through `access`: in-handler authorization
+// (access.hasPermissions / access.requirePermissions), resource nodes
+// (access.resource.*), caller reads (access.me.*), mirror-table reads
+// (access.tenants, access.roles, ...), and access.syncStatus.
+export const access = createAccess({ query, mutation, action, components });
 
-export const {
-  // Auth-aware builders. They require a verified identity and, when the
-  // definition includes { permission, tenant?, resource? }, enforce that
-  // permission before the handler runs.
-  protectedQuery: query,
-  protectedMutation: mutation,
-  protectedAction: action,
-  // In-handler authorization: hasPermissions returns a boolean,
-  // requirePermissions throws.
-  hasPermissions,
-  requirePermissions,
-  // Component-owned resource nodes. The app owns their lifecycle through
-  // resource.write / resource.delete and reads them with resource.get /
-  // resource.list, which can filter by a permission.
-  resource,
-} = access;
-
-// Raw builders, no auth. Use these only for explicitly public functions.
-export const publicQuery = rawQuery;
-export const publicMutation = rawMutation;
-export const publicAction = rawAction;
+export const { protectedQuery, protectedMutation, protectedAction } = access;
 
 // The access result the auth pages consume. It is derived entirely from the
 // local access mirror, so it stays in sync with control-plane changes as they
@@ -47,17 +27,18 @@ export type IamAccessEvaluationResult = {
   reason: string;
 };
 
-// getTenantAccessStatus — the reactive query the access boundary subscribes to.
+// getTenantAccessStatus - the reactive query the access boundary subscribes to.
 // It returns the caller's membership status in the primary tenant straight from
-// the mirror.
-export const getTenantAccessStatus = publicQuery({
+// the mirror. Public (unauthenticated) so the boundary can render a signed-out
+// state, so it uses the raw query builder.
+export const getTenantAccessStatus = query({
   args: {},
   handler: async (ctx) => await access.me.accessStatus(ctx),
 });
 
-// evaluateAccess — an imperative access re-check used by the auth pages. It
+// evaluateAccess - an imperative access re-check used by the auth pages. It
 // reads the same mirror and normalizes it into an allowed/status result.
-export const evaluateAccess = action({
+export const evaluateAccess = protectedAction({
   args: {},
   handler: async (ctx): Promise<IamAccessEvaluationResult> => {
     const status = await access.me.accessStatus(ctx);
