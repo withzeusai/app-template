@@ -2,31 +2,24 @@
   "$schema": "https://schemas.hercules.app/iam/v1.json",
   "version": "v1",
 
-  // App permissions. Use concrete actions (no wildcards), keyed as
-  // app.<type>:<action>. These are the keys you check at runtime.
-  "permissions": {
-    "app.document:read": { "name": "Read documents" },
-    "app.document:manage": { "name": "Manage documents" },
-  },
+  // App permissions. Declare concrete actions (no wildcards) as
+  // app.<resourceType>:<action>, then attach them to roles below. Starts empty:
+  // add a permission here, then list it in a role's "permissions".
+  "permissions": {},
 
-  // Resource types for the ReBAC graph. Nest a type under another with
-  // "parent"; a role granted on a parent applies to its descendants.
-  "resourceTypes": {
-    "app.project": { "name": "Project" },
-    "app.document": { "name": "Document", "parent": "app.project" },
-  },
+  // Resource types for the ReBAC graph. Nest a type under another with "parent";
+  // a role granted on a parent applies to its descendants. Starts empty: add a
+  // type when a feature needs per-resource access.
+  "resourceTypes": {},
 
-  // Custom roles only. The platform seeds the "owner" role, so do not declare
-  // it here.
+  // The four platform-seeded roles. Grant each role its permissions inline via
+  // "permissions" (there is no separate rolePermissions map). "app_owner" is
+  // app-scoped (app-wide authority, primary tenant only). "member" is the tenant
+  // default conferred on new members.
   "roles": {
-    "editor": {
-      "name": "Editor",
-      "description": "Can read and manage documents",
-    },
-  },
-
-  // Map each role to the permission keys it grants.
-  "rolePermissions": {
-    "editor": ["app.document:read", "app.document:manage"],
+    "app_owner": { "name": "App Owner", "isAppScope": true, "permissions": [] },
+    "owner": { "name": "Owner", "permissions": [] },
+    "admin": { "name": "Admin", "permissions": [] },
+    "member": { "name": "Member", "isDefault": true, "permissions": [] },
   },
 }

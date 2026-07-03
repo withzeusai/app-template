@@ -8,23 +8,12 @@
  * @module
  */
 
-import type * as documents from "../documents.js";
-import type * as iam from "../iam.js";
+import type { ApiFromModules, FilterApi, FunctionReference } from "convex/server";
 import type * as http from "../http.js";
+import type * as iam from "../iam.js";
 import type * as users from "../users.js";
 
-import type {
-  ApiFromModules,
-  FilterApi,
-  FunctionReference,
-} from "convex/server";
-
-declare const fullApi: ApiFromModules<{
-  documents: typeof documents;
-  iam: typeof iam;
-  http: typeof http;
-  users: typeof users;
-}>;
+declare const fullApi: ApiFromModules<{ iam: typeof iam; http: typeof http; users: typeof users }>;
 
 /**
  * A utility for referencing Convex functions in your app's public API.
@@ -34,10 +23,7 @@ declare const fullApi: ApiFromModules<{
  * const myFunctionReference = api.myModule.myFunction;
  * ```
  */
-export declare const api: FilterApi<
-  typeof fullApi,
-  FunctionReference<any, "public">
->;
+export declare const api: FilterApi<typeof fullApi, FunctionReference<any, "public">>;
 
 /**
  * A utility for referencing Convex functions in your app's internal API.
@@ -47,10 +33,7 @@ export declare const api: FilterApi<
  * const myFunctionReference = internal.myModule.myFunction;
  * ```
  */
-export declare const internal: FilterApi<
-  typeof fullApi,
-  FunctionReference<any, "internal">
->;
+export declare const internal: FilterApi<typeof fullApi, FunctionReference<any, "internal">>;
 
 export declare const components: {
   hercules: import("@usehercules/convex/_generated/component.js").ComponentApi<"hercules">;
