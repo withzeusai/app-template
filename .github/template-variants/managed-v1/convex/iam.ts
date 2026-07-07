@@ -51,13 +51,18 @@ export const evaluateAccess = protectedAction({
       return {
         allowed: entered.allowed,
         status: entered.status,
-        reason: entered.status === "active" ? "membership_active" : entered.status,
+        reason:
+          entered.status === "active" ? "membership_active" : entered.status,
       };
     }
     const status = await access.me.accessStatus(ctx);
     if (status.kind === "principal" && status.status !== "active") {
       return { allowed: false, status: status.status, reason: status.status };
     }
-    return { allowed: false, status: "missing", reason: entered.reason ?? "membership_missing" };
+    return {
+      allowed: false,
+      status: "missing",
+      reason: entered.reason ?? "membership_missing",
+    };
   },
 });

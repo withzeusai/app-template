@@ -18,11 +18,11 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(convex@1.42.1(react@19.2.7))(react@19.2.7)
       '@usehercules/convex':
-        specifier: https://pkg.pr.new/@usehercules/convex@ffac93b
-        version: https://pkg.pr.new/@usehercules/convex@ffac93b(@standard-schema/spec@1.1.0)(convex@1.42.1(react@19.2.7))(react@19.2.7)
+        specifier: https://pkg.pr.new/@usehercules/convex@fc80c3b
+        version: https://pkg.pr.new/@usehercules/convex@fc80c3b(@standard-schema/spec@1.1.0)(convex@1.42.1(react@19.2.7))(react@19.2.7)
       '@usehercules/sdk':
-        specifier: ^1.15.10
-        version: 1.15.10
+        specifier: ^1.15.11
+        version: 1.15.11
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -2199,8 +2199,8 @@ packages:
       convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
 
-  '@usehercules/convex@https://pkg.pr.new/@usehercules/convex@ffac93b':
-    resolution: {integrity: sha512-KciUsRtUV03HPonCKoUbRZf+eDFhNuChsi1s0hztqAHg3IfAJS5EsovnqAkeh7URnFEWcSHIFlFwY1N5+TRMJw==, tarball: https://pkg.pr.new/@usehercules/convex@ffac93b}
+  '@usehercules/convex@https://pkg.pr.new/@usehercules/convex@fc80c3b':
+    resolution: {integrity: sha512-9JmCGZ+4MVQF7h2qASq1YIFKZ/lCTcnRsKlB1P8OGL4pcicIQ+WV/n8VHvpaUoWTWTjDbq2uV/Wb48O31SnIOg==, tarball: https://pkg.pr.new/@usehercules/convex@fc80c3b}
     version: 1.0.1
     hasBin: true
     peerDependencies:
@@ -2214,8 +2214,8 @@ packages:
       eslint: '>=9.0.0'
       typescript: '>=4.0.0'
 
-  '@usehercules/sdk@1.15.10':
-    resolution: {integrity: sha512-MUoYFAxkhi7oxFRDOAFrmd263tRpCarcux3Yx9z0i+3CnwJoviRu6zURvQ9GY+1RNT9I4g0H9Mo1h/RY6XGgog==}
+  '@usehercules/sdk@1.15.11':
+    resolution: {integrity: sha512-wLD1cmzH6v0P/MLjL/Lo+s3pb7VQSWks6+vufT4plUE97Ea0+vRge8kjDV7X31wCwK5zKJah5j0pUVl44o1kgg==}
 
   '@usehercules/vite@1.1.0':
     resolution: {integrity: sha512-nhdwHDUXrHeV+3q7sSDNAYez4+0LNUNv72BShAJCjhVgyhry6/txiezPYt+DxvevGi0SQzOcSTSOJZb0UUSxaQ==}
@@ -5326,9 +5326,9 @@ snapshots:
       react-oidc-context: 3.3.1(oidc-client-ts@3.5.0)(react@19.2.7)
       zod: 4.4.3
 
-  '@usehercules/convex@https://pkg.pr.new/@usehercules/convex@ffac93b(@standard-schema/spec@1.1.0)(convex@1.42.1(react@19.2.7))(react@19.2.7)':
+  '@usehercules/convex@https://pkg.pr.new/@usehercules/convex@fc80c3b(@standard-schema/spec@1.1.0)(convex@1.42.1(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@usehercules/sdk': 1.15.10
+      '@usehercules/sdk': 1.15.11
       convex: 1.42.1(react@19.2.7)
       convex-helpers: 0.1.120(@standard-schema/spec@1.1.0)(convex@1.42.1(react@19.2.7))(react@19.2.7)(typescript@6.0.3)(zod@4.4.3)
       standardwebhooks: 1.0.0
@@ -5351,7 +5351,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@usehercules/sdk@1.15.10': {}
+  '@usehercules/sdk@1.15.11': {}
 
   '@usehercules/vite@1.1.0(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0))':
     dependencies:
