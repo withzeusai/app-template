@@ -18,9 +18,7 @@ export const access = createAccess({ query, mutation, action, components });
 
 export const { protectedQuery, protectedMutation, protectedAction } = access;
 
-// The access result the auth pages consume. It is derived entirely from the
-// local access mirror, so it stays in sync with control-plane changes as they
-// project into Convex.
+// The access result the auth pages consume.
 export type IamAccessEvaluationResult = {
   allowed: boolean;
   status: MembershipStatus | "missing";
@@ -36,19 +34,30 @@ export const getTenantAccessStatus = query({
   handler: async (ctx) => await access.me.accessStatus(ctx),
 });
 
-// evaluateAccess - an imperative access re-check used by the auth pages. It
-// reads the same mirror and normalizes it into an allowed/status result.
+// evaluateAccess - the imperative access check the auth pages run after
+// sign-in and from "Check again". It first performs deployment ENTRY via the
+// control plane (access.enter): open sign-up admits the caller with the
+// tenant default role, approval-required creates a pending membership, and
+// invite-only or a matching admission rule denies. The outcome is normalized
+// into an allowed/status result, using the local mirror to distinguish an
+// existing blocked / suspended / removed membership from a policy denial.
+// Entry targets the primary tenant; a multi-tenant app can add a tenant arg
+// here and pass it through to access.enter and access.me.accessStatus.
 export const evaluateAccess = protectedAction({
   args: {},
   handler: async (ctx): Promise<IamAccessEvaluationResult> => {
-    const status = await access.me.accessStatus(ctx);
-    if (status.kind === "principal") {
+    const entered = await access.enter(ctx);
+    if (entered.status !== "denied") {
       return {
-        allowed: status.status === "active",
-        status: status.status,
-        reason: status.status === "active" ? "membership_active" : status.status,
+        allowed: entered.allowed,
+        status: entered.status,
+        reason: entered.status === "active" ? "membership_active" : entered.status,
       };
     }
-    return { allowed: false, status: "missing", reason: status.reason };
+    const status = await access.me.accessStatus(ctx);
+    if (status.kind === "principal" && status.status !== "active") {
+      return { allowed: false, status: status.status, reason: status.status };
+    }
+    return { allowed: false, status: "missing", reason: entered.reason ?? "membership_missing" };
   },
 });
