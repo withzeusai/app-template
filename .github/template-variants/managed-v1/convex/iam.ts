@@ -34,15 +34,12 @@ export const getTenantAccessStatus = query({
   handler: async (ctx) => await access.me.accessStatus(ctx),
 });
 
-// evaluateAccess - the imperative access check the auth pages run after
-// sign-in and from "Check again". It first performs deployment ENTRY via the
-// control plane (access.enter): open sign-up admits the caller with the
-// tenant default role, approval-required creates a pending membership, and
-// invite-only or a matching admission rule denies. The outcome is normalized
-// into an allowed/status result, using the local mirror to distinguish an
-// existing blocked / suspended / removed membership from a policy denial.
-// Entry targets the primary tenant; a multi-tenant app can add a tenant arg
-// here and pass it through to access.enter and access.me.accessStatus.
+// evaluateAccess - run by the auth pages after sign-in and from "Check
+// again". Performs deployment entry via access.enter (the tenant's access
+// mode decides admit / pending / deny), then normalizes the outcome, using
+// the mirror to distinguish an existing blocked/suspended/removed membership
+// from a policy denial. Multi-tenant apps can add a tenant arg passed through
+// to access.enter and access.me.accessStatus.
 export const evaluateAccess = protectedAction({
   args: {},
   handler: async (ctx): Promise<IamAccessEvaluationResult> => {

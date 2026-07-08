@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./auth.tsx";
 import { ConvexProvider } from "./convex.tsx";
-import { IamAccessBoundary } from "./iam-access-boundary.tsx";
+import { HerculesIAM } from "./hercules-iam.tsx";
 import { ImpersonationBanner } from "./impersonation-banner.tsx";
 import { QueryClientProvider } from "./query-client.tsx";
 import { ThemeProvider } from "./theme.tsx";
@@ -17,7 +17,7 @@ export function DefaultProviders({ children }: { children: React.ReactNode }) {
             <ThemeProvider>
               <BrowserRouter>
                 <ImpersonationBanner />
-                <IamAccessBoundary>{children}</IamAccessBoundary>
+                <HerculesIAM>{children}</HerculesIAM>
                 <Toaster />
               </BrowserRouter>
             </ThemeProvider>

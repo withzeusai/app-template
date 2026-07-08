@@ -3,13 +3,36 @@ import { useNavigate } from "react-router-dom";
 import { useAuth, useAuthCallback } from "@usehercules/auth/react";
 import { useAction, useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { IamAccessStateView } from "@/components/iam/access-state.tsx";
+import {
+  getAuthAccessRoute,
+  IamAccessStateView,
+} from "@/components/providers/hercules-iam.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
-import { getAuthAccessRoute } from "./access-routes.ts";
+
+// Post-sign-in destination round-tripped through OIDC state by
+// signin({ returnTo }). Same-app paths only, never back into /auth/*.
+// Checks run on the raw AND decoded value: percent-encoding must not smuggle
+// an /auth path past the guard, backslashes normalize cross-origin in URLs.
+function getReturnTo(state: unknown): string | null {
+  if (typeof state !== "object" || state === null) return null;
+  const { returnTo } = state as { returnTo?: unknown };
+  if (typeof returnTo !== "string" || !returnTo.startsWith("/")) return null;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(returnTo);
+  } catch {
+    return null;
+  }
+  for (const value of [returnTo, decoded]) {
+    if (value.startsWith("//") || value.includes("\\")) return null;
+    if (/^\/auth(\/|$)/.test(value)) return null;
+  }
+  return returnTo;
+}
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const { signout } = useAuth();
+  const { signout, user } = useAuth();
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
   const evaluateAccess = useAction(api.iam.evaluateAccess);
@@ -24,12 +47,12 @@ export default function AuthCallback() {
   const handleAccessResult = useCallback(
     (result: Awaited<ReturnType<typeof evaluateAccess>>) => {
       if (result.allowed) {
-        navigateHome();
+        navigate(getReturnTo(user?.state) ?? "/", { replace: true });
         return;
       }
       navigate(getAuthAccessRoute(result.status), { replace: true });
     },
-    [navigate, navigateHome],
+    [navigate, user],
   );
 
   const onSync = useCallback(async () => {

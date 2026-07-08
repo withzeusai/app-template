@@ -17,9 +17,9 @@
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
     "@tanstack/react-query": "^5.101.1",
-    "@usehercules/auth": "^1.1.0",
-    "@usehercules/convex": "https://pkg.pr.new/@usehercules/convex@fc80c3b",
-    "@usehercules/sdk": "^1.15.11",
+    "@usehercules/auth": "https://pkg.pr.new/@usehercules/auth@271f0ff",
+    "@usehercules/convex": "https://pkg.pr.new/@usehercules/convex@271f0ff",
+    "@usehercules/sdk": "^1.15.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

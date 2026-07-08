@@ -2,20 +2,17 @@
   "$schema": "https://schemas.hercules.app/iam/v1.json",
   "version": "v1",
 
-  // App permissions. Declare concrete actions (no wildcards) as
-  // app.<resourceType>:<action>, then attach them to roles below. Starts empty:
-  // add a permission here, then list it in a role's "permissions".
-  "permissions": {},
+  "permissions": {
+    // Example: declare a permission, then list its key in a role's "permissions".
+    // "app.project:read": { "name": "Read projects" },
+  },
 
-  // Resource types for the ReBAC graph. Nest a type under another with "parent";
-  // a role granted on a parent applies to its descendants. Starts empty: add a
-  // type when a feature needs per-resource access.
-  "resourceTypes": {},
+  "resourceTypes": {
+    // Example: a type for per-resource access; nest under another type with "parent".
+    // "app.project": { "name": "Project" },
+    // "app.document": { "name": "Document", "parent": "app.project" },
+  },
 
-  // The four platform-seeded roles. Grant each role its permissions inline via
-  // "permissions" (there is no separate rolePermissions map). "app_owner" is
-  // app-scoped (app-wide authority, primary tenant only). "member" is the tenant
-  // default conferred on new members.
   "roles": {
     "app_owner": { "name": "App Owner", "isAppScope": true, "permissions": [] },
     "owner": { "name": "Owner", "permissions": [] },
