@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schemas.hercules.app/iam/v1.json",
+  "$schema": "https://hercules.app/schemas/iam/v1.json",
   "version": "v1",
 
   "permissions": {
