@@ -1,4 +1,4 @@
-import { createStart } from "@tanstack/react-start";
+import { createCsrfMiddleware, createStart } from "@tanstack/react-start";
 import { herculesAuthMiddleware } from "@usehercules/auth-tanstack";
 
 /**
@@ -20,9 +20,23 @@ import { herculesAuthMiddleware } from "@usehercules/auth-tanstack";
  * Cookie `SameSite` is intentionally left at the SDK's protocol-derived
  * default: `None` + `Secure` over HTTPS so the cookies survive cross-site
  * iframe embedding, and `Lax` over HTTP for local development.
+ *
+ * `csrfMiddleware` must stay in this array: supplying any `requestMiddleware`
+ * replaces TanStack Start's default CSRF middleware, and the `SameSite=None`
+ * session cookie means the browser provides no same-site backstop of its own.
+ * It is scoped to server functions so cross-site *navigations* — in
+ * particular the OIDC provider's redirect back to `/auth/callback` (a server
+ * route) — are unaffected, while cross-site fetches to server-function
+ * endpoints are rejected. Same-origin requests from the app itself always
+ * pass, including when the app is embedded in an iframe.
  */
+const csrfMiddleware = createCsrfMiddleware({
+  filter: (ctx) => ctx.handlerType === "serverFn",
+});
+
 export const startInstance = createStart(() => ({
   requestMiddleware: [
+    csrfMiddleware,
     herculesAuthMiddleware({
       redirectUri: process.env.HERCULES_AUTH_REDIRECT_URI,
     }),
