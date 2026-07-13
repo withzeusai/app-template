@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "build": "vite build",
     "generate-routes": "tsr generate",
-    "typecheck": "tsr generate && tsc --noEmit",
+    "typecheck": "tsr generate && tsc --noEmit && tsc --noEmit --project convex/tsconfig.json",
     "test": "vitest run",
     "lint": "eslint .",
     "prettier-fix": "prettier --write .",
