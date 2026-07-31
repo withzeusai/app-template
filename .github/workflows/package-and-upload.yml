@@ -16,33 +16,35 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
-      - name: Create tarball
+      - name: Materialize template variants
+        run: |
+          node .github/scripts/materialize-template-variants.mjs \
+            --output-dir /tmp/app-template-variants
+
+      - name: Create tarballs
         env:
           GITHUB_REF: ${{ github.ref }}
         run: |
           # Sanitize ref name for use as a filename (e.g., feature/abc -> feature-abc).
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           SAFE_BRANCH_NAME="${BRANCH_NAME//\//-}"
-          TARBALL_NAME="${SAFE_BRANCH_NAME}.tar.gz"
-          TARBALL_PATH="/tmp/${TARBALL_NAME}"
+          LEGACY_TARBALL_PATH="/tmp/${SAFE_BRANCH_NAME}.tar.gz"
+          MANAGED_TARBALL_PATH="/tmp/managed-v1-${SAFE_BRANCH_NAME}.tar.gz"
 
-          # Create tarball in /tmp to avoid "file changed as we read it" error.
-          tar -czf "${TARBALL_PATH}" \
-            --exclude='.github' \
-            --exclude='.git' \
-            --exclude='node_modules' \
-            --exclude='dist' \
-            --exclude='.env' \
-            --exclude='.env.local' \
-            .
+          tar -C /tmp/app-template-variants/legacy \
+            -czf "${LEGACY_TARBALL_PATH}" .
+          tar -C /tmp/app-template-variants/managed-v1 \
+            -czf "${MANAGED_TARBALL_PATH}" .
 
-          echo "TARBALL_PATH=${TARBALL_PATH}" >> "$GITHUB_ENV"
-          echo "Created tarball: ${TARBALL_NAME} from branch: ${BRANCH_NAME}"
-          ls -lh "${TARBALL_PATH}"
+          echo "SAFE_BRANCH_NAME=${SAFE_BRANCH_NAME}" >> "$GITHUB_ENV"
+          echo "LEGACY_TARBALL_PATH=${LEGACY_TARBALL_PATH}" >> "$GITHUB_ENV"
+          echo "MANAGED_TARBALL_PATH=${MANAGED_TARBALL_PATH}" >> "$GITHUB_ENV"
+          echo "Created legacy and managed-v1 tarballs from branch: ${BRANCH_NAME}"
+          ls -lh "${LEGACY_TARBALL_PATH}" "${MANAGED_TARBALL_PATH}"
 
       - name: Upload to Cloudflare R2
         env:
@@ -51,16 +53,29 @@ jobs:
           AWS_DEFAULT_REGION: auto
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
         run: |
-          TARBALL_NAME="$(basename "${TARBALL_PATH}")"
+          R2_URL="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
 
-          aws s3 cp "${TARBALL_PATH}" \
-            "s3://hercules-app-templates/${TARBALL_NAME}" \
-            --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          # Preserve the existing legacy URL while adding the managed alias.
+          aws s3 cp "${LEGACY_TARBALL_PATH}" \
+            "s3://hercules-app-templates/${SAFE_BRANCH_NAME}.tar.gz" \
+            --endpoint-url "${R2_URL}"
+          aws s3 cp "${MANAGED_TARBALL_PATH}" \
+            "s3://hercules-app-templates/managed-v1/${SAFE_BRANCH_NAME}.tar.gz" \
+            --endpoint-url "${R2_URL}"
 
-          echo "Successfully uploaded ${TARBALL_NAME} to R2 bucket: hercules-app-templates"
+          # Immutable paths let herculesd pin a template release for warm pools.
+          aws s3 cp "${LEGACY_TARBALL_PATH}" \
+            "s3://hercules-app-templates/releases/${GITHUB_SHA}/legacy.tar.gz" \
+            --endpoint-url "${R2_URL}"
+          aws s3 cp "${MANAGED_TARBALL_PATH}" \
+            "s3://hercules-app-templates/releases/${GITHUB_SHA}/managed-v1.tar.gz" \
+            --endpoint-url "${R2_URL}"
+
+          echo "Successfully uploaded both template variants"
 
       - name: Cleanup
         if: always()
         run: |
-          rm -f "${TARBALL_PATH}"
-          echo "Cleaned up tarball"
+          rm -rf /tmp/app-template-variants
+          rm -f "${LEGACY_TARBALL_PATH}" "${MANAGED_TARBALL_PATH}"
+          echo "Cleaned up template artifacts"

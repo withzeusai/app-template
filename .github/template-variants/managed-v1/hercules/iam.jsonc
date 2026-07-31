@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schemas.hercules.app/iam/v1.json",
+  "version": "v1",
+
+  "permissions": {},
+  "orgAdminGrantablePermissions": [],
+
+  "roles": {
+    // Owner and Admin are platform-owned. Declare them, but do not add them to
+    // app-authored rolePermissions.
+    "owner": {
+      "type": "built_in",
+    },
+    "admin": {
+      "type": "built_in",
+    },
+    "member": {
+      "type": "built_in",
+    },
+  },
+
+  "rolePermissions": {},
+}
