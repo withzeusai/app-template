@@ -1,3 +1,4 @@
+import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./auth.tsx";
 import { ConvexProvider } from "./convex.tsx";
 import { QueryClientProvider } from "./query-client.tsx";
@@ -12,8 +13,10 @@ export function DefaultProviders({ children }: { children: React.ReactNode }) {
         <QueryClientProvider>
           <TooltipProvider>
             <ThemeProvider>
-              <Toaster />
-              {children}
+              <BrowserRouter>
+                <Toaster />
+                {children}
+              </BrowserRouter>
             </ThemeProvider>
           </TooltipProvider>
         </QueryClientProvider>

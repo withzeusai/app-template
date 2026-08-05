@@ -1,31 +1,20 @@
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { DefaultProviders } from "./components/providers/default.tsx";
-import { DeploymentEntryProvider } from "./components/providers/deployment-entry.tsx";
+import { IamAccessRoute } from "./components/providers/hercules-iam.tsx";
 import AuthCallback from "./pages/auth/Callback.tsx";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
-function ProtectedAppRoutes() {
-  return (
-    <DeploymentEntryProvider>
-      <Outlet />
-    </DeploymentEntryProvider>
-  );
-}
-
 export default function App() {
   return (
     <DefaultProviders>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route element={<ProtectedAppRoutes />}>
-            <Route path="/" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/auth/*" element={<IamAccessRoute />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </DefaultProviders>
   );
 }

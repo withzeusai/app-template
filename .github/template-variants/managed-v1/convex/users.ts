@@ -1,7 +1,7 @@
 import { ConvexError } from "convex/values";
-import { authenticatedMutation, authenticatedQuery } from "./hercules";
+import { protectedMutation, protectedQuery } from "./iam";
 
-export const updateCurrentUser = authenticatedMutation({
+export const updateCurrentUser = protectedMutation({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -15,9 +15,7 @@ export const updateCurrentUser = authenticatedMutation({
     // Check if we've already stored this identity before.
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
+      .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
       .unique();
     if (user !== null) {
       return user._id;
@@ -31,7 +29,7 @@ export const updateCurrentUser = authenticatedMutation({
   },
 });
 
-export const getCurrentUser = authenticatedQuery({
+export const getCurrentUser = protectedQuery({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -43,9 +41,7 @@ export const getCurrentUser = authenticatedQuery({
     }
     const user = await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
+      .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
       .unique();
     return user;
   },
