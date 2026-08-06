@@ -7,7 +7,7 @@
     "dev": "vite",
     "preview": "vite preview",
     "build": "hercules-convex-access-check convex && tsc -b && vite build",
-    "lint": "eslint . && hercules-convex-access-check convex",
+    "lint": "eslint . --max-warnings=0 && hercules-convex-access-check convex",
     "lint:access": "hercules-convex-access-check convex",
     "test": "vitest run",
     "fix:access-authenticated": "hercules-convex-access-check convex --fix-authenticated",
