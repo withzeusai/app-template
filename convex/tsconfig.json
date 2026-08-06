@@ -13,6 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
     "incremental": true,
+    "types": ["node"],
 
     /* These compiler options are required by Convex */
     "target": "ESNext",
