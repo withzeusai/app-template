@@ -320,8 +320,7 @@ describe("DeploymentEntryProvider", () => {
       isLoading: false,
     };
     let resolveEntry:
-      | ((value: ReturnType<typeof allowedResult>) => void)
-      | null = null;
+      ((value: ReturnType<typeof allowedResult>) => void) | null = null;
     enterDeployment.mockReturnValueOnce(
       new Promise((resolve) => {
         resolveEntry = resolve;
@@ -429,8 +428,7 @@ describe("DeploymentEntryProvider", () => {
       isLoading: false,
     };
     let resolveAlice:
-      | ((value: ReturnType<typeof allowedResult>) => void)
-      | null = null;
+      ((value: ReturnType<typeof allowedResult>) => void) | null = null;
     enterDeployment
       .mockReturnValueOnce(
         new Promise((resolve) => {

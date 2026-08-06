@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@usehercules/auth/react";
 import { useAction, useConvexAuth } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
@@ -6,11 +6,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
 type EntryStatus =
-  | "active"
-  | "blocked"
-  | "suspended"
-  | "pending_approval"
-  | "removed";
+  "active" | "blocked" | "suspended" | "pending_approval" | "removed";
 
 type EntryDecision = {
   allowed: boolean;
@@ -92,7 +88,9 @@ export function DeploymentEntryProvider({
   const enterDeployment = useAction(api.accessUser.enterDeployment);
   const [entryState, setEntryState] = useState<EntryState | null>(null);
   const [retryVersion, setRetryVersion] = useState(0);
-  const checkedIdentityKey = useRef<string | null>(null);
+  const [checkedIdentityKey, setCheckedIdentityKey] = useState<string | null>(
+    null,
+  );
 
   const identityKey = useMemo(() => {
     const issuer = auth.user?.profile.iss;
@@ -113,7 +111,7 @@ export function DeploymentEntryProvider({
     if (identityKey !== null) {
       entryRequests.delete(identityKey);
     }
-    checkedIdentityKey.current = null;
+    setCheckedIdentityKey(null);
     setEntryState(null);
     setRetryVersion((version) => version + 1);
   };
@@ -123,17 +121,23 @@ export function DeploymentEntryProvider({
     await auth.signin();
   };
 
-  useEffect(() => {
+  // Drop the recorded check when the session ends, so signing back in
+  // re-verifies access instead of trusting the previous decision.
+  const [wasAuthenticated, setWasAuthenticated] = useState(
+    auth.isAuthenticated,
+  );
+  if (wasAuthenticated !== auth.isAuthenticated) {
+    setWasAuthenticated(auth.isAuthenticated);
     if (!auth.isAuthenticated) {
-      checkedIdentityKey.current = null;
+      setCheckedIdentityKey(null);
     }
-  }, [auth.isAuthenticated]);
+  }
 
   useEffect(() => {
     if (
       !canCheckEntry ||
       identityKey === null ||
-      checkedIdentityKey.current === identityKey
+      checkedIdentityKey === identityKey
     ) {
       return;
     }
@@ -153,14 +157,14 @@ export function DeploymentEntryProvider({
           : decision.status && decision.status !== "active"
             ? decision.status
             : "denied";
-        checkedIdentityKey.current = identityKey;
+        setCheckedIdentityKey(identityKey);
         setEntryState({ identityKey, status: resolved });
       },
       () => {
         if (!active) {
           return;
         }
-        checkedIdentityKey.current = identityKey;
+        setCheckedIdentityKey(identityKey);
         setEntryState({ identityKey, status: "error" });
       },
     );
@@ -168,7 +172,14 @@ export function DeploymentEntryProvider({
     return () => {
       active = false;
     };
-  }, [canCheckEntry, enterDeployment, idToken, identityKey, retryVersion]);
+  }, [
+    canCheckEntry,
+    checkedIdentityKey,
+    enterDeployment,
+    idToken,
+    identityKey,
+    retryVersion,
+  ]);
 
   if (auth.isLoading) {
     return <EntryLoadingState />;
@@ -198,7 +209,7 @@ export function DeploymentEntryProvider({
   }
 
   const currentState =
-    checkedIdentityKey.current === identityKey &&
+    checkedIdentityKey === identityKey &&
     entryState?.identityKey === identityKey
       ? entryState.status
       : null;

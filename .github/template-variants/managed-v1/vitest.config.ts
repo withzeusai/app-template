@@ -1,5 +1,5 @@
 import path from "node:path";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
 // Unit-test config for this app. Two projects run in one command:
@@ -11,8 +11,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
-      "@/convex": path.resolve(__dirname, "./convex"),
-      "@": path.resolve(__dirname, "./src"),
+      "@/convex": path.resolve(import.meta.dirname, "./convex"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   test: {
