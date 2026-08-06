@@ -1,5 +1,5 @@
 import path from "node:path";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
 // Unit-test config for this app. Two projects run in one command:
