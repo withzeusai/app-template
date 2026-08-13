@@ -64,13 +64,27 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
     const { isAuthenticated, signin, signout, isLoading, error } = useAuth();
 
     useEffect(() => {
-      if (error) {
-        toast.error("Login error", {
-          description: error.message,
-        });
-        console.error("Login error", error);
+      if (!error) return;
+
+      // `error` covers background token renewals too, not just clicking sign
+      // in. Renewals fail routinely (expired or already-rotated refresh
+      // token), and the SDK now recovers by clearing the dead session, so the
+      // next action is a normal sign-in. Interrupting with an error toast for
+      // something the user never initiated is noise they cannot act on.
+      const userInitiated = !isAuthenticated && !isLoading;
+      if (!userInitiated) {
+        console.warn("Background token renewal failed; signed out", error);
+        return;
       }
-    }, [error]);
+
+      // Never surface `error.message` directly: for an OAuth failure it is the
+      // raw `error_description` from the server (e.g. "session not found"),
+      // which is server jargon rather than anything a user can act on.
+      toast.error("Could not sign you in", {
+        description: "Something went wrong. Please try signing in again.",
+      });
+      console.error("Sign-in error", error);
+    }, [error, isAuthenticated, isLoading]);
 
     const handleClick = useCallback(
       async (event: React.MouseEvent<HTMLButtonElement>) => {
