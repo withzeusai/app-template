@@ -1,22 +1,5 @@
-# Cloudflare asset headers. Vite copies this file into dist/ at build time, and
-# the Hercules publish pipeline hands it to Cloudflare as the app's asset config.
-#
-# Why this file has to exist: Cloudflare's asset runtime ships exactly one
-# built-in Cache-Control -- "public, max-age=0, must-revalidate" -- and applies
-# it to every file, whether or not the name is content-hashed. Neither Wrangler
-# nor @cloudflare/vite-plugin generates a default to override it, so a _headers
-# file is the only supported way to change it.
-#
-# Without the rule below, a returning visitor revalidates every script,
-# stylesheet and font before the page can render. Each one is a blocking round
-# trip to the edge that ends in a 304 with an empty body.
-#
-# Vite fingerprints everything it emits into /assets, so the bytes behind a
-# given URL never change -- a rebuild produces a new filename instead. That
-# makes them safe to pin for a year and mark immutable, which also stops the
-# browser revalidating them on a manual reload.
-#
-# index.html is deliberately left alone: it keeps the must-revalidate default so
-# a new deploy is picked up on the next navigation.
+# Vite fingerprints the assets it emits, so these URLs never change contents.
+# https://developers.cloudflare.com/workers/static-assets/headers
+
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
