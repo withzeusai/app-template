@@ -1,0 +1,5 @@
+# https://developers.cloudflare.com/workers/static-assets/headers
+
+# Vite fingerprints the assets it emits, so these URLs never change contents.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
