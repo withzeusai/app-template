@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
+@theme static {
   --font-sans:
     "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -13,7 +13,9 @@
     "Liberation Mono", "Courier New", monospace;
   --font-serif:
     "Noto Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
 
+@theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
