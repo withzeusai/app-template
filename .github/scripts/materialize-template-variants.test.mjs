@@ -34,8 +34,12 @@ test("materializes the legacy template as a TanStack Start app", async () => {
   assert.equal(packageJson.scripts.build, "vite build");
   assert.ok(packageJson.dependencies["@tanstack/react-start"]);
   assert.ok(packageJson.dependencies["@convex-dev/react-query"]);
-  assert.ok(packageJson.dependencies["@usehercules/auth"]);
+  assert.ok(packageJson.dependencies["@usehercules/auth-tanstack"]);
   assert.equal(packageJson.dependencies["react-router-dom"], undefined);
+  // The client-only SPA auth SDK must not come back alongside the TanStack
+  // one: it is what this template replaced, and having both would silently
+  // reintroduce browser-held OIDC tokens next to the server session.
+  assert.equal(packageJson.dependencies["@usehercules/auth"], undefined);
   assert.equal(packageJson.dependencies["@usehercules/convex"], undefined);
 
   await access(path.join(legacyRoot, "src/router.tsx"));

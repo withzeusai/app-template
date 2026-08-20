@@ -54,4 +54,13 @@ export default defineConfig([
       "react-refresh/only-export-components": "off",
     },
   },
+  {
+    // TanStack Router route files must export `Route` alongside their
+    // component -- that is the framework contract, and the router plugin
+    // handles Fast Refresh for them.
+    files: ["src/routes/**", "src/router.tsx"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
 ]);

@@ -1,8 +1,5 @@
 import { useCallback, useMemo } from "react";
-import {
-  ConvexProviderWithAuth,
-  type ConvexReactClient,
-} from "convex/react";
+import { ConvexProviderWithAuth, type ConvexReactClient } from "convex/react";
 import { useIdToken, useAuth } from "@usehercules/auth-tanstack/client";
 import type { ClientUserInfo, NoUserInfo } from "@usehercules/auth-tanstack";
 import { AuthProvider } from "./auth.tsx";
@@ -25,9 +22,12 @@ function useConvexHerculesAuth() {
       const token = forceRefreshToken ? await refresh() : await getIdToken();
       return token ?? null;
     },
-    // Re-create when auth flips so Convex re-runs the fetcher on sign-in/out.
-    [getIdToken, refresh, isAuthenticated],
+    [getIdToken, refresh],
   );
+
+  // `isAuthenticated` belongs on the memo, not the callback: Convex re-runs
+  // the fetcher when this object's identity changes, so the sign-in/out flip
+  // is already covered here without making the callback itself unstable.
 
   return useMemo(
     () => ({ isLoading: loading, isAuthenticated, fetchAccessToken }),
