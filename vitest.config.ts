@@ -11,8 +11,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
-      "@/convex": path.resolve(__dirname, "./convex"),
-      "@": path.resolve(__dirname, "./src"),
+      "@/convex": path.resolve(import.meta.dirname, "./convex"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   test: {

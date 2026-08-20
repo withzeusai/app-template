@@ -7,10 +7,7 @@ export type CreateOrgScopeArgs = {
   name: string;
   defaultRoleKey?: string;
   accountEntryMode?:
-    | "open"
-    | "allowlisted_only"
-    | "invite_only"
-    | "approval_required";
+    "open" | "allowlisted_only" | "invite_only" | "approval_required";
 };
 
 export async function createOrgScope(

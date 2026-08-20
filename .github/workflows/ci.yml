@@ -74,7 +74,7 @@ jobs:
 
       - name: Test
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
-        run: pnpm run --if-present test
+        run: pnpm test
 
   dependency-review:
     runs-on: ubuntu-latest
