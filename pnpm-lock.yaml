@@ -94,8 +94,8 @@ importers:
         version: 4.4.3
     devDependencies:
       '@convex-dev/eslint-plugin':
-        specifier: ^3.0.0
-        version: 3.0.0(convex@1.43.0(react@19.2.8))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)
+        specifier: ^4.0.0
+        version: 4.0.0(convex@1.43.0(react@19.2.8))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)
       '@edge-runtime/vm':
         specifier: ^5.0.0
         version: 5.0.0
@@ -303,8 +303,8 @@ packages:
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
 
-  '@convex-dev/eslint-plugin@3.0.0':
-    resolution: {integrity: sha512-2LTsyUB1g9vsm/d8oGajY5G5sScD8XZr09bGR+OEynn32RLc0nwQsh7ZWnETLJhbVcE7vm0fDmDWS6cAW/VNCw==}
+  '@convex-dev/eslint-plugin@4.0.0':
+    resolution: {integrity: sha512-7bYP8Fkk+19L7LWl3xIqUqq/0yIEZNoUQHOodZKIvupqmgaMisz8NKz6OkmMwBVLUQ0sh/9+iPK1OyASANiWyw==}
     peerDependencies:
       convex: ^1.43.0
 
@@ -3434,7 +3434,7 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
 
-  '@convex-dev/eslint-plugin@3.0.0(convex@1.43.0(react@19.2.8))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)':
+  '@convex-dev/eslint-plugin@4.0.0(convex@1.43.0(react@19.2.8))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/types': 8.58.2
       '@typescript-eslint/utils': 8.58.2(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)
@@ -4721,8 +4721,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.58.2(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.58.2(typescript@6.0.3)
-      '@typescript-eslint/types': 8.58.2
+      '@typescript-eslint/tsconfig-utils': 8.67.0(typescript@6.0.3)
+      '@typescript-eslint/types': 8.67.0
       debug: 4.4.3
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -4731,7 +4731,7 @@ snapshots:
   '@typescript-eslint/project-service@8.66.0(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.66.0(typescript@6.0.3)
-      '@typescript-eslint/types': 8.66.0
+      '@typescript-eslint/types': 8.67.0
       debug: 4.4.3
       typescript: 6.0.3
     transitivePeerDependencies:
