@@ -36,8 +36,8 @@ importers:
         specifier: 1.168.48
         version: 1.168.48(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
       '@usehercules/auth-tanstack':
-        specifier: ^0.4.0
-        version: 0.4.0(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
+        specifier: ^0.5.0
+        version: 0.5.0(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -2879,8 +2879,8 @@ packages:
     resolution: {integrity: sha512-fkv8dHRDqfGtTHuJeebdrQ7cX6Ad4WAS00rgHh9UGvMycF1mjBfsxry1XsLIFhWZ6Judlh6UdzK+TYlbpCXgnA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@usehercules/auth-tanstack@0.4.0':
-    resolution: {integrity: sha512-9noDoxgoXsZlFe3WnKnvtgO9BPNea5DNCoVT1gTOA6MbKoDmu6/+9Qhi+exfZNkwZ1m2Z9CP/tPik56wGolh/Q==}
+  '@usehercules/auth-tanstack@0.5.0':
+    resolution: {integrity: sha512-K1PHlpqb0BhNRObqlUh6vdhN9U4/Cz3I5Cn9i/y9b3RAkhAhBN2pwE3R3LuJHLOu9T9ePHH4qHhCDhWKNBEElw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -6979,7 +6979,7 @@ snapshots:
       '@typescript-eslint/types': 8.67.0
       eslint-visitor-keys: 5.0.1
 
-  '@usehercules/auth-tanstack@0.4.0(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))':
+  '@usehercules/auth-tanstack@0.5.0(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))':
     dependencies:
       '@tanstack/react-router': 1.170.17(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-start': 1.168.27(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
