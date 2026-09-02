@@ -1,5 +1,10 @@
-import { createCsrfMiddleware, createStart } from "@tanstack/react-start";
+import {
+  createCsrfMiddleware,
+  createMiddleware,
+  createStart,
+} from "@tanstack/react-start";
 import { herculesAuthMiddleware } from "@usehercules/auth-tanstack";
+import { withResponseCacheSafety } from "./lib/response-cache";
 
 /**
  * Server-side TanStack Start configuration.
@@ -34,8 +39,25 @@ const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === "serverFn",
 });
 
+// Wrap auth and CSRF responses too. The root serializes session state, so an
+// opted-in product route must still become private for a cookie-bearing request.
+const cacheSafetyMiddleware = createMiddleware().server(
+  async ({ request, next, handlerType }) => {
+    const result = await next();
+    return {
+      ...result,
+      response: withResponseCacheSafety(
+        request,
+        result.response,
+        handlerType === "serverFn",
+      ),
+    };
+  },
+);
+
 export const startInstance = createStart(() => ({
   requestMiddleware: [
+    cacheSafetyMiddleware,
     csrfMiddleware,
     herculesAuthMiddleware({
       redirectUri: process.env.HERCULES_AUTH_REDIRECT_URI,

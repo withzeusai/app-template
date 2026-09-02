@@ -62,15 +62,11 @@ jobs:
 
       - name: Type check
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
-        run: pnpm exec tsc --noEmit
+        run: pnpm typecheck
 
       - name: Build
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm build
-
-      - name: Type check Convex
-        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
-        run: pnpm exec tsc -p convex/tsconfig.json
 
       - name: Test
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
