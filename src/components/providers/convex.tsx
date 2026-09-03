@@ -8,30 +8,59 @@ import { AuthProvider } from "./auth.tsx";
  * Bridge Hercules auth into Convex's generic auth integration.
  *
  * `ConvexProviderWithAuth` expects `{ isLoading, isAuthenticated,
- * fetchAccessToken }`. `fetchAccessToken` returns the Hercules ID token, and
- * Convex calls it again with `forceRefreshToken` before expiry, so long
- * sessions stay authenticated on the client.
+ * fetchAccessToken }` and calls `fetchAccessToken` when that object changes
+ * identity — and not otherwise. Two rules follow from that:
+ *
+ * - `isAuthenticated` means "an ID token exists", not "a session exists". The
+ *   auth provider is seeded with `initialAuth` during SSR, so `user` is set
+ *   from the very first client render, before the token store has fetched
+ *   anything. Reporting authenticated then spends Convex's single request on
+ *   a cold store; if it comes back empty the client stays unauthenticated for
+ *   the life of the page even once the token lands.
+ * - `fetchAccessToken` never resolves `null` for a live session. Convex reads
+ *   `null` as "signed out" and will not ask again. It forces a refresh right
+ *   after confirming the cached token (and again ahead of expiry); a refresh
+ *   can legitimately come back empty — no refresh token was issued, or the
+ *   grant failed transiently — so fall back to the current ID token.
  */
 function useConvexHerculesAuth() {
   const { user, loading } = useAuth();
-  const { getIdToken, refresh } = useIdToken();
-  const isAuthenticated = user !== null;
+  const { idToken, loading: tokenLoading, getIdToken, refresh } = useIdToken();
+  const isAuthenticated = user !== null && idToken != null;
 
   const fetchAccessToken = useCallback(
     async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
-      const token = forceRefreshToken ? await refresh() : await getIdToken();
-      return token ?? null;
+      try {
+        if (forceRefreshToken) {
+          const refreshed = await refresh().catch(() => undefined);
+          if (refreshed) return refreshed;
+        }
+        const token = await getIdToken();
+        return token ?? null;
+      } catch {
+        // Resolve rather than reject: Convex treats a rejection as "no token"
+        // and will not ask again until this hook's identity changes. The token
+        // store schedules its own retry and re-renders us when it lands.
+        return null;
+      }
     },
     [getIdToken, refresh],
   );
 
   // `isAuthenticated` belongs on the memo, not the callback: Convex re-runs
   // the fetcher when this object's identity changes, so the sign-in/out flip
-  // is already covered here without making the callback itself unstable.
-
+  // and the token landing are both covered here without making the callback
+  // itself unstable.
   return useMemo(
-    () => ({ isLoading: loading, isAuthenticated, fetchAccessToken }),
-    [loading, isAuthenticated, fetchAccessToken],
+    () => ({
+      // Once authenticated, stay out of the loading state: a background
+      // refresh must not flip Convex's `AuthLoading` back on and unmount
+      // everything under `Authenticated`.
+      isLoading: isAuthenticated ? false : loading || tokenLoading,
+      isAuthenticated,
+      fetchAccessToken,
+    }),
+    [loading, tokenLoading, isAuthenticated, fetchAccessToken],
   );
 }
 
