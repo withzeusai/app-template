@@ -15,11 +15,20 @@ files shared by every generated app.
 Control template. Files under the same path replace the legacy version; paths
 that do not exist in the root are added only to the managed template.
 
-The release workflow publishes:
+The release workflow (`package-and-upload.yml`) publishes each packaged
+scaffold under its own key prefix in the `hercules-app-templates` bucket:
 
-- `main.tar.gz` for legacy apps, preserving the existing URL.
-- `managed-v1/main.tar.gz` for managed Access Control apps.
-- Immutable copies of both variants under `releases/<commit-sha>/`.
+| Branch                   | Prefix            | Keys                                                                   |
+| ------------------------ | ----------------- | ---------------------------------------------------------------------- |
+| `main`                   | (none)            | `main.tar.gz`, `managed-v1/main.tar.gz`, `releases/<commit-sha>/…`     |
+| `migrate/tanstack-start` | `tanstack-start/` | `tanstack-start/main.tar.gz`, `tanstack-start/releases/<commit-sha>/…` |
+
+- `<prefix>main.tar.gz` is the legacy (base) app, preserving the existing URL.
+- `<prefix>managed-v1/main.tar.gz` is the managed Access Control app. It is
+  uploaded only when the materializer produced the `managed-v1` variant on
+  that branch, so the paused TanStack overlay does not block publishing.
+- Immutable copies of every uploaded variant live under
+  `<prefix>releases/<commit-sha>/`.
 
 Run the materializer locally with:
 
