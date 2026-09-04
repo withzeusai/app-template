@@ -1,9 +1,32 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/*
+ * Fonts shipped with the template (self-hosted via @fontsource; a face is only
+ * downloaded when text actually uses it).
+ *
+ *   Family                    | CSS font-family            | Wired to
+ *   --------------------------|----------------------------|-------------
+ *   Geist (variable)          | "Geist Variable"           | --font-sans (default)
+ *   Geist Mono (variable)     | "Geist Mono Variable"      | --font-mono
+ *   Noto Serif (variable)     | "Noto Serif Variable"      | --font-serif
+ *   Fraunces (variable)       | "Fraunces Variable"        | not wired
+ *   Outfit (variable)         | "Outfit Variable"          | not wired
+ *   Instrument Serif (400)    | "Instrument Serif"         | not wired
+ *
+ * To use a display face, point an existing variable at it (e.g. set
+ * `--font-serif` to "Fraunces Variable") or add a new one in `@theme inline`
+ * below, e.g. `--font-display: "Outfit Variable", sans-serif;` which Tailwind
+ * exposes as the `font-display` utility.
+ */
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
 @import "@fontsource-variable/noto-serif";
 @import "@fontsource-variable/noto-serif/wght-italic.css";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/fraunces/wght-italic.css";
+@import "@fontsource-variable/outfit";
+@import "@fontsource/instrument-serif";
+@import "@fontsource/instrument-serif/400-italic.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
