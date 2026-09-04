@@ -1,0 +1,22 @@
+{
+  "$schema": "https://hercules.app/schemas/iam/v1.json",
+  "version": "v1",
+
+  "permissions": {
+    // Example: declare a permission, then list its key in a role's "permissions".
+    // "app.project:read": { "name": "Read projects" },
+  },
+
+  "resourceTypes": {
+    // Example: a type for per-resource access; nest under another type with "parent".
+    // "app.project": { "name": "Project" },
+    // "app.document": { "name": "Document", "parent": "app.project" },
+  },
+
+  "roles": {
+    "app_owner": { "name": "App Owner", "isAppScope": true, "permissions": [] },
+    "owner": { "name": "Owner", "permissions": [] },
+    "admin": { "name": "Admin", "permissions": [] },
+    "member": { "name": "Member", "isDefault": true, "permissions": [] },
+  },
+}
