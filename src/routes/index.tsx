@@ -1,10 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/use-auth.ts";
+import { Button } from "@/components/ui/button.tsx";
+import { SignInButton } from "@/components/ui/signin.tsx";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center space-y-6">
@@ -14,6 +19,14 @@ function Index() {
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Start chatting to build your app
         </p>
+        <div className="flex items-center justify-center gap-3">
+          {user ? (
+            <Button asChild>
+              <Link to="/dashboard">Go to dashboard</Link>
+            </Button>
+          ) : null}
+          <SignInButton variant={user ? "outline" : "default"} />
+        </div>
       </div>
     </div>
   );
