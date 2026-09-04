@@ -3,16 +3,11 @@ import { useAuth } from "@/hooks/use-auth.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { SignInButton } from "@/components/ui/signin.tsx";
 
-// Public, server-rendered landing page. Keep it outside the `_app` layout so
-// its title and text are in the HTML for crawlers and signed-out visitors.
-// Private pages live under `src/routes/_app/` (see `src/routes/_app.tsx`).
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
-  // `useAuth().user` is seeded from the SSR session, so this branch is
-  // correct in the server-rendered HTML with no hydration flash.
   const { user } = useAuth();
 
   return (

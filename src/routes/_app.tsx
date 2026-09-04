@@ -4,22 +4,8 @@ import { Button } from "@/components/ui/button.tsx";
 import { SignInButton } from "@/components/ui/signin.tsx";
 import { Spinner } from "@/components/ui/spinner.tsx";
 
-/**
- * Private app shell: a pathless layout for every signed-in page.
- *
- * - `/` stays public and server-rendered in `src/routes/index.tsx`. Never put
- *   the landing page (or anything that needs SEO / a server-rendered title)
- *   under this layout.
- * - Private pages go in `src/routes/_app/` (e.g. `_app/dashboard.tsx` serves
- *   `/dashboard`). They inherit this shell and its sign-in gate, and `_app`
- *   never appears in the URL.
- * - `ssr: false` renders these routes client-only, so loaders here run in the
- *   browser and nothing private lands in the HTML.
- * - The gate uses `useAuth().user` (the Hercules session). Use `Authenticated`
- *   from `convex/react` only around private Convex data (`useQuery` /
- *   `convexQuery`), since Convex's auth state flips only after the client
- *   WebSocket authenticates.
- */
+// Client-only so nothing private lands in the server HTML. `/` stays public
+// in `index.tsx`; private pages go under `_app/`.
 export const Route = createFileRoute("/_app")({
   ssr: false,
   component: AppLayout,

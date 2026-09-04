@@ -10,11 +10,6 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty.tsx";
 
-/**
- * Placeholder private page at `/dashboard`, rendered inside the `_app` shell
- * (see `src/routes/_app.tsx`). Replace or delete it when building the real
- * app; keep new private pages in this folder.
- */
 export const Route = createFileRoute("/_app/dashboard")({
   component: Dashboard,
 });
