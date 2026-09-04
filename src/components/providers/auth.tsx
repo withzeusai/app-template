@@ -1,22 +1,25 @@
-import { HerculesAuthProvider } from "@usehercules/auth/react";
+import { HerculesAuthProvider } from "@usehercules/auth-tanstack/client";
+import type { ClientUserInfo, NoUserInfo } from "@usehercules/auth-tanstack";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+/**
+ * Provides reactive auth state (`useAuth`, `useAccessToken`, …) to the tree.
+ *
+ * OIDC configuration lives server-side (the `HERCULES_AUTH_*` env vars); the
+ * provider just reads the sealed session cookie via server functions, so there
+ * is nothing to configure here. `initialAuth` is the sanitized session fetched
+ * during SSR (see `__root.tsx`'s `beforeLoad`); seeding it means `useAuth()`
+ * returns the real user on the server render and hydrates without a loading
+ * flash. The client keeps the session fresh from there.
+ */
+export function AuthProvider({
+  initialAuth,
+  children,
+}: {
+  initialAuth?: ClientUserInfo | NoUserInfo;
+  children: React.ReactNode;
+}) {
   return (
-    <HerculesAuthProvider
-      authority={import.meta.env.VITE_HERCULES_OIDC_AUTHORITY!}
-      client_id={import.meta.env.VITE_HERCULES_OIDC_CLIENT_ID!}
-      userManagerSettings={{
-        prompt: import.meta.env.VITE_HERCULES_OIDC_PROMPT ?? "select_account",
-        response_type:
-          import.meta.env.VITE_HERCULES_OIDC_RESPONSE_TYPE ?? "code",
-        scope:
-          import.meta.env.VITE_HERCULES_OIDC_SCOPE ??
-          "openid profile email offline_access",
-        redirect_uri:
-          import.meta.env.VITE_HERCULES_OIDC_REDIRECT_URI ??
-          `${window.location.origin}/auth/callback`,
-      }}
-    >
+    <HerculesAuthProvider initialAuth={initialAuth}>
       {children}
     </HerculesAuthProvider>
   );
