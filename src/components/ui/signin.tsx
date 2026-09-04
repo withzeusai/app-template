@@ -43,18 +43,7 @@ export interface SignInButtonProps
   asChild?: boolean;
 }
 
-/**
- * Renders "Sign In" or "Sign Out" from the Hercules session (`useAuth()`),
- * with loading states and accessibility attributes.
- *
- * The session is seeded during SSR, so the button is correct in the
- * server-rendered HTML. Do not wrap it in `<Unauthenticated>` /
- * `<Authenticated>` from `convex/react`: those reflect Convex's own auth
- * state, which flips only after the client WebSocket authenticates, so the
- * wrapper and the button would disagree (a "Sign Out" button inside
- * `<Unauthenticated>`). Render it unconditionally, or gate on
- * `useAuth().user` — the same source it reads.
- */
+/** Renders Sign In / Sign Out from the Hercules session (`useAuth()`); do not wrap in `<Unauthenticated>` / `<Authenticated>` from `convex/react`. */
 export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
   (
     {
