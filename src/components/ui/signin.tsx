@@ -43,10 +43,7 @@ export interface SignInButtonProps
   asChild?: boolean;
 }
 
-/**
- * A button component that handles authentication sign in/out with proper loading states
- * and accessibility features.
- */
+/** Renders Sign In / Sign Out from the Hercules session (`useAuth()`); do not wrap in `<Unauthenticated>` / `<Authenticated>` from `convex/react`. */
 export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
   (
     {
