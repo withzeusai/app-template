@@ -1,7 +1,7 @@
 import { ConvexError } from "convex/values";
-import { authenticatedMutation, authenticatedQuery } from "./hercules";
+import { protectedMutation, protectedQuery } from "./iam";
 
-export const updateCurrentUser = authenticatedMutation({
+export const updateCurrentUser = protectedMutation({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -31,7 +31,7 @@ export const updateCurrentUser = authenticatedMutation({
   },
 });
 
-export const getCurrentUser = authenticatedQuery({
+export const getCurrentUser = protectedQuery({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
