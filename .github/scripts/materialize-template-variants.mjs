@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { chmod, copyFile, cp, mkdir, rm, stat } from "node:fs/promises";
+import { chmod, copyFile, mkdir, rm, stat } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
@@ -65,25 +65,17 @@ export async function materializeTemplateVariants({
     );
   }
 
+  // Only the legacy (base) template ships today. The managed-v1 access-control
+  // overlay under .github/template-variants/managed-v1 still targets the old
+  // React Router app and is paused until it is migrated to TanStack Start.
   const legacyRoot = path.join(resolvedOutputRoot, "legacy");
-  const managedRoot = path.join(resolvedOutputRoot, "managed-v1");
-  const managedOverlay = path.join(
-    resolvedRepositoryRoot,
-    ".github/template-variants/managed-v1",
-  );
 
   await rm(resolvedOutputRoot, { force: true, recursive: true });
   await mkdir(legacyRoot, { recursive: true });
-  await mkdir(managedRoot, { recursive: true });
 
   await copyTrackedTemplate(resolvedRepositoryRoot, legacyRoot);
-  await copyTrackedTemplate(resolvedRepositoryRoot, managedRoot);
-  await cp(managedOverlay, managedRoot, {
-    force: true,
-    recursive: true,
-  });
 
-  return { legacyRoot, managedRoot };
+  return { legacyRoot };
 }
 
 function readOutputRoot(argv) {

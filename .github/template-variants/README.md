@@ -1,5 +1,13 @@
 # App template variants
 
+> **Status:** `managed-v1/` is **paused**. The repository root has migrated to
+> TanStack Start, but the overlay below still targets the old React Router app,
+> so the materializer, CI, and release workflow currently build the `legacy`
+> (base) template only. The overlay is kept here as the reference for porting
+> the managed Access Control variant to TanStack Start. Re-enable it by
+> restoring the managed branch in `materialize-template-variants.mjs`, the CI
+> matrix, and `package-and-upload.yml`.
+
 The repository root is the legacy app template and remains the source for all
 files shared by every generated app.
 

@@ -9,7 +9,14 @@ import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist", "**/_generated/*"]),
+  globalIgnores([
+    "dist",
+    ".output",
+    ".tanstack",
+    ".github",
+    "**/_generated/*",
+    "src/routeTree.gen.ts",
+  ]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
@@ -31,6 +38,9 @@ export default defineConfig([
         "warn",
         { allowConstantExport: true },
       ],
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/purity": "warn",
+      "react-hooks/refs": "warn",
     },
     languageOptions: {
       ecmaVersion: 2020,
@@ -40,6 +50,15 @@ export default defineConfig([
   {
     // shadcn/ui components co-export their cva variant helpers by design.
     files: ["src/components/ui/**"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  {
+    // TanStack Router route files must export `Route` alongside their
+    // component -- that is the framework contract, and the router plugin
+    // handles Fast Refresh for them.
+    files: ["src/routes/**", "src/router.tsx"],
     rules: {
       "react-refresh/only-export-components": "off",
     },

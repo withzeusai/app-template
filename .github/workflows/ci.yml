@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [legacy, managed-v1]
+        variant: [legacy]
 
     steps:
       - name: Checkout repository
@@ -34,7 +34,6 @@ jobs:
           cache: pnpm
           cache-dependency-path: |
             pnpm-lock.yaml
-            .github/template-variants/managed-v1/pnpm-lock.yaml
 
       - name: Test template materialization
         if: matrix.variant == 'legacy'
@@ -49,6 +48,10 @@ jobs:
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm install --frozen-lockfile
 
+      - name: Generate routes
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
+        run: pnpm generate-routes
+
       - name: Lint
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm lint
@@ -57,7 +60,11 @@ jobs:
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm prettier-check
 
-      - name: Type check & build
+      - name: Type check
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
+        run: pnpm exec tsc --noEmit
+
+      - name: Build
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm build
 

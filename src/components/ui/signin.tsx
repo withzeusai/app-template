@@ -1,9 +1,12 @@
-import { forwardRef, useCallback, useEffect } from "react";
+import { forwardRef, useCallback, useState } from "react";
 import { type VariantProps } from "class-variance-authority";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@usehercules/auth/react";
+import { useAuth } from "@usehercules/auth-tanstack/client";
 import { Button, buttonVariants } from "@/components/ui/button.tsx";
+
+/** Route that starts the OIDC sign-in flow (redirects to the provider). */
+const SIGN_IN_PATH = "/auth/sign-in";
 
 export interface SignInButtonProps
   extends
@@ -40,10 +43,7 @@ export interface SignInButtonProps
   asChild?: boolean;
 }
 
-/**
- * A button component that handles authentication sign in/out with proper loading states
- * and accessibility features.
- */
+/** Renders Sign In / Sign Out from the Hercules session (`useAuth()`); do not wrap in `<Unauthenticated>` / `<Authenticated>` from `convex/react`. */
 export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
   (
     {
@@ -61,49 +61,51 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
     },
     ref,
   ) => {
-    const { isAuthenticated, signin, signout, isLoading, error } = useAuth();
-
-    useEffect(() => {
-      if (error) {
-        toast.error("Login error", {
-          description: error.message,
-        });
-        console.error("Login error", error);
-      }
-    }, [error]);
+    const { user, loading, signOut } = useAuth();
+    const isAuthenticated = user !== null;
+    const [pending, setPending] = useState(false);
 
     const handleClick = useCallback(
       async (event: React.MouseEvent<HTMLButtonElement>) => {
         // Run custom onClick first
         onClick?.(event);
 
+        setPending(true);
         try {
           if (isAuthenticated) {
-            await signout();
+            // Clears the session and redirects to the provider's logout.
+            await signOut();
           } else {
-            await signin();
+            // The sign-in route 302s to the OIDC provider; navigate to it.
+            window.location.href = SIGN_IN_PATH;
+            return;
           }
         } catch (err) {
           console.error("Authentication error:", err);
-          // Don't prevent the default here as the auth library handles errors
+          toast.error("Authentication error", {
+            description: err instanceof Error ? err.message : String(err),
+          });
+        } finally {
+          setPending(false);
         }
       },
-      [isAuthenticated, signout, signin, onClick],
+      [isAuthenticated, signOut, onClick],
     );
 
-    const isDisabled = disabled || isLoading;
+    const isBusy = loading || pending;
+    const isDisabled = disabled || isBusy;
     const defaultLoadingText = isAuthenticated
       ? "Signing Out..."
       : "Signing In...";
     const currentLoadingText = loadingText || defaultLoadingText;
 
-    const buttonText = isLoading
+    const buttonText = isBusy
       ? currentLoadingText
       : isAuthenticated
         ? signOutText
         : signInText;
 
-    const icon = isLoading ? (
+    const icon = isBusy ? (
       <Loader2 className="size-4 animate-spin" />
     ) : isAuthenticated ? (
       <LogOut className="size-4" />
@@ -125,7 +127,6 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
             ? "Sign out of your account"
             : "Sign in to your account"
         }
-        aria-describedby={error ? "auth-error" : undefined}
         {...props}
       >
         {showIcon && icon}
