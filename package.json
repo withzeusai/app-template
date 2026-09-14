@@ -13,7 +13,7 @@
     "prettier-check": "prettier --check ."
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.7.1",
+    "@hookform/resolvers": "^5.9.1",
     "@tanstack/react-query": "^5.101.4",
     "@usehercules/auth": "^1.2.0",
     "class-variance-authority": "^0.7.1",
