@@ -1,11 +1,18 @@
 import { ShieldAlert } from "lucide-react";
-import { useHerculesImpersonation } from "@usehercules/auth/react";
+import { useAuth } from "@usehercules/auth-tanstack/client";
 import { Button } from "@/components/ui/button.tsx";
 
+/**
+ * Fixed pill shown while a Hercules admin is impersonating the signed-in user.
+ * `impersonator` is derived from the session's token claims by the auth SDK
+ * (seeded from SSR, so the banner is correct in the server-rendered HTML).
+ * "Stop" ends the impersonation session by signing out through the provider,
+ * which clears the sealed session cookie and returns to the app signed out.
+ */
 export function ImpersonationBanner() {
-  const { isImpersonating, stopImpersonating } = useHerculesImpersonation();
+  const { impersonator, signOut } = useAuth();
 
-  if (!isImpersonating) return null;
+  if (!impersonator) return null;
 
   return (
     <div
@@ -22,7 +29,7 @@ export function ImpersonationBanner() {
           size="sm"
           variant="secondary"
           className="h-7 rounded-full px-3"
-          onClick={() => void stopImpersonating()}
+          onClick={() => void signOut()}
         >
           Stop
         </Button>
