@@ -8,15 +8,15 @@ onlyBuiltDependencies:
 
 blockExoticSubdeps: true
 
-trustPolicy: no-downgrade
-trustPolicyExclude:
-  # Existing legacy Babel dependency; keep its reviewed lock integrity.
-  # Remove this exact exception when no locked dependency needs this version.
-  - semver@6.3.1
-
 minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - "@usehercules/*"
 allowBuilds:
   "@swc/core": true
   esbuild: true
+
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  # Existing legacy Babel dependency; keep its reviewed lock integrity.
+  # Remove this exact exception when no locked dependency needs this version.
+  - semver@6.3.1
