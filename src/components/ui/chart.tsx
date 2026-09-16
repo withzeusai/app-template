@@ -5,6 +5,7 @@ import * as RechartsPrimitive from "recharts";
 import type { TooltipValueType } from "recharts";
 
 import { cn } from "@/lib/utils";
+import { encodeChartStyleText } from "./chart-style-text";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;
@@ -93,9 +94,10 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
+        __html: encodeChartStyleText(
+          Object.entries(THEMES)
+            .map(
+              ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
@@ -107,8 +109,9 @@ ${colorConfig
   .join("\n")}
 }
 `,
-          )
-          .join("\n"),
+            )
+            .join("\n"),
+        ),
       }}
     />
   );
