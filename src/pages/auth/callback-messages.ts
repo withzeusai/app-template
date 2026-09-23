@@ -6,6 +6,7 @@ export interface AuthCallbackMessages {
   tryAgain: string;
 }
 
+/** Pass a preset to `<AuthCallback messages={authCallbackMessages.de} />`. */
 export const authCallbackMessages = {
   en: {
     loading: "Loading...",
