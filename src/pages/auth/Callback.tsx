@@ -15,7 +15,13 @@ interface AuthCallbackProps {
 }
 
 export default function AuthCallback({
-  messages = authCallbackMessages.en,
+  messages: {
+    loading = authCallbackMessages.en.loading,
+    errorTitle = authCallbackMessages.en.errorTitle,
+    missingState = authCallbackMessages.en.missingState,
+    returnHome = authCallbackMessages.en.returnHome,
+    tryAgain = authCallbackMessages.en.tryAgain,
+  } = {},
 }: AuthCallbackProps): React.JSX.Element {
   const navigate = useNavigate();
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
@@ -41,18 +47,18 @@ export default function AuthCallback({
     return (
       <div className="flex flex-col items-center justify-center h-svh gap-6 px-4">
         <div className="flex flex-col items-center gap-2 text-center">
-          <p className="text-destructive font-medium">{messages.errorTitle}</p>
+          <p className="text-destructive font-medium">{errorTitle}</p>
           <p className="text-sm text-muted-foreground max-w-md">
             {error === "No matching state found in storage"
-              ? messages.missingState
+              ? missingState
               : error}
           </p>
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" onClick={navigateHome}>
-            {messages.returnHome}
+            {returnHome}
           </Button>
-          <Button onClick={retry}>{messages.tryAgain}</Button>
+          <Button onClick={retry}>{tryAgain}</Button>
         </div>
       </div>
     );
@@ -60,8 +66,8 @@ export default function AuthCallback({
 
   return (
     <div className="flex flex-col items-center justify-center h-svh gap-4">
-      <Spinner className="size-8" aria-label={messages.loading} />
-      <p className="text-sm text-muted-foreground">{messages.loading}</p>
+      <Spinner className="size-8" aria-label={loading} />
+      <p className="text-sm text-muted-foreground">{loading}</p>
     </div>
   );
 }

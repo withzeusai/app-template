@@ -60,6 +60,9 @@ beforeEach(() => {
 describe("AuthCallback", () => {
   it.each([
     { messages: undefined, loading: "Loading..." },
+    { messages: {}, loading: "Loading..." },
+    { messages: { loading: undefined }, loading: "Loading..." },
+    { messages: { loading: "Signing in..." }, loading: "Signing in..." },
     { messages: authCallbackMessages.de, loading: "Wird geladen..." },
   ])(
     "localizes loading text and its accessible label: $loading",
@@ -75,6 +78,25 @@ describe("AuthCallback", () => {
   it.each([
     {
       messages: undefined,
+      title: "Something went wrong",
+      guidance: /reopen the original link in your browser/,
+      home: "Return home",
+      retry: "Try again",
+    },
+    {
+      messages: { tryAgain: "Retry sign-in" },
+      title: "Something went wrong",
+      guidance: /reopen the original link in your browser/,
+      home: "Return home",
+      retry: "Retry sign-in",
+    },
+    {
+      messages: {
+        errorTitle: undefined,
+        missingState: undefined,
+        returnHome: undefined,
+        tryAgain: undefined,
+      },
       title: "Something went wrong",
       guidance: /reopen the original link in your browser/,
       home: "Return home",

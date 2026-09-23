@@ -1,9 +1,9 @@
 export interface AuthCallbackMessages {
-  loading: string;
-  errorTitle: string;
-  missingState: string;
-  returnHome: string;
-  tryAgain: string;
+  loading?: string;
+  errorTitle?: string;
+  missingState?: string;
+  returnHome?: string;
+  tryAgain?: string;
 }
 
 /** Pass a preset to `<AuthCallback messages={authCallbackMessages.de} />`. */
