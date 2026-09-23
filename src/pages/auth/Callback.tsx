@@ -5,8 +5,24 @@ import { useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import {
+  authCallbackMessages,
+  type AuthCallbackMessages,
+} from "./callback-messages.ts";
 
-export default function AuthCallback() {
+interface AuthCallbackProps {
+  messages?: AuthCallbackMessages;
+}
+
+export default function AuthCallback({
+  messages: {
+    loading = authCallbackMessages.en.loading,
+    errorTitle = authCallbackMessages.en.errorTitle,
+    missingState = authCallbackMessages.en.missingState,
+    returnHome = authCallbackMessages.en.returnHome,
+    tryAgain = authCallbackMessages.en.tryAgain,
+  } = {},
+}: AuthCallbackProps): React.JSX.Element {
   const navigate = useNavigate();
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
@@ -31,14 +47,18 @@ export default function AuthCallback() {
     return (
       <div className="flex flex-col items-center justify-center h-svh gap-6 px-4">
         <div className="flex flex-col items-center gap-2 text-center">
-          <p className="text-destructive font-medium">Something went wrong</p>
-          <p className="text-sm text-muted-foreground max-w-md">{error}</p>
+          <p className="text-destructive font-medium">{errorTitle}</p>
+          <p className="text-sm text-muted-foreground max-w-md">
+            {error === "No matching state found in storage"
+              ? missingState
+              : error}
+          </p>
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" onClick={navigateHome}>
-            Return home
+            {returnHome}
           </Button>
-          <Button onClick={retry}>Try again</Button>
+          <Button onClick={retry}>{tryAgain}</Button>
         </div>
       </div>
     );
@@ -46,8 +66,8 @@ export default function AuthCallback() {
 
   return (
     <div className="flex flex-col items-center justify-center h-svh gap-4">
-      <Spinner className="size-8" />
-      <p className="text-sm text-muted-foreground">Loading...</p>
+      <Spinner className="size-8" aria-label={loading} />
+      <p className="text-sm text-muted-foreground">{loading}</p>
     </div>
   );
 }
