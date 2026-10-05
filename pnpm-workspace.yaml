@@ -14,3 +14,9 @@ minimumReleaseAgeExclude:
 allowBuilds:
   "@swc/core": true
   esbuild: true
+
+overrides:
+  # GHSA-rfgv-xxqx-mfg5 batch, fixed in 8.10.2. Held on 8.10.x: 8.11.0 breaks
+  # gzip/br decoding in Node's built-in fetch over HTTP/2 when an undici 8
+  # Agent is the global dispatcher.
+  "undici@8": "~8.10.2"
