@@ -4,7 +4,7 @@ import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { ConvexProvider } from "convex/react";
 import { RouteError } from "@/components/route-error.tsx";
-import { routeTree } from "./routeTree.gen";
+import { routeTree, type FileRouteTypes } from "./routeTree.gen";
 
 export function getRouter() {
   const CONVEX_URL = import.meta.env.VITE_CONVEX_URL;
@@ -68,3 +68,9 @@ declare module "@tanstack/react-router" {
     router: ReturnType<typeof getRouter>;
   }
 }
+
+/**
+ * Any route path without `$params`, e.g. `"/"` or `"/settings"`. Use it to
+ * type a `to` prop that is passed straight to `<Link to={to} />`.
+ */
+export type RoutePath = Exclude<FileRouteTypes["to"], `${string}$${string}`>;

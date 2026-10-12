@@ -18,6 +18,7 @@ import { RootRouteError } from "@/components/route-error.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
 import { TooltipProvider } from "@/components/ui/tooltip.tsx";
+import { site } from "@/lib/site.ts";
 import appCss from "@/index.css?url";
 
 const WEBSITE_ID = import.meta.env.VITE_HERCULES_WEBSITE_ID ?? "";
@@ -66,14 +67,11 @@ export const Route = createRootRouteWithContext<{
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1.0" },
-      { title: "Hercules App" },
-      { name: "description", content: "An app made by https://hercules.app" },
+      { title: site.name },
+      { name: "description", content: site.tagline },
       { name: "author", content: "Hercules" },
-      { property: "og:title", content: "Hercules App" },
-      {
-        property: "og:description",
-        content: "An app made by https://hercules.app",
-      },
+      { property: "og:title", content: site.name },
+      { property: "og:description", content: site.tagline },
       { property: "og:type", content: "website" },
       { property: "og:image", content: OG_IMAGE },
       { property: "og:image:type", content: "image/png" },
