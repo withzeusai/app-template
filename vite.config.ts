@@ -52,14 +52,22 @@ export default defineConfig({
     // the first time a page that imports it renders. The list therefore
     // covers every package the template ships, not only the ones the starter
     // page uses: the first route that adds a form or an animation would
-    // otherwise trigger that re-optimization.
+    // otherwise trigger that re-optimization. It matches what
+    // `node_modules/.vite/deps_ssr/_metadata.json` holds after a full build,
+    // minus the React entries Start adds itself.
     ssr: {
       optimizeDeps: {
         include: [
           "@tanstack/react-query",
+          "@tanstack/react-router-ssr-query",
+          "@tanstack/react-router > @tanstack/react-store",
           "@convex-dev/react-query",
+          "@usehercules/auth-tanstack",
+          "@usehercules/auth-tanstack/client",
+          "@usehercules/auth-tanstack/convex",
           "convex/browser",
           "convex/react",
+          "convex/server",
           "convex/values",
           "@hookform/resolvers/zod",
           "class-variance-authority",
