@@ -14,6 +14,7 @@ import { getAuthAction, getIdTokenAction } from "@usehercules/auth-tanstack";
 import type { ClientUserInfo, NoUserInfo } from "@usehercules/auth-tanstack";
 import { ConvexAppProvider } from "@/components/providers/convex.tsx";
 import { ThemeProvider } from "@/components/providers/theme.tsx";
+import { RootRouteError } from "@/components/route-error.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
 import { TooltipProvider } from "@/components/ui/tooltip.tsx";
@@ -89,6 +90,7 @@ export const Route = createRootRouteWithContext<{
       { rel: "stylesheet", href: appCss },
     ],
   }),
+  errorComponent: RootRouteError,
   notFoundComponent: NotFound,
   component: RootComponent,
   shellComponent: RootDocument,
