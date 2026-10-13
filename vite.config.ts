@@ -47,13 +47,47 @@ export default defineConfig({
     // these up front so Vite never re-optimizes them mid-session, which would
     // load a second React copy and break SSR until a restart. TanStack Start
     // already includes React here and must keep its router packages out.
+    //
+    // The optimizer only scans from the Worker entry, so it finds a package
+    // the first time a page that imports it renders. The list therefore
+    // covers every package the template ships, not only the ones the starter
+    // page uses: the first route that adds a form or an animation would
+    // otherwise trigger that re-optimization. It matches what
+    // `node_modules/.vite/deps_ssr/_metadata.json` holds after a full build,
+    // minus the React entries Start adds itself.
     ssr: {
       optimizeDeps: {
         include: [
           "@tanstack/react-query",
+          "@tanstack/react-router-ssr-query",
+          "@tanstack/react-router > @tanstack/react-store",
           "@convex-dev/react-query",
+          "@usehercules/auth-tanstack",
+          "@usehercules/auth-tanstack/client",
+          "@usehercules/auth-tanstack/convex",
           "convex/browser",
           "convex/react",
+          "convex/server",
+          "convex/values",
+          "@hookform/resolvers/zod",
+          "class-variance-authority",
+          "clsx",
+          "cmdk",
+          "date-fns",
+          "embla-carousel-react",
+          "input-otp",
+          "lucide-react",
+          "motion/react",
+          "radix-ui",
+          "react-day-picker",
+          "react-hook-form",
+          "react-resizable-panels",
+          "recharts",
+          "sonner",
+          "tailwind-merge",
+          "use-debounce",
+          "vaul",
+          "zod",
         ],
       },
     },
