@@ -18,7 +18,12 @@ export default defineConfig({
     },
   },
   plugins: [
-    devtools(),
+    // Server logs already reach the terminal; piping them into the browser
+    // (and prefixing every log) would print each line twice.
+    devtools({
+      consolePiping: { enabled: false },
+      enhancedLogs: { enabled: false },
+    }),
     tailwindcss(),
     hercules(),
     cloudflare({ viteEnvironment: { name: "ssr" } }),
@@ -36,6 +41,22 @@ export default defineConfig({
       "react/jsx-runtime",
       "react/jsx-dev-runtime",
     ],
+  },
+  environments: {
+    // "ssr" is the Worker environment (see `viteEnvironment` above). Bundle
+    // these up front so Vite never re-optimizes them mid-session, which would
+    // load a second React copy and break SSR until a restart. TanStack Start
+    // already includes React here and must keep its router packages out.
+    ssr: {
+      optimizeDeps: {
+        include: [
+          "@tanstack/react-query",
+          "@convex-dev/react-query",
+          "convex/browser",
+          "convex/react",
+        ],
+      },
+    },
   },
   build: {
     chunkSizeWarningLimit: 1000,
