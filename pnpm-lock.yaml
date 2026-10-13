@@ -36,8 +36,8 @@ importers:
         specifier: 1.168.48
         version: 1.168.48(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
       '@usehercules/auth-tanstack':
-        specifier: ^0.6.0
-        version: 0.6.0(convex@1.44.0(react@19.2.8))(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
+        specifier: ^0.7.0
+        version: 0.7.0(convex@1.44.0(react@19.2.8))(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -2767,8 +2767,8 @@ packages:
     resolution: {integrity: sha512-fkv8dHRDqfGtTHuJeebdrQ7cX6Ad4WAS00rgHh9UGvMycF1mjBfsxry1XsLIFhWZ6Judlh6UdzK+TYlbpCXgnA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@usehercules/auth-tanstack@0.6.0':
-    resolution: {integrity: sha512-TsGmf+4xQke2uu9higaKwcmdG465niQarHx0EDNcu5ubcELPNJpRroqw2wywWr8LWoB9szuwiPRVAGnddGjJoQ==}
+  '@usehercules/auth-tanstack@0.7.0':
+    resolution: {integrity: sha512-Wl/+3wZcEE96iiihR5bF04tezauFvOIBCiColJDWYm6oKIsl1ZkOrIauYNG0QR/HDco4F2N1ormDlN5bQQ+TAA==}
     peerDependencies:
       convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
@@ -6668,7 +6668,7 @@ snapshots:
       '@typescript-eslint/types': 8.67.0
       eslint-visitor-keys: 5.0.1
 
-  '@usehercules/auth-tanstack@0.6.0(convex@1.44.0(react@19.2.8))(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))':
+  '@usehercules/auth-tanstack@0.7.0(convex@1.44.0(react@19.2.8))(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))':
     dependencies:
       '@tanstack/react-router': 1.170.31(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-start': 1.168.48(esbuild@0.28.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.4)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
