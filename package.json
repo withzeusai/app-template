@@ -64,7 +64,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@usehercules/eslint-plugin": "^1.0.41",
-    "@usehercules/vite": "^1.2.0",
+    "@usehercules/vite": "^1.2.3",
     "@vitejs/plugin-react": "^6.0.5",
     "convex-test": "^0.0.55",
     "eslint": "^10.8.1",
