@@ -76,6 +76,15 @@ jobs:
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm test
 
+      # The app builder adds packages with `pnpm add`, which re-checks every
+      # locked package against `minimumReleaseAge`. A lockfile that pins a
+      # release younger than that makes every package install fail in new
+      # apps, so add an old package the same way. Runs last: it edits the
+      # materialized copy.
+      - name: Check packages can be added
+        working-directory: /tmp/app-template-variants/${{ matrix.variant }}
+        run: pnpm add ms@2.1.3
+
   dependency-review:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
