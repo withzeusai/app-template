@@ -34,6 +34,8 @@ export function RouteError({ error, reset }: ErrorComponentProps) {
     return () => hot.off("vite:afterUpdate", retry);
   }, [retry]);
 
+  const message = error instanceof Error ? error.message : String(error ?? "");
+
   return (
     <div className="flex flex-1 items-center justify-center p-6">
       <div className="max-w-md space-y-6 text-center">
@@ -43,9 +45,9 @@ export function RouteError({ error, reset }: ErrorComponentProps) {
             This page ran into a problem. Try again in a moment.
           </p>
         </div>
-        {import.meta.env.DEV && error.message ? (
+        {import.meta.env.DEV && message ? (
           <pre className="overflow-auto rounded-md bg-muted p-3 text-left text-xs whitespace-pre-wrap text-muted-foreground">
-            {error.message}
+            {message}
           </pre>
         ) : null}
         <Button onClick={retry}>Try again</Button>
