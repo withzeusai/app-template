@@ -21,9 +21,6 @@ import { TooltipProvider } from "@/components/ui/tooltip.tsx";
 import { site } from "@/lib/site.ts";
 import appCss from "@/index.css?url";
 
-const WEBSITE_ID = import.meta.env.VITE_HERCULES_WEBSITE_ID ?? "";
-const OG_IMAGE = `https://hercules.app/og/app/${WEBSITE_ID}.png`;
-
 // The root `beforeLoad` re-runs on every client-side navigation AND every
 // hover preload (`defaultPreload: "intent"`), but `getAuthAction` is a server
 // function — an HTTP round-trip from the browser. The session is only consumed
@@ -73,10 +70,10 @@ export const Route = createRootRouteWithContext<{
       { property: "og:title", content: site.name },
       { property: "og:description", content: site.tagline },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image", content: site.ogImage },
       { property: "og:image:type", content: "image/png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: OG_IMAGE },
+      { name: "twitter:image", content: site.ogImage },
       { name: "twitter:site", content: "@usehercules" },
     ],
     links: [
