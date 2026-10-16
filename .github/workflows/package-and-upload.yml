@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - migrate/tanstack-start
   workflow_dispatch:
 
 permissions:
@@ -25,22 +26,59 @@ jobs:
           node .github/scripts/materialize-template-variants.mjs \
             --output-dir /tmp/app-template-variants
 
-      - name: Create tarball
+      - name: Create tarballs
         env:
           GITHUB_REF: ${{ github.ref }}
         run: |
           # Sanitize ref name for use as a filename (e.g., feature/abc -> feature-abc).
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           SAFE_BRANCH_NAME="${BRANCH_NAME//\//-}"
+
+          # Each packaged scaffold lives under its own key prefix in the bucket
+          # so herculesd can pick a scaffold by URL:
+          #   main                   -> main.tar.gz (Vite SPA, existing URL)
+          #   migrate/tanstack-start -> tanstack-start/main.tar.gz
+          # Any other branch (workflow_dispatch) keeps the <branch>.tar.gz key.
+          case "${BRANCH_NAME}" in
+            main)
+              TEMPLATE_PREFIX=""
+              TARBALL_NAME="main"
+              ;;
+            migrate/tanstack-start)
+              TEMPLATE_PREFIX="tanstack-start/"
+              TARBALL_NAME="main"
+              ;;
+            *)
+              TEMPLATE_PREFIX=""
+              TARBALL_NAME="${SAFE_BRANCH_NAME}"
+              ;;
+          esac
+
           LEGACY_TARBALL_PATH="/tmp/${SAFE_BRANCH_NAME}.tar.gz"
+          MANAGED_TARBALL_PATH="/tmp/managed-v1-${SAFE_BRANCH_NAME}.tar.gz"
 
           tar -C /tmp/app-template-variants/legacy \
             -czf "${LEGACY_TARBALL_PATH}" .
 
-          echo "SAFE_BRANCH_NAME=${SAFE_BRANCH_NAME}" >> "$GITHUB_ENV"
-          echo "LEGACY_TARBALL_PATH=${LEGACY_TARBALL_PATH}" >> "$GITHUB_ENV"
-          echo "Created legacy tarball from branch: ${BRANCH_NAME}"
-          ls -lh "${LEGACY_TARBALL_PATH}"
+          # The managed-v1 overlay is only materialized on branches where it has
+          # been ported (see .github/template-variants/README.md); skip it otherwise.
+          if [ -d /tmp/app-template-variants/managed-v1 ]; then
+            tar -C /tmp/app-template-variants/managed-v1 \
+              -czf "${MANAGED_TARBALL_PATH}" .
+          else
+            MANAGED_TARBALL_PATH=""
+            echo "No managed-v1 variant materialized; publishing the legacy tarball only"
+          fi
+
+          {
+            echo "SAFE_BRANCH_NAME=${SAFE_BRANCH_NAME}"
+            echo "TEMPLATE_PREFIX=${TEMPLATE_PREFIX}"
+            echo "TARBALL_NAME=${TARBALL_NAME}"
+            echo "LEGACY_TARBALL_PATH=${LEGACY_TARBALL_PATH}"
+            echo "MANAGED_TARBALL_PATH=${MANAGED_TARBALL_PATH}"
+          } >> "$GITHUB_ENV"
+          echo "Created tarballs from branch: ${BRANCH_NAME} (prefix: '${TEMPLATE_PREFIX}')"
+          ls -lh /tmp/*.tar.gz
 
       - name: Upload to Cloudflare R2
         env:
@@ -50,22 +88,36 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
         run: |
           R2_URL="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          BUCKET="s3://hercules-app-templates/${TEMPLATE_PREFIX}"
 
-          # Preserve the existing legacy URL.
+          # Mutable alias herculesd downloads (main.tar.gz, tanstack-start/main.tar.gz, ...).
           aws s3 cp "${LEGACY_TARBALL_PATH}" \
-            "s3://hercules-app-templates/${SAFE_BRANCH_NAME}.tar.gz" \
+            "${BUCKET}${TARBALL_NAME}.tar.gz" \
             --endpoint-url "${R2_URL}"
 
           # Immutable paths let herculesd pin a template release for warm pools.
           aws s3 cp "${LEGACY_TARBALL_PATH}" \
-            "s3://hercules-app-templates/releases/${GITHUB_SHA}/legacy.tar.gz" \
+            "${BUCKET}releases/${GITHUB_SHA}/legacy.tar.gz" \
             --endpoint-url "${R2_URL}"
 
-          echo "Successfully uploaded the legacy template"
+          if [ -n "${MANAGED_TARBALL_PATH:-}" ]; then
+            aws s3 cp "${MANAGED_TARBALL_PATH}" \
+              "${BUCKET}managed-v1/${TARBALL_NAME}.tar.gz" \
+              --endpoint-url "${R2_URL}"
+            aws s3 cp "${MANAGED_TARBALL_PATH}" \
+              "${BUCKET}releases/${GITHUB_SHA}/managed-v1.tar.gz" \
+              --endpoint-url "${R2_URL}"
+            echo "Successfully uploaded the legacy and managed-v1 templates to ${BUCKET}"
+          else
+            echo "Successfully uploaded the legacy template to ${BUCKET}"
+          fi
 
       - name: Cleanup
         if: always()
         run: |
           rm -rf /tmp/app-template-variants
           rm -f "${LEGACY_TARBALL_PATH}"
+          if [ -n "${MANAGED_TARBALL_PATH:-}" ]; then
+            rm -f "${MANAGED_TARBALL_PATH}"
+          fi
           echo "Cleaned up template artifacts"
