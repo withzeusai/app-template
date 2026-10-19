@@ -151,8 +151,8 @@ importers:
         specifier: ^1.0.41
         version: 1.0.41(@typescript-eslint/parser@8.67.0(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.8.1(jiti@2.7.0))(typescript@6.0.3)
       '@usehercules/vite':
-        specifier: ^1.2.4
-        version: 1.2.4(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
+        specifier: ^1.2.5
+        version: 1.2.5(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
       '@vitejs/plugin-react':
         specifier: ^6.0.5
         version: 6.0.5(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))
@@ -2782,8 +2782,8 @@ packages:
       eslint: '>=9.0.0'
       typescript: '>=4.0.0'
 
-  '@usehercules/vite@1.2.4':
-    resolution: {integrity: sha512-ZV0XnFp5x0gcLyhTgYyAbg+FrcAaGR0CzafPtwvuC/cExmlUkYVYYgYk+kqPzeLgGJYQNCDHrOFuW55Zqr8vLg==}
+  '@usehercules/vite@1.2.5':
+    resolution: {integrity: sha512-XmQ2cA+sqBozOkZcWBAVEeOzlNzkEyF0bFnMF9k5SrohkzfVZ0YdbR1SCX9dZiotSTD1DDjMay4c1UKJCbGhGg==}
     peerDependencies:
       vite: ^7.0.0 || ^8.0.0
 
@@ -6691,7 +6691,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@usehercules/vite@1.2.4(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))':
+  '@usehercules/vite@1.2.5(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.7.0))':
     dependencies:
       '@babel/generator': 8.0.0
       '@babel/parser': 8.0.4
