@@ -76,6 +76,17 @@ jobs:
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm test
 
+      # Lint, type check, and build pass even when every page with a loader
+      # crashes during server rendering (for example when two TanStack
+      # packages in the lockfile no longer agree). Serve a production build
+      # and request real pages, including a loader that fills TanStack Query,
+      # so such a crash fails here. Needs no Convex backend. Rebuilds with a
+      # temporary route, so it runs after the steps that use the plain build.
+      - name: SSR smoke test
+        run: |
+          node .github/scripts/ssr-smoke-test.mjs \
+            --app-dir /tmp/app-template-variants/${{ matrix.variant }}
+
       # The app builder adds packages with `pnpm add`, which re-checks every
       # locked package against `minimumReleaseAge`. A lockfile that pins a
       # release younger than that makes every package install fail in new
