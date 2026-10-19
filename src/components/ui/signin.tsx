@@ -76,8 +76,11 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
             // Clears the session and redirects to the provider's logout.
             await signOut();
           } else {
-            // The sign-in route 302s to the OIDC provider; navigate to it.
-            window.location.href = SIGN_IN_PATH;
+            // The sign-in route 302s to the OIDC provider; navigate to it,
+            // passing the current page so the callback returns here.
+            const { pathname, search, hash } = window.location;
+            const returnTo = encodeURIComponent(`${pathname}${search}${hash}`);
+            window.location.href = `${SIGN_IN_PATH}?returnTo=${returnTo}`;
             return;
           }
         } catch (err) {
