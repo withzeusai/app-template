@@ -20,11 +20,13 @@ const mocks = vi.hoisted(() => {
     callback,
     backendAuthenticated: false,
     updateCurrentUser: vi.fn(),
+    userState: undefined as unknown,
   };
 });
 
 vi.mock("@usehercules/auth/react", () => ({
   useAuthCallback: vi.fn(() => mocks.callback),
+  useAuth: () => ({ user: { state: mocks.userState } }),
 }));
 
 vi.mock("convex/react", () => ({
@@ -43,6 +45,7 @@ function CallbackRoutes(
       <Routes>
         <Route path="/auth/callback" element={<AuthCallback {...props} />} />
         <Route path="/" element={<div>App home</div>} />
+        <Route path="/notes/:id" element={<div>Note page</div>} />
       </Routes>
     </MemoryRouter>
   );
@@ -52,6 +55,7 @@ beforeEach(() => {
   mocks.callback.status = "processing-oauth";
   mocks.callback.error = null;
   mocks.backendAuthenticated = false;
+  mocks.userState = undefined;
   vi.mocked(mocks.callback.retry).mockReset().mockResolvedValue(undefined);
   vi.mocked(useAuthCallback).mockClear();
   mocks.updateCurrentUser.mockReset().mockResolvedValue(null);
@@ -215,4 +219,28 @@ describe("AuthCallback", () => {
       expect(mocks.callback.retry).not.toHaveBeenCalled();
     },
   );
+
+  it("returns to the page sign-in started from", () => {
+    mocks.userState = { returnTo: "/notes/42?tab=edit" };
+    render(<CallbackRoutes />);
+
+    act(() => vi.mocked(useAuthCallback).mock.lastCall?.[0]?.onSuccess?.());
+
+    expect(screen.getByText("Note page")).toBeInTheDocument();
+  });
+
+  it.each([
+    "https://evil.example/notes/1",
+    "//evil.example/notes/1",
+    "/\\evil.example",
+    "/auth/callback?code=x",
+    42,
+  ])("goes home instead of following an unsafe returnTo: %s", (returnTo) => {
+    mocks.userState = { returnTo };
+    render(<CallbackRoutes />);
+
+    act(() => vi.mocked(useAuthCallback).mock.lastCall?.[0]?.onSuccess?.());
+
+    expect(screen.getByText("App home")).toBeInTheDocument();
+  });
 });

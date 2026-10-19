@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthCallback } from "@usehercules/auth/react";
+import { useAuth, useAuthCallback } from "@usehercules/auth/react";
 import { useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { Spinner } from "@/components/ui/spinner.tsx";
@@ -9,6 +9,7 @@ import {
   authCallbackMessages,
   type AuthCallbackMessages,
 } from "./callback-messages.ts";
+import { resolveReturnTo } from "./return-to.ts";
 
 interface AuthCallbackProps {
   messages?: AuthCallbackMessages;
@@ -24,6 +25,7 @@ export default function AuthCallback({
   } = {},
 }: AuthCallbackProps): React.JSX.Element {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
 
@@ -36,10 +38,18 @@ export default function AuthCallback({
     [navigate],
   );
 
+  // Back to the page the user signed in from, which `signin()` round-trips
+  // through the OIDC state.
+  const returnTo = resolveReturnTo(user?.state);
+  const navigateBack = useCallback(
+    () => navigate(returnTo, { replace: true }),
+    [navigate, returnTo],
+  );
+
   const { status, error, retry } = useAuthCallback({
     isBackendAuthenticated: isConvexAuthenticated,
     onSync,
-    onSuccess: navigateHome,
+    onSuccess: navigateBack,
     onNoAuthParams: navigateHome,
   });
 
