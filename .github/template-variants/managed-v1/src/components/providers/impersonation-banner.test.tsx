@@ -1,27 +1,25 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ImpersonationBanner } from "./impersonation-banner.tsx";
 
-const stopImpersonating = vi.fn();
+const signOut = vi.fn();
 
-let impersonationState = {
-  isImpersonating: false,
-  stopImpersonating,
+let authState: {
+  impersonator: { email: string; reason: string | null } | undefined;
+  signOut: typeof signOut;
+} = {
+  impersonator: undefined,
+  signOut,
 };
 
-vi.mock("@usehercules/auth/react", () => ({
-  useHerculesImpersonation: () => impersonationState,
+vi.mock("@usehercules/auth-tanstack/client", () => ({
+  useAuth: () => authState,
 }));
 
 describe("ImpersonationBanner", () => {
-  afterEach(cleanup);
-
   beforeEach(() => {
-    stopImpersonating.mockReset();
-    impersonationState = {
-      isImpersonating: false,
-      stopImpersonating,
-    };
+    signOut.mockReset();
+    authState = { impersonator: undefined, signOut };
   });
 
   it("renders nothing outside an impersonation session", () => {
@@ -30,10 +28,10 @@ describe("ImpersonationBanner", () => {
     expect(view.container.firstChild).toBeNull();
   });
 
-  it("shows a fixed pill without shifting app layout", () => {
-    impersonationState = {
-      isImpersonating: true,
-      stopImpersonating,
+  it("shows a fixed pill and ends impersonation by signing out", () => {
+    authState = {
+      impersonator: { email: "admin@example.com", reason: null },
+      signOut,
     };
 
     render(<ImpersonationBanner />);
@@ -48,6 +46,6 @@ describe("ImpersonationBanner", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Stop" }));
-    expect(stopImpersonating).toHaveBeenCalledTimes(1);
+    expect(signOut).toHaveBeenCalledTimes(1);
   });
 });
