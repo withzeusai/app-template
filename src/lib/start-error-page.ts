@@ -20,37 +20,77 @@ function isPageLoad(request: Request): boolean {
 // passes through.
 const START_ERROR_KEYS = ["message", "status", "statusText", "unhandled"];
 
-/**
- * Read at most `limit` bytes of a copy of `response`'s body, or null if it is
- * longer. Stops early, so a large or never-ending body is not buffered.
- */
-async function readBoundedBody(
-  response: Response,
-  limit: number,
-): Promise<string | null> {
-  const body = response.clone().body;
-  if (body == null) return "";
-  const reader = body.getReader();
-  const chunks: Uint8Array[] = [];
-  let size = 0;
+// How long reading the body may take before the response is passed through
+// untouched. Start writes its body in one piece.
+const BODY_TIMEOUT_MS = 1000;
+
+function byobReader(
+  stream: ReadableStream<Uint8Array>,
+): ReadableStreamBYOBReader | null {
   try {
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
+    return stream.getReader({ mode: "byob" });
+  } catch {
+    // Not a byte stream.
+    return null;
+  }
+}
+
+/**
+ * Read up to `limit` bytes of `stream`, or null if it is longer or takes
+ * longer than `timeoutMs`. A byte stream is read into a buffer of `limit + 1`
+ * bytes, so no read pulls more than that; any other stream is read chunk by
+ * chunk and dropped once it passes the limit.
+ */
+async function readPrefix(
+  stream: ReadableStream<Uint8Array>,
+  limit: number,
+  timeoutMs: number,
+): Promise<Uint8Array | null> {
+  const byob = byobReader(stream);
+  const reader = byob ?? stream.getReader();
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    reader.cancel().catch(() => {});
+  }, timeoutMs);
+
+  let buffer = new Uint8Array(limit + 1);
+  let size = 0;
+
+  async function readOnce(): Promise<boolean> {
+    if (byob) {
+      const view = new Uint8Array(
+        buffer.buffer,
+        size,
+        buffer.byteLength - size,
+      );
+      const { done, value } = await byob.read(view);
+      if (value) {
+        buffer = new Uint8Array(value.buffer, 0, limit + 1);
+        size += value.byteLength;
+      }
+      return done;
+    }
+    const { done, value } = await reader.read();
+    if (value) {
+      const room = Math.max(0, buffer.byteLength - size);
+      buffer.set(value.subarray(0, room), size);
       size += value.byteLength;
-      if (size > limit) return null;
-      chunks.push(value);
+    }
+    return done;
+  }
+
+  try {
+    let done = false;
+    while (!done && !timedOut && size <= limit) {
+      done = await readOnce();
     }
   } finally {
+    clearTimeout(timer);
     reader.cancel().catch(() => {});
   }
-  const bytes = new Uint8Array(size);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  return new TextDecoder().decode(bytes);
+  if (timedOut || size > limit) return null;
+  return buffer.subarray(0, size);
 }
 
 function isStartUnhandledError(body: string, status: number): boolean {
@@ -145,6 +185,7 @@ export const ERROR_PAGE_HTML = `<!doctype html>
 export async function withErrorPage(
   request: Request,
   response: Response,
+  { bodyTimeoutMs = BODY_TIMEOUT_MS }: { bodyTimeoutMs?: number } = {},
 ): Promise<Response> {
   if (response.status < 500 || !isPageLoad(request)) return response;
   if (!response.headers.get("content-type")?.includes("application/json")) {
@@ -154,10 +195,12 @@ export async function withErrorPage(
     return response;
   }
 
-  const body = await readBoundedBody(response, MAX_BODY_BYTES);
-  if (body == null || !isStartUnhandledError(body, response.status)) {
-    return response;
-  }
+  const stream = response.clone().body;
+  if (stream == null) return response;
+  const prefix = await readPrefix(stream, MAX_BODY_BYTES, bodyTimeoutMs);
+  if (prefix == null) return response;
+  const body = new TextDecoder().decode(prefix);
+  if (!isStartUnhandledError(body, response.status)) return response;
   await response.body?.cancel();
 
   const headers = new Headers(response.headers);

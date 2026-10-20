@@ -104,4 +104,19 @@ describe("withErrorPage", () => {
 
     expect(await withErrorPage(pageRequest(), original)).toBe(original);
   });
+
+  it("keeps a JSON body that stalls before it ends", async () => {
+    const stalled = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new Uint8Array([123]));
+      },
+    });
+    const original = startError(stalled);
+
+    const response = await withErrorPage(pageRequest(), original, {
+      bodyTimeoutMs: 10,
+    });
+
+    expect(response).toBe(original);
+  });
 });
