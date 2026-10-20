@@ -14,10 +14,13 @@ function pageRequest(
   return new Request("https://app.example.com/notes/1", { headers });
 }
 
-function startError(body = START_BODY, status = 500) {
+function startError(body: BodyInit = START_BODY, status = 500) {
   return new Response(body, {
     status,
-    headers: { "content-type": "application/json" },
+    headers: {
+      "content-type": "application/json",
+      "content-security-policy": "script-src 'none'",
+    },
   });
 }
 
@@ -30,6 +33,7 @@ describe("withErrorPage", () => {
       "text/html; charset=utf-8",
     );
     expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("content-security-policy")).toBeNull();
     expect(await response.text()).toBe(ERROR_PAGE_HTML);
   });
 
@@ -64,6 +68,39 @@ describe("withErrorPage", () => {
 
   it("keeps responses below 500", async () => {
     const original = startError(START_BODY, 404);
+
+    expect(await withErrorPage(pageRequest(), original)).toBe(original);
+  });
+
+  it("keeps an error body with extra detail", async () => {
+    const original = startError(
+      JSON.stringify({
+        status: 500,
+        statusText: "",
+        unhandled: true,
+        message: "HTTPError",
+        detail: "database down",
+      }),
+    );
+
+    expect(await withErrorPage(pageRequest(), original)).toBe(original);
+  });
+
+  it("keeps an error body whose status differs", async () => {
+    const original = startError(START_BODY, 502);
+
+    expect(await withErrorPage(pageRequest(), original)).toBe(original);
+  });
+
+  it("keeps a long JSON body without reading all of it", async () => {
+    const chunk = new Uint8Array(2048).fill(32);
+    // Never closes: reading it to the end would hang.
+    const endless = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(chunk);
+      },
+    });
+    const original = startError(endless);
 
     expect(await withErrorPage(pageRequest(), original)).toBe(original);
   });

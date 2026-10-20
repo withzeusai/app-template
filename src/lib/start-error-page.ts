@@ -16,20 +16,62 @@ function isPageLoad(request: Request): boolean {
   return request.headers.get("accept")?.includes("text/html") ?? false;
 }
 
-function isStartUnhandledError(body: string): boolean {
+// Exactly the keys Start writes; an app's own error JSON with extra detail
+// passes through.
+const START_ERROR_KEYS = ["message", "status", "statusText", "unhandled"];
+
+/**
+ * Read at most `limit` bytes of a copy of `response`'s body, or null if it is
+ * longer. Stops early, so a large or never-ending body is not buffered.
+ */
+async function readBoundedBody(
+  response: Response,
+  limit: number,
+): Promise<string | null> {
+  const body = response.clone().body;
+  if (body == null) return "";
+  const reader = body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
   try {
-    const parsed: unknown = JSON.parse(body);
-    return (
-      typeof parsed === "object" &&
-      parsed !== null &&
-      "unhandled" in parsed &&
-      parsed.unhandled === true &&
-      "message" in parsed &&
-      parsed.message === "HTTPError"
-    );
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > limit) return null;
+      chunks.push(value);
+    }
+  } finally {
+    reader.cancel().catch(() => {});
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(bytes);
+}
+
+function isStartUnhandledError(body: string, status: number): boolean {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(body);
   } catch {
     return false;
   }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    return false;
+  }
+  const keys = Object.keys(parsed).sort();
+  if (keys.join() !== START_ERROR_KEYS.join()) return false;
+  const fields = parsed as Record<string, unknown>;
+  return (
+    fields.status === status &&
+    typeof fields.statusText === "string" &&
+    fields.unhandled === true &&
+    fields.message === "HTTPError"
+  );
 }
 
 /**
@@ -112,14 +154,18 @@ export async function withErrorPage(
     return response;
   }
 
-  const body = await response.clone().text();
-  if (body.length > MAX_BODY_BYTES || !isStartUnhandledError(body)) {
+  const body = await readBoundedBody(response, MAX_BODY_BYTES);
+  if (body == null || !isStartUnhandledError(body, response.status)) {
     return response;
   }
+  await response.body?.cancel();
 
   const headers = new Headers(response.headers);
   headers.set("content-type", "text/html; charset=utf-8");
   headers.set("cache-control", "no-store");
   headers.delete("content-length");
+  // The app's policy may block the page's inline script and styles.
+  headers.delete("content-security-policy");
+  headers.delete("content-security-policy-report-only");
   return new Response(ERROR_PAGE_HTML, { status: response.status, headers });
 }
