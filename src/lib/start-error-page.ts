@@ -33,10 +33,9 @@ function isStartUnhandledError(body: string): boolean {
 }
 
 /**
- * The error page. It retries once by itself, since the first request after
- * the dev server reloads can fail and the next one succeed. The stored time
- * keeps a page that keeps failing from reloading in a loop. The console line
- * uses the prefix the Hercules preview picks up, so the agent sees it.
+ * The error page for deployed apps. It retries once by itself in case the
+ * failure was momentary; the stored time keeps a page that keeps failing from
+ * reloading in a loop.
  */
 export const ERROR_PAGE_HTML = `<!doctype html>
 <html lang="en">
@@ -78,7 +77,6 @@ export const ERROR_PAGE_HTML = `<!doctype html>
       <button id="retry" type="button">Try again</button>
     </main>
     <script>
-      console.error("[Runtime Error] The server failed while loading " + location.pathname + ". The cause is in the server log.");
       document.getElementById("retry").addEventListener("click", function () {
         location.reload();
       });
