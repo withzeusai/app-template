@@ -96,8 +96,14 @@ export const ERROR_PAGE_HTML = `<!doctype html>
 </html>
 `;
 
-/** Return `response`, or the error page if it is Start's unhandled-error JSON for a page load. */
-export async function withErrorPage(request: Request, response: Response): Promise<Response> {
+/**
+ * Return `response`, or the error page if it is Start's unhandled-error JSON
+ * for a page load.
+ */
+export async function withErrorPage(
+  request: Request,
+  response: Response,
+): Promise<Response> {
   if (response.status < 500 || !isPageLoad(request)) return response;
   if (!response.headers.get("content-type")?.includes("application/json")) {
     return response;

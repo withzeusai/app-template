@@ -8,7 +8,9 @@ const START_BODY = JSON.stringify({
   message: "HTTPError",
 });
 
-function pageRequest(headers: Record<string, string> = { "sec-fetch-dest": "document" }) {
+function pageRequest(
+  headers: Record<string, string> = { "sec-fetch-dest": "document" },
+) {
   return new Request("https://app.example.com/notes/1", { headers });
 }
 
@@ -20,16 +22,18 @@ function startError(body = START_BODY, status = 500) {
 }
 
 describe("withErrorPage", () => {
-  it("serves the error page for a page load that got Start's error JSON", async () => {
+  it("serves the error page for Start's error JSON", async () => {
     const response = await withErrorPage(pageRequest(), startError());
 
     expect(response.status).toBe(500);
-    expect(response.headers.get("content-type")).toBe("text/html; charset=utf-8");
+    expect(response.headers.get("content-type")).toBe(
+      "text/html; charset=utf-8",
+    );
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(await response.text()).toBe(ERROR_PAGE_HTML);
   });
 
-  it("detects a page load from Accept when Sec-Fetch-Dest is missing", async () => {
+  it("detects a page load from Accept alone", async () => {
     const response = await withErrorPage(
       pageRequest({ accept: "text/html,application/xhtml+xml" }),
       startError(),
@@ -53,7 +57,9 @@ describe("withErrorPage", () => {
     const response = await withErrorPage(pageRequest(), original);
 
     expect(response).toBe(original);
-    expect(await response.text()).toBe(JSON.stringify({ error: "database down" }));
+    expect(await response.text()).toBe(
+      JSON.stringify({ error: "database down" }),
+    );
   });
 
   it("keeps responses below 500", async () => {
