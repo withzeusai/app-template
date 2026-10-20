@@ -47,11 +47,12 @@ async function readPrefix(
   timeoutMs: number,
 ): Promise<Uint8Array | null> {
   const byob = byobReader(stream);
-  const reader = byob ?? stream.getReader();
+  const plain = byob == null ? stream.getReader() : null;
+  const reader = byob ?? plain;
   let timedOut = false;
   const timer = setTimeout(() => {
     timedOut = true;
-    reader.cancel().catch(() => {});
+    reader?.cancel().catch(() => {});
   }, timeoutMs);
 
   let buffer = new Uint8Array(limit + 1);
@@ -71,7 +72,8 @@ async function readPrefix(
       }
       return done;
     }
-    const { done, value } = await reader.read();
+    if (plain == null) return true;
+    const { done, value } = await plain.read();
     if (value) {
       const room = Math.max(0, buffer.byteLength - size);
       buffer.set(value.subarray(0, room), size);
@@ -87,7 +89,7 @@ async function readPrefix(
     }
   } finally {
     clearTimeout(timer);
-    reader.cancel().catch(() => {});
+    reader?.cancel().catch(() => {});
   }
   if (timedOut || size > limit) return null;
   return buffer.subarray(0, size);
