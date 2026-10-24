@@ -18,6 +18,8 @@
 
     /* Linting */
     "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
 
     "paths": {
       "@/convex/*": ["./convex/*"],

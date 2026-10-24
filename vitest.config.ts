@@ -1,4 +1,3 @@
-import path from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
@@ -10,10 +9,8 @@ import { defineConfig } from "vitest/config";
 // network calls, or environment-dependent behavior.
 export default defineConfig({
   resolve: {
-    alias: {
-      "@/convex": path.resolve(import.meta.dirname, "./convex"),
-      "@": path.resolve(import.meta.dirname, "./src"),
-    },
+    // `@/` and `@/convex/` come from the `paths` in tsconfig.json.
+    tsconfigPaths: true,
   },
   test: {
     passWithNoTests: true,
