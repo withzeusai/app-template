@@ -20,10 +20,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Materialize template variants
+      - name: Materialize templates
         run: |
-          node .github/scripts/materialize-template-variants.mjs \
-            --output-dir /tmp/app-template-variants
+          node .github/scripts/materialize-templates.mjs \
+            --output-dir /tmp/app-templates
 
       - name: Create tarballs
         env:
@@ -33,17 +33,16 @@ jobs:
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           SAFE_BRANCH_NAME="${BRANCH_NAME//\//-}"
 
-          # One tarball per materialized <template>/<variant>.
-          for dir in /tmp/app-template-variants/*/*/; do
-            variant="$(basename "${dir}")"
-            template="$(basename "$(dirname "${dir}")")"
-            mkdir -p "/tmp/app-template-tarballs/${template}"
-            tar -C "${dir}" -czf "/tmp/app-template-tarballs/${template}/${variant}.tar.gz" .
+          # One tarball per materialized template.
+          mkdir -p /tmp/app-template-tarballs
+          for dir in /tmp/app-templates/*/; do
+            template="$(basename "${dir}")"
+            tar -C "${dir}" -czf "/tmp/app-template-tarballs/${template}.tar.gz" .
           done
 
           echo "SAFE_BRANCH_NAME=${SAFE_BRANCH_NAME}" >> "$GITHUB_ENV"
           echo "Created tarballs from branch: ${BRANCH_NAME}"
-          ls -lhR /tmp/app-template-tarballs
+          ls -lh /tmp/app-template-tarballs
 
       - name: Upload to Cloudflare R2
         env:
@@ -60,33 +59,22 @@ jobs:
               --endpoint-url "${R2_URL}"
           }
 
-          for tarball in /tmp/app-template-tarballs/*/*.tar.gz; do
-            variant="$(basename "${tarball}" .tar.gz)"
-            template="$(basename "$(dirname "${tarball}")")"
-
-            # <template>/main.tar.gz, and <template>/<variant>/main.tar.gz for
-            # the variants built on top of it.
-            if [ "${variant}" = "legacy" ]; then
-              upload "${template}/${variant}" "${template}/${SAFE_BRANCH_NAME}.tar.gz"
-            else
-              upload "${template}/${variant}" "${template}/${variant}/${SAFE_BRANCH_NAME}.tar.gz"
-            fi
-
+          for tarball in /tmp/app-template-tarballs/*.tar.gz; do
+            template="$(basename "${tarball}" .tar.gz)"
+            upload "${template}" "${template}/${SAFE_BRANCH_NAME}.tar.gz"
             # Immutable paths let herculesd pin a template release for warm pools.
-            upload "${template}/${variant}" "releases/${GITHUB_SHA}/${template}/${variant}.tar.gz"
+            upload "${template}" "releases/${GITHUB_SHA}/${template}.tar.gz"
           done
 
-          # The paths herculesd reads today, from before the repository held
-          # more than one template. They stay the react-spa template.
-          upload react-spa/legacy "${SAFE_BRANCH_NAME}.tar.gz"
-          upload react-spa/managed-v1 "managed-v1/${SAFE_BRANCH_NAME}.tar.gz"
-          upload react-spa/legacy "releases/${GITHUB_SHA}/legacy.tar.gz"
-          upload react-spa/managed-v1 "releases/${GITHUB_SHA}/managed-v1.tar.gz"
+          # The paths from before the repository held more than one template
+          # (herculesd reads main.tar.gz). They stay the react-spa template.
+          upload react-spa "${SAFE_BRANCH_NAME}.tar.gz"
+          upload react-spa "releases/${GITHUB_SHA}/legacy.tar.gz"
 
-          echo "Successfully uploaded every template variant"
+          echo "Successfully uploaded every template"
 
       - name: Cleanup
         if: always()
         run: |
-          rm -rf /tmp/app-template-variants /tmp/app-template-tarballs
+          rm -rf /tmp/app-templates /tmp/app-template-tarballs
           echo "Cleaned up template artifacts"

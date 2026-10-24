@@ -25,30 +25,24 @@ pnpm dev
 A change that applies to every template (a shared component, a dependency
 bump, an auth fix) can land in one pull request that edits each directory.
 
-## Variants
-
-A variant is a template with an overlay from
-`.github/template-variants/<template>/<variant>/` copied over it. See
-[`.github/template-variants/README.md`](.github/template-variants/README.md).
-
 ## CI
 
-`ci.yml` materializes every variant and runs its install, lint, format check,
-type checks, build, and tests. `tanstack-start` also checks its committed route
-tree and runs an SSR smoke test against a production build.
+`ci.yml` copies each template's tracked files out of the repository and runs
+its install, lint, format check, type checks, build, and tests.
+`tanstack-start` also checks its committed route tree and runs an SSR smoke
+test against a production build.
 
 ## Publishing
 
-On every push to `main`, `package-and-upload.yml` uploads each variant to the
+On every push to `main`, `package-and-upload.yml` uploads each template to the
 `hercules-app-templates` bucket (served at `https://app-templates.hercules.app`):
 
-| Path                                                               | Contents                                                       |
-| ------------------------------------------------------------------ | -------------------------------------------------------------- |
-| `<template>/main.tar.gz`                                           | The template                                                   |
-| `<template>/<variant>/main.tar.gz`                                 | A variant, such as `managed-v1`                                |
-| `releases/<sha>/<template>/<variant>.tar.gz`                       | Immutable copy of a variant (`legacy` is the template itself)  |
-| `main.tar.gz`, `managed-v1/main.tar.gz`                            | `react-spa`, at its older paths (Hercules reads `main.tar.gz`) |
-| `releases/<sha>/legacy.tar.gz`, `releases/<sha>/managed-v1.tar.gz` | `react-spa`, immutable, at its older paths                     |
+| Path                               | Contents                                             |
+| ---------------------------------- | ---------------------------------------------------- |
+| `<template>/main.tar.gz`           | The template                                         |
+| `releases/<sha>/<template>.tar.gz` | Immutable copy of the template                       |
+| `main.tar.gz`                      | `react-spa`, at its older path, which Hercules reads |
+| `releases/<sha>/legacy.tar.gz`     | `react-spa`, immutable, at its older path            |
 
 ### The `migrate/tanstack-start` branch
 
@@ -67,6 +61,6 @@ workflow by hand with `overwrite` checked.
 
 1. Add the template as a new top-level directory with its own `package.json`
    and `pnpm-lock.yaml`.
-2. Add it to `templates` in `.github/scripts/materialize-template-variants.mjs`.
+2. Add it to `templates` in `.github/scripts/materialize-templates.mjs`.
 3. Add it to the `check` matrix in `.github/workflows/ci.yml`.
 4. Add its directory to the npm entry in `.github/dependabot.yml`.

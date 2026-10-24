@@ -23,21 +23,15 @@ jobs:
           node-version: 22
 
       - name: Test template materialization
-        run: node --test .github/scripts/materialize-template-variants.test.mjs
+        run: node --test .github/scripts/materialize-templates.test.mjs
 
   check:
-    name: check (${{ matrix.template }}, ${{ matrix.variant }})
+    name: check (${{ matrix.template }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - template: react-spa
-            variant: legacy
-          - template: react-spa
-            variant: managed-v1
-          - template: tanstack-start
-            variant: legacy
+        template: [react-spa, tanstack-start]
 
     steps:
       - name: Checkout repository
@@ -55,17 +49,15 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: |
-            ${{ matrix.template }}/pnpm-lock.yaml
-            .github/template-variants/${{ matrix.template }}/*/pnpm-lock.yaml
+          cache-dependency-path: ${{ matrix.template }}/pnpm-lock.yaml
 
-      - name: Materialize template variants
+      - name: Materialize templates
         run: |
-          node .github/scripts/materialize-template-variants.mjs \
-            --output-dir /tmp/app-template-variants
+          node .github/scripts/materialize-templates.mjs \
+            --output-dir /tmp/app-templates
 
       - name: Install dependencies
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm install --frozen-lockfile
 
       # The route tree is committed. Regenerate it and fail if it changed, so
@@ -73,36 +65,36 @@ jobs:
       # the footer TanStack Start adds, so this matches what `vite dev` writes.
       - name: Generate routes
         if: matrix.template == 'tanstack-start'
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: |
           cp src/routeTree.gen.ts "$RUNNER_TEMP/routeTree.gen.ts"
           pnpm generate-routes
           diff -u "$RUNNER_TEMP/routeTree.gen.ts" src/routeTree.gen.ts
 
       - name: Lint
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm lint
 
       - name: Format check
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm prettier-check
 
       # react-spa type checks as part of its build (`tsc -b && vite build`).
       - name: Type check
         if: matrix.template == 'tanstack-start'
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm exec tsc --noEmit
 
       - name: Build
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm build
 
       - name: Type check Convex
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm exec tsc -p convex/tsconfig.json
 
       - name: Test
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm test
 
       # Lint, type check, and build pass even when every page with a loader
@@ -115,7 +107,7 @@ jobs:
         if: matrix.template == 'tanstack-start'
         run: |
           node .github/scripts/ssr-smoke-test.mjs \
-            --app-dir /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+            --app-dir /tmp/app-templates/${{ matrix.template }}
 
       # The app builder adds packages with `pnpm add`, which re-checks every
       # locked package against `minimumReleaseAge`. A lockfile that pins a
@@ -123,7 +115,7 @@ jobs:
       # apps, so add an old package the same way. Runs last: it edits the
       # materialized copy.
       - name: Check packages can be added
-        working-directory: /tmp/app-template-variants/${{ matrix.template }}/${{ matrix.variant }}
+        working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm add ms@2.1.3
 
   dependency-review:

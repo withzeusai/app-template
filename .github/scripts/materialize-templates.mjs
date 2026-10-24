@@ -1,23 +1,13 @@
 import { execFile } from "node:child_process";
-import { chmod, copyFile, cp, mkdir, rm, stat } from "node:fs/promises";
+import { chmod, copyFile, mkdir, rm, stat } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 
 const execFileAsync = promisify(execFile);
 
-/**
- * Every template directory at the repository root, with the variants built
- * from it. "legacy" is the template as committed; any other variant is the
- * template with `.github/template-variants/<template>/<variant>/` copied over
- * it.
- */
-export const templates = {
-  "react-spa": ["legacy", "managed-v1"],
-  // The tanstack-start managed-v1 overlay still targets the React Router app
-  // and is paused until it is ported to TanStack Start.
-  "tanstack-start": ["legacy"],
-};
+/** Every template directory at the repository root. */
+export const templates = ["react-spa", "tanstack-start"];
 
 function containsPath(parent, child) {
   const relative = path.relative(parent, child);
@@ -69,13 +59,11 @@ async function copyTrackedTemplate(repositoryRoot, template, destinationRoot) {
 }
 
 /**
- * Writes each variant of each template to `<outputRoot>/<template>/<variant>`
- * and returns those paths, keyed by template and then variant.
+ * Copies the tracked files of each template to `<outputRoot>/<template>`, so
+ * what is checked and published is exactly what is committed, and returns
+ * those paths keyed by template.
  */
-export async function materializeTemplateVariants({
-  repositoryRoot,
-  outputRoot,
-}) {
+export async function materializeTemplates({ repositoryRoot, outputRoot }) {
   const resolvedRepositoryRoot = path.resolve(repositoryRoot);
   const resolvedOutputRoot = path.resolve(outputRoot);
 
@@ -91,27 +79,12 @@ export async function materializeTemplateVariants({
   await rm(resolvedOutputRoot, { force: true, recursive: true });
 
   const roots = {};
-  for (const [template, variants] of Object.entries(templates)) {
-    roots[template] = {};
-    for (const variant of variants) {
-      const variantRoot = path.join(resolvedOutputRoot, template, variant);
+  for (const template of templates) {
+    const templateRoot = path.join(resolvedOutputRoot, template);
 
-      await mkdir(variantRoot, { recursive: true });
-      await copyTrackedTemplate(resolvedRepositoryRoot, template, variantRoot);
-      if (variant !== "legacy") {
-        await cp(
-          path.join(
-            resolvedRepositoryRoot,
-            ".github/template-variants",
-            template,
-            variant,
-          ),
-          variantRoot,
-          { force: true, recursive: true },
-        );
-      }
-      roots[template][variant] = variantRoot;
-    }
+    await mkdir(templateRoot, { recursive: true });
+    await copyTrackedTemplate(resolvedRepositoryRoot, template, templateRoot);
+    roots[template] = templateRoot;
   }
 
   return roots;
@@ -122,7 +95,7 @@ function readOutputRoot(argv) {
   const outputRoot = argv[outputFlagIndex + 1];
 
   if (outputFlagIndex === -1 || !outputRoot) {
-    throw new Error("Usage: materialize-template-variants --output-dir <path>");
+    throw new Error("Usage: materialize-templates --output-dir <path>");
   }
 
   return outputRoot;
@@ -138,7 +111,7 @@ if (isCommandLine) {
     "../..",
   );
 
-  await materializeTemplateVariants({
+  await materializeTemplates({
     repositoryRoot,
     outputRoot: readOutputRoot(process.argv.slice(2)),
   });
