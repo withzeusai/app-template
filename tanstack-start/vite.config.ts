@@ -138,6 +138,17 @@ function hasNativeAddon(manifest: Manifest): boolean {
 }
 
 /**
+ * Whether a project-root file has the package's name. `tsconfigPaths` looks a
+ * bare name up from the root first, so `convex` resolves to `convex.json` and
+ * the optimizer would warn "Cannot optimize dependency" on every start.
+ */
+function isShadowedByProjectPath(root: string, name: string): boolean {
+  return ["", ".json", ".js", ".mjs", ".ts", ".mts", ".jsx", ".tsx"].some(
+    (extension) => existsSync(path.join(root, name + extension)),
+  );
+}
+
+/**
  * The installed runtime `dependencies` the optimizer can bundle. One that is
  * declared but not linked yet is left out until it is.
  */
@@ -149,6 +160,7 @@ function dependenciesToPrebundle(root: string): string[] {
       if (NEVER_PREBUNDLED.has(name) || name.startsWith("@types/")) {
         return false;
       }
+      if (isShadowedByProjectPath(root, name)) return false;
       const packageDir = path.join(root, "node_modules", name);
       const manifest = readManifest(path.join(packageDir, "package.json"));
       return (
@@ -157,6 +169,28 @@ function dependenciesToPrebundle(root: string): string[] {
         !hasNativeAddon(manifest)
       );
     });
+}
+
+/**
+ * Restarts the dev server with its HMR messages muted. Until the new server
+ * listens, a message from the old one (a reload for a route file written
+ * meanwhile) sends the browser to a port that is about to close, and the page
+ * stays on a connection error. Browsers reload by themselves once the new
+ * server accepts their socket. A failed restart keeps the old server, so it
+ * gets its messages back.
+ */
+function restartQuietly(server: ViteDevServer): Promise<void> {
+  const { environments } = server;
+  const channels: { send(...args: unknown[]): void }[] = [
+    server.ws,
+    ...Object.values(environments).map((environment) => environment.hot),
+  ];
+  const sends = channels.map((channel) => [channel, channel.send] as const);
+  for (const [channel] of sends) channel.send = () => {};
+  return server.restart().finally(() => {
+    if (server.environments !== environments) return;
+    for (const [channel, send] of sends) channel.send = send;
+  });
 }
 
 /**
@@ -181,7 +215,7 @@ function restartOnDependencyChange(
         "[hercules] dependencies changed; restarting the dev server to pre-bundle them",
         { timestamp: true },
       );
-      void server.restart();
+      void restartQuietly(server);
       return;
     }
     // pnpm can write package.json before it links the new package.
