@@ -2,41 +2,42 @@ import { forwardRef, useCallback, useState } from "react";
 import { type VariantProps } from "class-variance-authority";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@usehercules/auth-tanstack/client";
 import { Button, buttonVariants } from "@/components/ui/button.tsx";
+import { useAuth } from "@/hooks/use-auth.ts";
 
 /** Route that starts the OIDC sign-in flow (redirects to the provider). */
 const SIGN_IN_PATH = "/auth/sign-in";
 
-export interface SignInButtonProps
-  extends
-    Omit<React.ComponentProps<"button">, "onClick">,
-    VariantProps<typeof buttonVariants> {
-  /**
-   * Custom onClick handler that runs before authentication action
-   */
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  /**
-   * Whether to show icons in the button
-   * @default true
-   */
-  showIcon?: boolean;
-  /**
-   * Custom text for sign in state
-   * @default "Sign In"
-   */
-  signInText?: string;
-  /**
-   * Custom text for sign out state
-   * @default "Sign Out"
-   */
-  signOutText?: string;
-  /**
-   * Custom text for loading state
-   * @default "Signing In..." or "Signing Out..."
-   */
-  loadingText?: string;
-}
+export type SignInButtonProps = Omit<
+  React.ComponentProps<"button">,
+  "onClick"
+> &
+  VariantProps<typeof buttonVariants> & {
+    /**
+     * Custom onClick handler that runs before authentication action
+     */
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    /**
+     * Whether to show icons in the button
+     * @default true
+     */
+    showIcon?: boolean;
+    /**
+     * Custom text for sign in state
+     * @default "Sign In"
+     */
+    signInText?: string;
+    /**
+     * Custom text for sign out state
+     * @default "Sign Out"
+     */
+    signOutText?: string;
+    /**
+     * Custom text for loading state
+     * @default "Signing In..." or "Signing Out..."
+     */
+    loadingText?: string;
+  };
 
 /** Renders Sign In / Sign Out from the Hercules session (`useAuth()`); do not wrap in `<Unauthenticated>` / `<Authenticated>` from `convex/react`. */
 export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(

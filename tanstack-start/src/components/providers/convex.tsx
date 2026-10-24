@@ -1,7 +1,7 @@
 import type { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithHerculesAuth } from "@usehercules/auth-tanstack/convex";
 import type { ClientUserInfo, NoUserInfo } from "@usehercules/auth-tanstack";
-import { AuthProvider } from "./auth.tsx";
+import AuthProvider from "./auth.tsx";
 
 /**
  * Wires the Convex client into the app.
@@ -23,7 +23,7 @@ import { AuthProvider } from "./auth.tsx";
  * in `__root.tsx` — and gate UI on `useAuth().user`, which IS seeded from
  * `initialAuth` and therefore correct in the SSR HTML with no loading flash.
  */
-export function ConvexAppProvider({
+export default function ConvexAppProvider({
   client,
   initialAuth,
   children,

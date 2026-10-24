@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button.tsx";
  * as the router's `defaultErrorComponent` in `router.tsx`, so every route
  * gets it unless it sets its own `errorComponent`.
  */
-export function RouteError({ error, reset }: ErrorComponentProps) {
+export default function RouteError({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
   const queryErrorResetBoundary = useQueryErrorResetBoundary();
 
@@ -52,15 +52,6 @@ export function RouteError({ error, reset }: ErrorComponentProps) {
         ) : null}
         <Button onClick={retry}>Try again</Button>
       </div>
-    </div>
-  );
-}
-
-/** Full-page {@link RouteError} for the root route, which has no layout around it. */
-export function RootRouteError(props: ErrorComponentProps) {
-  return (
-    <div className="flex min-h-screen bg-background">
-      <RouteError {...props} />
     </div>
   );
 }

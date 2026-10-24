@@ -3,8 +3,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { ConvexProvider } from "convex/react";
-import { RouteError } from "@/components/route-error.tsx";
-import { routeTree, type FileRouteTypes } from "./routeTree.gen";
+import RouteError from "@/components/route-error.tsx";
+import { routeTree, type FileRouteTypes } from "./routeTree.gen.ts";
 
 export function getRouter() {
   const CONVEX_URL = import.meta.env.VITE_CONVEX_URL;

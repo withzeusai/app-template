@@ -30,7 +30,7 @@ function applyTheme(theme: Theme) {
   root.style.colorScheme = resolved;
 }
 
-export function ThemeProvider({
+export default function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "theme",

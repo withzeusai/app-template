@@ -53,9 +53,17 @@ const FAILURE_MARKERS = ["Something went wrong", "isDehydrated"];
 // talks to Convex.
 const PLACEHOLDER_CONVEX_URL = "https://ci-ssr-smoke.convex.cloud";
 
+// `status` is the exact status a page must answer with; without it, any
+// status below 500 passes.
 const PAGES = [
   { path: "/", requiredText: [] },
   { path: SMOKE_ROUTE_PATH, requiredText: [SMOKE_MARKER] },
+  { path: "/favicon.ico", status: 200, requiredText: [] },
+  {
+    path: "/ci-ssr-smoke-missing-page",
+    status: 404,
+    requiredText: ['<meta name="robots" content="noindex"'],
+  },
 ];
 
 function readAppDir(argv) {
@@ -140,7 +148,7 @@ async function waitForServer(preview) {
   );
 }
 
-async function checkPage({ path: pagePath, requiredText }) {
+async function checkPage({ path: pagePath, status, requiredText }) {
   const response = await fetch(new URL(pagePath, BASE_URL), {
     headers: { accept: "text/html" },
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
@@ -148,7 +156,9 @@ async function checkPage({ path: pagePath, requiredText }) {
   const html = await response.text();
   const problems = [];
 
-  if (response.status >= 500) {
+  if (
+    status !== undefined ? response.status !== status : response.status >= 500
+  ) {
     problems.push(`status ${response.status}`);
   }
   for (const marker of FAILURE_MARKERS) {

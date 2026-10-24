@@ -37,3 +37,15 @@ tsconfig.tsbuildinfo
 
 # Cloudflare
 .wrangler
+
+# Empty placeholders the Hercules dev machine creates in the app folder while
+# a sandboxed command runs, and removes afterwards
+/.bash_profile
+/.bashrc
+/.gitconfig
+/.gitmodules
+/.mcp.json
+/.profile
+/.ripgreprc
+/.zprofile
+/.zshrc

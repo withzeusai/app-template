@@ -11,7 +11,7 @@ import type { ClientUserInfo, NoUserInfo } from "@usehercules/auth-tanstack";
  * returns the real user on the server render and hydrates without a loading
  * flash. The client keeps the session fresh from there.
  */
-export function AuthProvider({
+export default function AuthProvider({
   initialAuth,
   children,
 }: {

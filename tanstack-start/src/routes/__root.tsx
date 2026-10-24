@@ -7,14 +7,15 @@ import {
   Scripts,
   createRootRouteWithContext,
   useLocation,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import type { ConvexQueryClient } from "@convex-dev/react-query";
 import type { ConvexReactClient } from "convex/react";
 import { getAuthAction, getIdTokenAction } from "@usehercules/auth-tanstack";
 import type { ClientUserInfo, NoUserInfo } from "@usehercules/auth-tanstack";
-import { ConvexAppProvider } from "@/components/providers/convex.tsx";
-import { ThemeProvider } from "@/components/providers/theme.tsx";
-import { RootRouteError } from "@/components/route-error.tsx";
+import ConvexAppProvider from "@/components/providers/convex.tsx";
+import ThemeProvider from "@/components/providers/theme.tsx";
+import RouteError from "@/components/route-error.tsx";
 import { buttonVariants } from "@/components/ui/button.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
 import { TooltipProvider } from "@/components/ui/tooltip.tsx";
@@ -66,22 +67,17 @@ export const Route = createRootRouteWithContext<{
       { name: "viewport", content: "width=device-width, initial-scale=1.0" },
       { title: site.name },
       { name: "description", content: site.tagline },
-      { name: "author", content: "Hercules" },
+      // App-wide defaults for link previews. A page overrides them in its own
+      // `head()` only when it has its own title, description, or image.
       { property: "og:title", content: site.name },
       { property: "og:description", content: site.tagline },
       { property: "og:type", content: "website" },
       { property: "og:image", content: site.ogImage },
-      { property: "og:image:type", content: "image/png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: site.ogImage },
-      { name: "twitter:site", content: "@usehercules" },
     ],
     links: [
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>",
-      },
+      { rel: "icon", href: "/favicon.ico" },
       { rel: "stylesheet", href: appCss },
     ],
   }),
@@ -127,6 +123,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Full-page {@link RouteError} for the root route, which has no layout around it. */
+function RootRouteError(props: ErrorComponentProps) {
+  return (
+    <div className="flex min-h-screen bg-background">
+      <RouteError {...props} />
+    </div>
+  );
+}
+
 function NotFound() {
   const location = useLocation();
 
@@ -139,6 +144,8 @@ function NotFound() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
+      {/* React moves this into <head>, also in the server HTML. */}
+      <meta name="robots" content="noindex" />
       <div className="text-center space-y-6">
         <div className="space-y-2">
           <h1 className="text-6xl font-bold text-muted-foreground">404</h1>
