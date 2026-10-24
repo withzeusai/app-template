@@ -12,7 +12,10 @@ updates:
           - "*"
 
   - package-ecosystem: npm
-    directory: /
+    # Every template directory. Each one gets its own update pull requests.
+    directories:
+      - /react-spa
+      - /tanstack-start
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
