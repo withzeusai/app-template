@@ -1,4 +1,3 @@
-import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -177,10 +176,8 @@ export default defineConfig({
     react(),
   ],
   resolve: {
-    alias: {
-      "@/convex": path.resolve(import.meta.dirname, "./convex"),
-      "@": path.resolve(import.meta.dirname, "./src"),
-    },
+    // `@/` and `@/convex/` come from the `paths` in tsconfig.json.
+    tsconfigPaths: true,
     dedupe: [
       "react",
       "react-dom",
