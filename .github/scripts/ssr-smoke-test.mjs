@@ -171,6 +171,49 @@ async function checkPage({ path: pagePath, status, requiredText }) {
   return { pagePath, status: response.status, problems, html };
 }
 
+// Checks on responses rather than page content: the headers `src/server.ts`
+// adds to every response (missing when the Worker does not run that entry),
+// and the 405 the auth routes answer for methods other than GET and HEAD.
+const RESPONSE_CHECKS = [
+  {
+    path: "/",
+    method: "GET",
+    status: 200,
+    headers: {
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "strict-origin-when-cross-origin",
+    },
+  },
+  {
+    path: "/auth/sign-in",
+    method: "POST",
+    status: 405,
+    headers: { allow: "GET, HEAD" },
+  },
+];
+
+async function checkResponse({ path: pagePath, method, status, headers }) {
+  const response = await fetch(new URL(pagePath, BASE_URL), {
+    method,
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
+  const html = await response.text();
+  const problems = [];
+
+  if (response.status !== status) problems.push(`status ${response.status}`);
+  for (const [name, value] of Object.entries(headers)) {
+    const actual = response.headers.get(name);
+    if (actual !== value) problems.push(`${name}: ${actual ?? "missing"}`);
+  }
+
+  return {
+    pagePath: `${method} ${pagePath}`,
+    status: response.status,
+    problems,
+    html,
+  };
+}
+
 async function main() {
   const appDir = readAppDir(process.argv.slice(2));
   const routeFile = path.join(appDir, SMOKE_ROUTE_FILE);
@@ -189,6 +232,9 @@ async function main() {
 
     const results = [];
     for (const page of PAGES) results.push(await checkPage(page));
+    for (const check of RESPONSE_CHECKS) {
+      results.push(await checkResponse(check));
+    }
 
     let failed = false;
     for (const result of results) {

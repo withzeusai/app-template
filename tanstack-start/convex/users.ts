@@ -31,15 +31,22 @@ export const updateCurrentUser = mutation({
   },
 });
 
+/**
+ * The signed-in user's row, or `null` for a signed-out visitor, so a loader
+ * that calls this still server-renders for them.
+ *
+ * `/auth/callback` creates the row before the redirect into the app (see
+ * `src/lib/sync-current-user.ts`), so a signed-in user without one means that
+ * sync failed. That throws `USER_NOT_FOUND` instead of returning `null`, so
+ * the failure shows up rather than leaving the app looking empty. Signing in
+ * again runs the sync again.
+ */
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new ConvexError({
-        code: "UNAUTHENTICATED",
-        message: "Called getCurrentUser without authentication present",
-      });
+      return null;
     }
     const user = await ctx.db
       .query("users")
@@ -47,6 +54,13 @@ export const getCurrentUser = query({
         q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
+    if (user === null) {
+      throw new ConvexError({
+        code: "USER_NOT_FOUND",
+        message:
+          "The signed-in user has no account record yet. Sign out and sign in again.",
+      });
+    }
     return user;
   },
 });

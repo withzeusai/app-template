@@ -42,14 +42,35 @@ describe("syncCurrentUser", () => {
     expect(mocks.mutation).not.toHaveBeenCalled();
   });
 
-  it("logs a failed sync instead of failing sign-in", async () => {
-    const error = new Error("Convex is unreachable");
-    mocks.mutation.mockRejectedValue(error);
+  it("retries a failed sync once", async () => {
+    mocks.mutation
+      .mockRejectedValueOnce(new Error("Convex is unreachable"))
+      .mockResolvedValueOnce("user-id");
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const consoleError = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
 
-    await expect(syncCurrentUser("id-token")).resolves.toBeUndefined();
+    await syncCurrentUser("id-token", { retryDelayMs: 0 });
+
+    expect(mocks.mutation).toHaveBeenCalledTimes(2);
+    expect(mocks.setAuth).toHaveBeenNthCalledWith(2, "id-token");
+    expect(consoleWarn).toHaveBeenCalledOnce();
+    expect(consoleError).not.toHaveBeenCalled();
+  });
+
+  it("logs a sync that fails twice instead of failing sign-in", async () => {
+    const error = new Error("Convex is unreachable");
+    mocks.mutation.mockRejectedValue(error);
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    await expect(
+      syncCurrentUser("id-token", { retryDelayMs: 0 }),
+    ).resolves.toBeUndefined();
+    expect(mocks.mutation).toHaveBeenCalledTimes(2);
     expect(consoleError).toHaveBeenCalledWith(
       "Failed to sync the signed-in user to Convex:",
       error,
