@@ -3,8 +3,28 @@ import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import hercules from "@usehercules/vite";
 import react from "@vitejs/plugin-react";
+import { createRequire } from "node:module";
 import { defineConfig, type Plugin } from "vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
+
+/**
+ * Base UI publishes one entry point per component (`@base-ui/react/dialog`,
+ * ...), and the optimizer treats each as its own package. Take them all from
+ * its export map, so a component the app starts using later is covered too.
+ * `internals/` holds hooks the components import from inside the package.
+ */
+function baseUiEntries(): string[] {
+  const { exports } = createRequire(import.meta.url)(
+    "@base-ui/react/package.json",
+  ) as { exports: Record<string, unknown> };
+  return Object.keys(exports)
+    .filter(
+      (key) => key !== "./package.json" && !key.startsWith("./internals/"),
+    )
+    .map((key) =>
+      key === "." ? "@base-ui/react" : `@base-ui/react/${key.slice(2)}`,
+    );
+}
 
 /**
  * Every package the template ships, bundled up front in both environments so
@@ -28,6 +48,8 @@ const PREBUNDLED_PACKAGES = [
   "convex/server",
   "convex/values",
   "@hookform/resolvers/zod",
+  ...baseUiEntries(),
+  "@shadcn/react/message-scroller",
   "class-variance-authority",
   "clsx",
   "cmdk",
@@ -36,7 +58,6 @@ const PREBUNDLED_PACKAGES = [
   "input-otp",
   "lucide-react",
   "motion/react",
-  "radix-ui",
   "react-day-picker",
   "react-hook-form",
   "react-resizable-panels",
@@ -44,7 +65,6 @@ const PREBUNDLED_PACKAGES = [
   "sonner",
   "tailwind-merge",
   "use-debounce",
-  "vaul",
   "zod",
 ];
 
