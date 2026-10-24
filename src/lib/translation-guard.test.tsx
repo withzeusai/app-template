@@ -80,6 +80,7 @@ describe("page translation", () => {
       </RootErrorBoundary>,
     );
     expect(screen.queryByText("Something went wrong")).not.toBeInTheDocument();
+    expect(screen.getByText("New")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Continue" }),
     ).toBeInTheDocument();
