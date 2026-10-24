@@ -5,7 +5,19 @@ import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 
 const execFileAsync = promisify(execFile);
-const repositoryOnlyPrefixes = [".github/"];
+
+/**
+ * Every template directory at the repository root, with the variants built
+ * from it. "legacy" is the template as committed; any other variant is the
+ * template with `.github/template-variants/<template>/<variant>/` copied over
+ * it.
+ */
+export const templates = {
+  "react-spa": ["legacy", "managed-v1"],
+  // The tanstack-start managed-v1 overlay still targets the React Router app
+  // and is paused until it is ported to TanStack Start.
+  "tanstack-start": ["legacy"],
+};
 
 function containsPath(parent, child) {
   const relative = path.relative(parent, child);
@@ -18,28 +30,35 @@ function containsPath(parent, child) {
   );
 }
 
-async function listTemplateFiles(repositoryRoot) {
-  const { stdout } = await execFileAsync("git", ["ls-files", "-z"], {
-    cwd: repositoryRoot,
-    encoding: "buffer",
-    maxBuffer: 10 * 1024 * 1024,
-  });
+/** Tracked files of `template`, relative to its directory. */
+async function listTemplateFiles(repositoryRoot, template) {
+  const { stdout } = await execFileAsync(
+    "git",
+    ["ls-files", "-z", "--", template],
+    {
+      cwd: repositoryRoot,
+      encoding: "buffer",
+      maxBuffer: 10 * 1024 * 1024,
+    },
+  );
+  const prefix = `${template}/`;
 
   return stdout
     .toString("utf8")
     .split("\0")
-    .filter(Boolean)
-    .filter(
-      (file) =>
-        !repositoryOnlyPrefixes.some((prefix) => file.startsWith(prefix)),
-    );
+    .filter((file) => file.startsWith(prefix))
+    .map((file) => file.slice(prefix.length));
 }
 
-async function copyTrackedTemplate(repositoryRoot, destinationRoot) {
-  const files = await listTemplateFiles(repositoryRoot);
+async function copyTrackedTemplate(repositoryRoot, template, destinationRoot) {
+  const files = await listTemplateFiles(repositoryRoot, template);
+
+  if (files.length === 0) {
+    throw new Error(`Template "${template}" has no tracked files`);
+  }
 
   for (const file of files) {
-    const source = path.join(repositoryRoot, file);
+    const source = path.join(repositoryRoot, template, file);
     const destination = path.join(destinationRoot, file);
     const sourceStat = await stat(source);
 
@@ -49,6 +68,10 @@ async function copyTrackedTemplate(repositoryRoot, destinationRoot) {
   }
 }
 
+/**
+ * Writes each variant of each template to `<outputRoot>/<template>/<variant>`
+ * and returns those paths, keyed by template and then variant.
+ */
 export async function materializeTemplateVariants({
   repositoryRoot,
   outputRoot,
@@ -65,25 +88,33 @@ export async function materializeTemplateVariants({
     );
   }
 
-  const legacyRoot = path.join(resolvedOutputRoot, "legacy");
-  const managedRoot = path.join(resolvedOutputRoot, "managed-v1");
-  const managedOverlay = path.join(
-    resolvedRepositoryRoot,
-    ".github/template-variants/managed-v1",
-  );
-
   await rm(resolvedOutputRoot, { force: true, recursive: true });
-  await mkdir(legacyRoot, { recursive: true });
-  await mkdir(managedRoot, { recursive: true });
 
-  await copyTrackedTemplate(resolvedRepositoryRoot, legacyRoot);
-  await copyTrackedTemplate(resolvedRepositoryRoot, managedRoot);
-  await cp(managedOverlay, managedRoot, {
-    force: true,
-    recursive: true,
-  });
+  const roots = {};
+  for (const [template, variants] of Object.entries(templates)) {
+    roots[template] = {};
+    for (const variant of variants) {
+      const variantRoot = path.join(resolvedOutputRoot, template, variant);
 
-  return { legacyRoot, managedRoot };
+      await mkdir(variantRoot, { recursive: true });
+      await copyTrackedTemplate(resolvedRepositoryRoot, template, variantRoot);
+      if (variant !== "legacy") {
+        await cp(
+          path.join(
+            resolvedRepositoryRoot,
+            ".github/template-variants",
+            template,
+            variant,
+          ),
+          variantRoot,
+          { force: true, recursive: true },
+        );
+      }
+      roots[template][variant] = variantRoot;
+    }
+  }
+
+  return roots;
 }
 
 function readOutputRoot(argv) {
