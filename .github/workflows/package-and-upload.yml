@@ -32,19 +32,18 @@ jobs:
           # Sanitize ref name for use as a filename (e.g., feature/abc -> feature-abc).
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           SAFE_BRANCH_NAME="${BRANCH_NAME//\//-}"
-          LEGACY_TARBALL_PATH="/tmp/${SAFE_BRANCH_NAME}.tar.gz"
-          MANAGED_TARBALL_PATH="/tmp/managed-v1-${SAFE_BRANCH_NAME}.tar.gz"
 
-          tar -C /tmp/app-template-variants/legacy \
-            -czf "${LEGACY_TARBALL_PATH}" .
-          tar -C /tmp/app-template-variants/managed-v1 \
-            -czf "${MANAGED_TARBALL_PATH}" .
+          # One tarball per materialized <template>/<variant>.
+          for dir in /tmp/app-template-variants/*/*/; do
+            variant="$(basename "${dir}")"
+            template="$(basename "$(dirname "${dir}")")"
+            mkdir -p "/tmp/app-template-tarballs/${template}"
+            tar -C "${dir}" -czf "/tmp/app-template-tarballs/${template}/${variant}.tar.gz" .
+          done
 
           echo "SAFE_BRANCH_NAME=${SAFE_BRANCH_NAME}" >> "$GITHUB_ENV"
-          echo "LEGACY_TARBALL_PATH=${LEGACY_TARBALL_PATH}" >> "$GITHUB_ENV"
-          echo "MANAGED_TARBALL_PATH=${MANAGED_TARBALL_PATH}" >> "$GITHUB_ENV"
-          echo "Created legacy and managed-v1 tarballs from branch: ${BRANCH_NAME}"
-          ls -lh "${LEGACY_TARBALL_PATH}" "${MANAGED_TARBALL_PATH}"
+          echo "Created tarballs from branch: ${BRANCH_NAME}"
+          ls -lhR /tmp/app-template-tarballs
 
       - name: Upload to Cloudflare R2
         env:
@@ -55,27 +54,39 @@ jobs:
         run: |
           R2_URL="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
 
-          # Preserve the existing legacy URL while adding the managed alias.
-          aws s3 cp "${LEGACY_TARBALL_PATH}" \
-            "s3://hercules-app-templates/${SAFE_BRANCH_NAME}.tar.gz" \
-            --endpoint-url "${R2_URL}"
-          aws s3 cp "${MANAGED_TARBALL_PATH}" \
-            "s3://hercules-app-templates/managed-v1/${SAFE_BRANCH_NAME}.tar.gz" \
-            --endpoint-url "${R2_URL}"
+          upload() {
+            aws s3 cp "/tmp/app-template-tarballs/$1.tar.gz" \
+              "s3://hercules-app-templates/$2" \
+              --endpoint-url "${R2_URL}"
+          }
 
-          # Immutable paths let herculesd pin a template release for warm pools.
-          aws s3 cp "${LEGACY_TARBALL_PATH}" \
-            "s3://hercules-app-templates/releases/${GITHUB_SHA}/legacy.tar.gz" \
-            --endpoint-url "${R2_URL}"
-          aws s3 cp "${MANAGED_TARBALL_PATH}" \
-            "s3://hercules-app-templates/releases/${GITHUB_SHA}/managed-v1.tar.gz" \
-            --endpoint-url "${R2_URL}"
+          for tarball in /tmp/app-template-tarballs/*/*.tar.gz; do
+            variant="$(basename "${tarball}" .tar.gz)"
+            template="$(basename "$(dirname "${tarball}")")"
 
-          echo "Successfully uploaded both template variants"
+            # <template>/main.tar.gz, and <template>/<variant>/main.tar.gz for
+            # the variants built on top of it.
+            if [ "${variant}" = "legacy" ]; then
+              upload "${template}/${variant}" "${template}/${SAFE_BRANCH_NAME}.tar.gz"
+            else
+              upload "${template}/${variant}" "${template}/${variant}/${SAFE_BRANCH_NAME}.tar.gz"
+            fi
+
+            # Immutable paths let herculesd pin a template release for warm pools.
+            upload "${template}/${variant}" "releases/${GITHUB_SHA}/${template}/${variant}.tar.gz"
+          done
+
+          # The paths herculesd reads today, from before the repository held
+          # more than one template. They stay the react-spa template.
+          upload react-spa/legacy "${SAFE_BRANCH_NAME}.tar.gz"
+          upload react-spa/managed-v1 "managed-v1/${SAFE_BRANCH_NAME}.tar.gz"
+          upload react-spa/legacy "releases/${GITHUB_SHA}/legacy.tar.gz"
+          upload react-spa/managed-v1 "releases/${GITHUB_SHA}/managed-v1.tar.gz"
+
+          echo "Successfully uploaded every template variant"
 
       - name: Cleanup
         if: always()
         run: |
-          rm -rf /tmp/app-template-variants
-          rm -f "${LEGACY_TARBALL_PATH}" "${MANAGED_TARBALL_PATH}"
+          rm -rf /tmp/app-template-variants /tmp/app-template-tarballs
           echo "Cleaned up template artifacts"
