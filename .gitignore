@@ -20,7 +20,6 @@ tsconfig.tsbuildinfo
 .nitro
 .tanstack
 .vinxi
-src/routeTree.gen.ts
 
 # Editor directories and files
 .vscode/*

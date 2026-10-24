@@ -48,9 +48,15 @@ jobs:
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
         run: pnpm install --frozen-lockfile
 
+      # The route tree is committed. Regenerate it and fail if it changed, so
+      # a route change cannot land with a stale tree. `tsr.config.json` repeats
+      # the footer TanStack Start adds, so this matches what `vite dev` writes.
       - name: Generate routes
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
-        run: pnpm generate-routes
+        run: |
+          cp src/routeTree.gen.ts "$RUNNER_TEMP/routeTree.gen.ts"
+          pnpm generate-routes
+          diff -u "$RUNNER_TEMP/routeTree.gen.ts" src/routeTree.gen.ts
 
       - name: Lint
         working-directory: /tmp/app-template-variants/${{ matrix.variant }}
