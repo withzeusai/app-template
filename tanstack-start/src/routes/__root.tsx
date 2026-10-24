@@ -15,7 +15,7 @@ import type { ClientUserInfo, NoUserInfo } from "@usehercules/auth-tanstack";
 import { ConvexAppProvider } from "@/components/providers/convex.tsx";
 import { ThemeProvider } from "@/components/providers/theme.tsx";
 import { RootRouteError } from "@/components/route-error.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { buttonVariants } from "@/components/ui/button.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
 import { TooltipProvider } from "@/components/ui/tooltip.tsx";
 import { site } from "@/lib/site.ts";
@@ -148,9 +148,9 @@ function NotFound() {
           This page does not exist.
         </p>
         <div className="pt-4">
-          <Button asChild>
-            <Link to="/">Return to Home</Link>
-          </Button>
+          <Link to="/" className={buttonVariants()}>
+            Return to Home
+          </Link>
         </div>
       </div>
     </div>

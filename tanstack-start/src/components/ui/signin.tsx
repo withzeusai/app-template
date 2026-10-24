@@ -36,11 +36,6 @@ export interface SignInButtonProps
    * @default "Signing In..." or "Signing Out..."
    */
   loadingText?: string;
-  /**
-   * Whether to use the asChild pattern
-   * @default false
-   */
-  asChild?: boolean;
 }
 
 /** Renders Sign In / Sign Out from the Hercules session (`useAuth()`); do not wrap in `<Unauthenticated>` / `<Authenticated>` from `convex/react`. */
@@ -56,7 +51,6 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
       className,
       variant,
       size,
-      asChild = false,
       ...props
     },
     ref,
@@ -124,7 +118,6 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
         variant={variant}
         size={size}
         className={className}
-        asChild={asChild}
         aria-label={
           isAuthenticated
             ? "Sign out of your account"
