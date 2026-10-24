@@ -34,17 +34,33 @@ function variantRoots() {
   );
 }
 
-test("lists every template directory in the repository", async () => {
+async function trackedFiles() {
   const { stdout } = await promisify(execFile)("git", ["ls-files"], {
     cwd: repositoryRoot,
   });
-  const templateDirectories = stdout
-    .split("\n")
+
+  return stdout.split("\n").filter(Boolean);
+}
+
+test("lists every template directory in the repository", async () => {
+  const templateDirectories = (await trackedFiles())
     .filter((file) => /^[^/.][^/]*\/package\.json$/.test(file))
     .map((file) => file.split("/")[0])
     .sort();
 
   assert.deepEqual(templateDirectories, Object.keys(templates).sort());
+});
+
+// A change ported from before the templates moved into their directories can
+// leave a new file at its old path, such as public/favicon.ico, where no
+// template ships it.
+test("keeps every file in a template directory or .github", async () => {
+  const roots = new Set([...Object.keys(templates), ".github"]);
+  const strays = (await trackedFiles()).filter(
+    (file) => file !== "README.md" && !roots.has(file.split("/")[0]),
+  );
+
+  assert.deepEqual(strays, []);
 });
 
 test("materializes the react-spa template without managed access control", async () => {
