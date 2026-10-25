@@ -1,5 +1,4 @@
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+import { defineVitestConfig } from "@usehercules/vite-tanstack/vitest";
 
 // Unit-test config for this app. Two projects run in one command:
 //   - "convex"   backend functions, run in the edge-runtime via convex-test
@@ -7,34 +6,4 @@ import { defineConfig } from "vitest/config";
 //
 // Keep tests hermetic: use convex-test and mocks instead of real deployments,
 // network calls, or environment-dependent behavior.
-export default defineConfig({
-  resolve: {
-    // `@/` and `@/convex/` come from the `paths` in tsconfig.json.
-    tsconfigPaths: true,
-  },
-  test: {
-    passWithNoTests: true,
-    // Restore Vitest mocks before each test to reduce state leakage.
-    restoreMocks: true,
-    projects: [
-      {
-        extends: true,
-        test: {
-          name: "convex",
-          environment: "edge-runtime",
-          include: ["convex/**/*.test.{ts,js}"],
-        },
-      },
-      {
-        extends: true,
-        plugins: [react()],
-        test: {
-          name: "frontend",
-          environment: "jsdom",
-          include: ["src/**/*.test.{ts,tsx}"],
-          setupFiles: ["./src/vitest.setup.ts"],
-        },
-      },
-    ],
-  },
-});
+export default defineVitestConfig();

@@ -19,6 +19,7 @@ import RouteError from "@/components/route-error.tsx";
 import { buttonVariants } from "@/components/ui/button.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
 import { TooltipProvider } from "@/components/ui/tooltip.tsx";
+import { useAuthErrorToast } from "@/hooks/use-auth-error-toast.ts";
 import { site } from "@/lib/site.ts";
 import appCss from "@/index.css?url";
 
@@ -71,6 +72,7 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   const { convexClient, auth } = Route.useRouteContext();
+  useAuthErrorToast(auth.user !== null);
   return (
     <ConvexAppProvider client={convexClient} initialAuth={auth}>
       <Outlet />
