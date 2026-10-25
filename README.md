@@ -44,19 +44,6 @@ On every push to `main`, `package-and-upload.yml` uploads each template to the
 | `main.tar.gz`                      | `react-spa`, at its older path, which Hercules reads |
 | `releases/<sha>/legacy.tar.gz`     | `react-spa`, immutable, at its older path            |
 
-### The `migrate/tanstack-start` branch
-
-Hercules still creates TanStack Start apps by cloning the
-`migrate/tanstack-start` branch. Until it reads `tanstack-start/` from `main`,
-`sync-tanstack-start-branch.yml` commits `tanstack-start/` onto that branch
-after every push to `main` that changes it. Make TanStack Start changes on
-`main`, not on the branch.
-
-If something is pushed to the branch anyway, the sync refuses to replace it.
-Port each such commit with
-`git cherry-pick -Xsubtree=tanstack-start <commit>` on `main`, then run the
-workflow by hand with `overwrite` checked.
-
 ## Adding a template
 
 1. Add the template as a new top-level directory with its own `package.json`
