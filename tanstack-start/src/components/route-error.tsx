@@ -3,18 +3,11 @@ import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { useRouter, type ErrorComponentProps } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button.tsx";
 
-/**
- * Shown when a route's `beforeLoad`, loader, or component throws. Registered
- * as the router's `defaultErrorComponent` in `router.tsx`, so every route
- * gets it unless it sets its own `errorComponent`.
- */
 export default function RouteError({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
   const queryErrorResetBoundary = useQueryErrorResetBoundary();
 
   const retry = useCallback(() => {
-    // Let failed suspense queries refetch, clear this boundary, then rerun
-    // the loaders (which also clears loader errors kept in router state).
     queryErrorResetBoundary.reset();
     reset();
     void router.invalidate();
@@ -26,8 +19,7 @@ export default function RouteError({ error, reset }: ErrorComponentProps) {
   }, [error]);
 
   useEffect(() => {
-    // In dev, retry after every hot update so fixing the code clears the
-    // error without a manual reload.
+    // Retry after a hot update so fixing the code clears the error.
     const hot = import.meta.hot;
     if (!hot) return;
     hot.on("vite:afterUpdate", retry);

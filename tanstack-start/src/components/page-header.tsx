@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils.ts";
 
-/**
- * Title row for a page: a heading, an optional description below it, and
- * optional actions (buttons, menus) aligned to the right.
- */
 export default function PageHeader({
   title,
   description,

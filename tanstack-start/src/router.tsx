@@ -9,9 +9,6 @@ import { routeTree, type FileRouteTypes } from "./routeTree.gen.ts";
 export function getRouter() {
   const CONVEX_URL = import.meta.env.VITE_CONVEX_URL;
   if (!CONVEX_URL) {
-    // A missing URL otherwise fails silently: the app renders but every
-    // Convex query hangs or errors. Fail loudly in production; in dev keep a
-    // placeholder so the shell still renders without a Convex deployment.
     if (import.meta.env.PROD) {
       throw new Error(
         "VITE_CONVEX_URL is not set — the Convex client cannot connect.",
@@ -22,8 +19,6 @@ export function getRouter() {
     );
   }
 
-  // ConvexQueryClient owns a ConvexReactClient and bridges Convex into
-  // TanStack Query so queries can run through `convexQuery()` and SSR.
   const convexQueryClient = new ConvexQueryClient(
     CONVEX_URL ?? "http://localhost:3000",
   );
@@ -31,9 +26,7 @@ export function getRouter() {
     defaultOptions: {
       queries: {
         queryKeyHashFn: convexQueryClient.hashFn(),
-        // This default routes every query without its own `queryFn` through
-        // Convex and THROWS for non-Convex query keys — any non-Convex
-        // `useQuery` in the app must pass its own `queryFn`.
+        // Throws for non-Convex keys: other queries need their own `queryFn`.
         queryFn: convexQueryClient.queryFn(),
       },
     },
@@ -69,8 +62,5 @@ declare module "@tanstack/react-router" {
   }
 }
 
-/**
- * Any route path without `$params`, e.g. `"/"` or `"/settings"`. Use it to
- * type a `to` prop that is passed straight to `<Link to={to} />`.
- */
+/** Any route path without `$params`, for typing a `<Link to>` prop. */
 export type RoutePath = Exclude<FileRouteTypes["to"], `${string}$${string}`>;

@@ -13,29 +13,10 @@ export type SignInButtonProps = Omit<
   "onClick"
 > &
   VariantProps<typeof buttonVariants> & {
-    /**
-     * Custom onClick handler that runs before authentication action
-     */
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-    /**
-     * Whether to show icons in the button
-     * @default true
-     */
     showIcon?: boolean;
-    /**
-     * Custom text for sign in state
-     * @default "Sign In"
-     */
     signInText?: string;
-    /**
-     * Custom text for sign out state
-     * @default "Sign Out"
-     */
     signOutText?: string;
-    /**
-     * Custom text for loading state
-     * @default "Signing In..." or "Signing Out..."
-     */
     loadingText?: string;
   };
 
@@ -62,17 +43,13 @@ export const SignInButton = forwardRef<HTMLButtonElement, SignInButtonProps>(
 
     const handleClick = useCallback(
       async (event: React.MouseEvent<HTMLButtonElement>) => {
-        // Run custom onClick first
         onClick?.(event);
 
         setPending(true);
         try {
           if (isAuthenticated) {
-            // Clears the session and redirects to the provider's logout.
             await signOut();
           } else {
-            // The sign-in route 302s to the OIDC provider; navigate to it,
-            // passing the current page so the callback returns here.
             const { pathname, search, hash } = window.location;
             const returnTo = encodeURIComponent(`${pathname}${search}${hash}`);
             window.location.href = `${SIGN_IN_PATH}?returnTo=${returnTo}`;

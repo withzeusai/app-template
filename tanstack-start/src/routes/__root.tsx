@@ -22,14 +22,8 @@ import { TooltipProvider } from "@/components/ui/tooltip.tsx";
 import { site } from "@/lib/site.ts";
 import appCss from "@/index.css?url";
 
-// The root `beforeLoad` re-runs on every client-side navigation AND every
-// hover preload (`defaultPreload: "intent"`), but `getAuthAction` is a server
-// function — an HTTP round-trip from the browser. The session is only consumed
-// once, to seed the auth provider at mount, and the provider keeps it fresh
-// from there (focus/visibility revalidation), so on the client we fetch it a
-// single time and reuse the promise. Sign-in and sign-out are always full-page
-// redirects, so a session change can never be masked by this cache. Module
-// state is safe: the client branch below is unreachable during SSR.
+// On the client, fetch the session once: the auth provider keeps it fresh,
+// and sign-in and sign-out are full-page redirects.
 let clientAuthPromise: Promise<ClientUserInfo | NoUserInfo> | undefined;
 
 export const Route = createRootRouteWithContext<{
@@ -37,11 +31,8 @@ export const Route = createRootRouteWithContext<{
   convexClient: ConvexReactClient;
   convexQueryClient: ConvexQueryClient;
 }>()({
-  // Read the Hercules session so authenticated Convex data can be fetched
-  // during SSR. `getAuthAction` returns the sanitized session (no tokens) used
-  // to seed the auth provider; the ID token only ever authenticates the
-  // server-side Convex HTTP client and is never serialized to the client.
-  // `serverHttpClient` is only defined during SSR.
+  // During SSR the ID token authenticates the server Convex client; only the
+  // sanitized session reaches the browser.
   beforeLoad: async (ctx) => {
     const serverHttpClient = ctx.context.convexQueryClient.serverHttpClient;
     if (serverHttpClient) {
@@ -55,7 +46,6 @@ export const Route = createRootRouteWithContext<{
       return { auth };
     }
     clientAuthPromise ??= getAuthAction().catch((error: unknown) => {
-      // Don't cache a rejection — let the next navigation retry.
       clientAuthPromise = undefined;
       throw error;
     });
@@ -67,14 +57,6 @@ export const Route = createRootRouteWithContext<{
       { name: "viewport", content: "width=device-width, initial-scale=1.0" },
       { title: site.name },
       { name: "description", content: site.tagline },
-      // App-wide defaults for link previews. A page overrides them in its own
-      // `head()` only when it has its own title, description, or image.
-      { property: "og:title", content: site.name },
-      { property: "og:description", content: site.tagline },
-      { property: "og:type", content: "website" },
-      { property: "og:image", content: site.ogImage },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: site.ogImage },
     ],
     links: [
       { rel: "icon", href: "/favicon.ico" },
@@ -87,14 +69,6 @@ export const Route = createRootRouteWithContext<{
   shellComponent: RootDocument,
 });
 
-/**
- * Mounts the authenticated Convex + Hercules providers around the route tree.
- *
- * This renders inside `RootDocument` and within the root match, so it can read
- * the SSR session (`auth`) and the Convex client from the route context. Seeding
- * the provider with `auth` makes signed-in/out state correct in the
- * server-rendered HTML with no hydration flash.
- */
 function RootComponent() {
   const { convexClient, auth } = Route.useRouteContext();
   return (
@@ -123,7 +97,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Full-page {@link RouteError} for the root route, which has no layout around it. */
 function RootRouteError(props: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen bg-background">
@@ -144,7 +117,6 @@ function NotFound() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      {/* React moves this into <head>, also in the server HTML. */}
       <meta name="robots" content="noindex" />
       <div className="text-center space-y-6">
         <div className="space-y-2">
