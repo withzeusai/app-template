@@ -30,7 +30,7 @@ function applyTheme(theme: Theme) {
   root.style.colorScheme = resolved;
 }
 
-export function ThemeProvider({
+export default function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "theme",
@@ -38,14 +38,8 @@ export function ThemeProvider({
   const [theme, setThemeState] = React.useState<Theme>(defaultTheme);
   const [mounted, setMounted] = React.useState(false);
 
-  // Deliberately reads localStorage in an effect rather than in a lazy
-  // initializer or `useSyncExternalStore`. The server cannot read it, so any
-  // client-side read during the first render would disagree with the SSR HTML
-  // and desync hydration for consumers that render off `theme`. Deferring to
-  // an effect keeps the first client render identical to the server's; the
-  // inline `ScriptOnce` above has already painted the correct theme, so the
-  // catch-up is invisible. `mounted` then gates `applyTheme` so the DOM is
-  // only touched once the real theme is known.
+  // Read localStorage in an effect so the first client render matches the
+  // server's. `ScriptOnce` has already painted the right theme.
   /* eslint-disable react-hooks/set-state-in-effect -- see the note above */
   React.useEffect(() => {
     const stored = localStorage.getItem(storageKey);
