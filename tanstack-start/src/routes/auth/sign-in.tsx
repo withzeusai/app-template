@@ -1,18 +1,28 @@
 import { handleSignInRoute } from "@usehercules/auth-tanstack";
 import { createFileRoute } from "@tanstack/react-router";
-import { methodNotAllowed } from "@/lib/method-not-allowed.ts";
-import { resolveReturnTo } from "@/lib/return-to.ts";
+
+const BASE = "https://app.invalid";
+
+/** The same-origin path to return to after sign-in, never an auth route. */
+function resolveReturnTo(returnTo: string | null): string {
+  if (returnTo === null || !returnTo.startsWith("/")) return "/";
+  let url: URL;
+  try {
+    // Parsed the way a browser reads `Location`, so `/\t/evil.com` is caught.
+    url = new URL(returnTo, BASE);
+  } catch {
+    return "/";
+  }
+  const path = `${url.pathname}${url.search}${url.hash}`;
+  if (url.origin !== BASE || path.startsWith("//")) return "/";
+  if (path.toLowerCase().startsWith("/auth/")) return "/";
+  return path;
+}
 
 export const Route = createFileRoute("/auth/sign-in")({
   server: {
     handlers: {
-      // In development, which is what the Hercules preview runs, `maxAge: 0`
-      // makes the provider ask for credentials on every sign-in instead of
-      // silently reusing its single-sign-on session, so the builder can try
-      // the preview as different users. Deployed apps let the provider reuse
-      // the session, as single sign-on normally works. `returnTo` is the page
-      // the sign-in button was on; the callback redirects there. HEAD falls
-      // back to GET.
+      // `maxAge: 0` in dev makes the preview ask for credentials every time.
       GET: ({ request }) =>
         handleSignInRoute({
           maxAge: import.meta.env.DEV ? 0 : undefined,
@@ -20,7 +30,8 @@ export const Route = createFileRoute("/auth/sign-in")({
             new URL(request.url).searchParams.get("returnTo"),
           ),
         })({ request }),
-      ANY: methodNotAllowed,
+      ANY: () =>
+        new Response(null, { status: 405, headers: { allow: "GET, HEAD" } }),
     },
   },
 });

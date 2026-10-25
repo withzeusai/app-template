@@ -1,10 +1,6 @@
-/**
- * TanStack Start answers an error thrown outside the router (request
- * middleware, a server route, a module that fails to load) with a fixed JSON
- * body and logs the real error on the server. `withErrorPage` swaps that body
- * for an HTML error page when a browser loads a page, so visitors never see
- * raw JSON. Fetches from the app keep the JSON they expect.
- */
+// Start answers an error thrown outside the router with a fixed JSON body.
+// `withErrorPage` shows an HTML page instead when a browser loads a page;
+// fetches keep the JSON.
 
 // Start's body is about 70 bytes; anything larger is the app's own response.
 const MAX_BODY_BYTES = 1024;
@@ -35,12 +31,7 @@ function byobReader(
   }
 }
 
-/**
- * Read up to `limit` bytes of `stream`, or null if it is longer or takes
- * longer than `timeoutMs`. A byte stream is read into a buffer of `limit + 1`
- * bytes, so no read pulls more than that; any other stream is read chunk by
- * chunk and dropped once it passes the limit.
- */
+/** Up to `limit` bytes of `stream`, or null if it is longer or slower than `timeoutMs`. */
 async function readPrefix(
   stream: ReadableStream<Uint8Array>,
   limit: number,
@@ -116,11 +107,7 @@ function isStartUnhandledError(body: string, status: number): boolean {
   );
 }
 
-/**
- * The error page for deployed apps. It retries once by itself in case the
- * failure was momentary; the stored time keeps a page that keeps failing from
- * reloading in a loop.
- */
+/** Reloads once by itself; the stored time stops a reload loop. */
 export const ERROR_PAGE_HTML = `<!doctype html>
 <html lang="en">
   <head>
@@ -180,10 +167,7 @@ export const ERROR_PAGE_HTML = `<!doctype html>
 </html>
 `;
 
-/**
- * Return `response`, or the error page if it is Start's unhandled-error JSON
- * for a page load.
- */
+/** `response`, or the error page if it is Start's error JSON for a page load. */
 export async function withErrorPage(
   request: Request,
   response: Response,

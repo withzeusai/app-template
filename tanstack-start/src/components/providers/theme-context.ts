@@ -12,10 +12,7 @@ export const ThemeProviderContext = React.createContext<ThemeProviderState>({
   setTheme: () => {},
 });
 
-/**
- * Lives beside `ThemeProvider` rather than in it so that `theme.tsx` exports
- * only components and keeps Fast Refresh working.
- */
+/** Separate from `theme.tsx` so that file only exports components (Fast Refresh). */
 export function useTheme() {
   return React.useContext(ThemeProviderContext);
 }

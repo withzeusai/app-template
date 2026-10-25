@@ -7,30 +7,15 @@ import type {
 } from "convex/server";
 
 /**
- * Query options for a Convex action that work with `useSuspenseQuery` and
- * `ensureQueryData`, so an action's result can be loaded during SSR.
- *
- * `convexAction()` types its `queryFn` as possibly `skipToken`, which
- * `useSuspenseQuery` rejects. This keeps its query key (the default `queryFn`
- * set in `router.tsx` runs it as an action) but drops the skip option.
- * Actions are not reactive, so the result is cached until invalidated.
+ * Query options for a Convex action that `useSuspenseQuery` and
+ * `ensureQueryData` accept, so its result can load during SSR. Actions are not
+ * reactive, so the result is cached until invalidated.
  *
  * @example
- * ```tsx
- * const weather = (city: string) =>
- *   convexActionQuery(api.weather.forecast, { city });
- *
- * export const Route = createFileRoute("/weather")({
- *   loader: ({ context }) =>
- *     context.queryClient.ensureQueryData(weather("Paris")),
- *   component: Weather,
- * });
- *
- * function Weather() {
- *   const { data } = useSuspenseQuery(weather("Paris"));
- *   return <p>{data.summary}</p>;
- * }
- * ```
+ * loader: ({ context }) =>
+ *   context.queryClient.ensureQueryData(
+ *     convexActionQuery(api.weather.forecast, { city: "Paris" }),
+ *   ),
  */
 export function convexActionQuery<Action extends FunctionReference<"action">>(
   action: Action,

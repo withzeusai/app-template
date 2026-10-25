@@ -12,7 +12,6 @@ export const updateCurrentUser = mutation({
       });
     }
 
-    // Check if we've already stored this identity before.
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
@@ -22,7 +21,6 @@ export const updateCurrentUser = mutation({
     if (user !== null) {
       return user._id;
     }
-    // If it's a new identity, create a new User.
     return await ctx.db.insert("users", {
       name: identity.name,
       email: identity.email,
@@ -32,14 +30,8 @@ export const updateCurrentUser = mutation({
 });
 
 /**
- * The signed-in user's row, or `null` for a signed-out visitor, so a loader
- * that calls this still server-renders for them.
- *
- * `/auth/callback` creates the row before the redirect into the app (see
- * `src/lib/sync-current-user.ts`), so a signed-in user without one means that
- * sync failed. That throws `USER_NOT_FOUND` instead of returning `null`, so
- * the failure shows up rather than leaving the app looking empty. Signing in
- * again runs the sync again.
+ * The signed-in user's row, or `null` when signed out. Throws `USER_NOT_FOUND`
+ * if `/auth/callback` failed to create it (see `src/lib/sync-current-user.ts`).
  */
 export const getCurrentUser = query({
   args: {},

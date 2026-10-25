@@ -23,12 +23,8 @@ import { useAuthErrorToast } from "@/hooks/use-auth-error-toast.ts";
 import { site } from "@/lib/site.ts";
 import appCss from "@/index.css?url";
 
-// On the client, reuse one session snapshot across navigations and hover
-// preloads (`getAuthAction` is an HTTP round trip), and refetch it once it is
-// older than `CLIENT_AUTH_TTL_MS` or the tab was hidden, so a sign-out in
-// another tab or an expired session is picked up. Sign-in and sign-out here
-// are full-page redirects. Convex checks the session on every call; this only
-// decides what to render.
+// The client reuses one session snapshot across navigations (`getAuthAction`
+// is a round trip) until it is a minute old or the tab was hidden.
 const CLIENT_AUTH_TTL_MS = 60_000;
 
 let clientAuth:
