@@ -5,11 +5,12 @@ import { syncCurrentUser } from "@/lib/sync-current-user.ts";
 export const Route = createFileRoute("/auth/callback")({
   server: {
     handlers: {
-      // Store the user in the Convex `users` table before the redirect into
-      // the app, so user-specific queries and mutations find their row.
+      // Creates the user's Convex row before redirecting into the app.
       GET: handleCallbackRoute({
         onSuccess: ({ idToken }) => syncCurrentUser(idToken),
       }),
+      ANY: () =>
+        new Response(null, { status: 405, headers: { allow: "GET, HEAD" } }),
     },
   },
 });
