@@ -139,8 +139,8 @@ importers:
         specifier: ^1.0.41
         version: 1.0.41(@typescript-eslint/parser@8.71.2(eslint@10.13.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.13.0(jiti@2.7.0))(typescript@6.0.3)
       '@usehercules/vite':
-        specifier: ^1.2.5
-        version: 1.2.5(vite@8.3.4(@types/node@26.6.5)(esbuild@0.27.0)(jiti@2.7.0))
+        specifier: ^2.0.1
+        version: 2.0.1(vite@8.3.4(@types/node@26.6.5)(esbuild@0.27.0)(jiti@2.7.0))
       '@vitejs/plugin-react':
         specifier: ^6.1.2
         version: 6.1.2(vite@8.3.4(@types/node@26.6.5)(esbuild@0.27.0)(jiti@2.7.0))
@@ -1973,8 +1973,8 @@ packages:
       eslint: '>=9.0.0'
       typescript: '>=4.0.0'
 
-  '@usehercules/vite@1.2.5':
-    resolution: {integrity: sha512-XmQ2cA+sqBozOkZcWBAVEeOzlNzkEyF0bFnMF9k5SrohkzfVZ0YdbR1SCX9dZiotSTD1DDjMay4c1UKJCbGhGg==}
+  '@usehercules/vite@2.0.1':
+    resolution: {integrity: sha512-iWLhIww+XWBbtYpyziTAv+jhYAOD/TqcQwSMTKSbtkyMjpf2z8wmXQpsWFbwHar82sJ4g6pD7erxIEyrqQ9okg==}
     peerDependencies:
       vite: ^7.0.0 || ^8.0.0
 
@@ -2700,6 +2700,9 @@ packages:
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
+
+  magic-string@1.4.3:
+    resolution: {integrity: sha512-z12OxmaPGE0F4xlpGdjuAUckipLpQlTAuAmyGhNoD7ODpYUzvDfvtxUbjM/jwznyP178oju/KDdyi220wNJ0RQ==}
 
   mdn-data@2.27.1:
     resolution: {integrity: sha512-9Yubnt3e8A0OKwxYSXyhLymGW4sCufcLG6VdiDdUGVkPhpqLxlvP5vl1983gQjJl3tqbrM731mjaZaP68AgosQ==}
@@ -4966,14 +4969,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@usehercules/vite@1.2.5(vite@8.3.4(@types/node@26.6.5)(esbuild@0.27.0)(jiti@2.7.0))':
+  '@usehercules/vite@2.0.1(vite@8.3.4(@types/node@26.6.5)(esbuild@0.27.0)(jiti@2.7.0))':
     dependencies:
       '@babel/generator': 8.0.6
       '@babel/parser': 8.0.7
       '@babel/traverse': 8.0.7
       '@babel/types': 8.0.6
       estree-walker: 3.0.3
-      magic-string: 0.30.21
+      magic-string: 1.4.3
       vite: 8.3.4(@types/node@26.6.5)(esbuild@0.27.0)(jiti@2.7.0)
 
   '@vitejs/plugin-react-swc@4.3.3(vite@8.3.4(@types/node@26.6.5)(esbuild@0.27.0)(jiti@2.7.0))':
@@ -5624,6 +5627,10 @@ snapshots:
   lz-string@1.5.0: {}
 
   magic-string@0.30.21:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.6.0
+
+  magic-string@1.4.3:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
 
