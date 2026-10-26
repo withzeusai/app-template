@@ -65,7 +65,7 @@
     "@usehercules/eslint-plugin": "^1.0.41",
     "@usehercules/vite-tanstack": "^1.0.0",
     "@vitejs/plugin-react": "^6.1.2",
-    "convex-test": "^0.0.55",
+    "convex-test": "^0.0.62",
     "eslint": "^10.13.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
