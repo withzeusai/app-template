@@ -17,9 +17,11 @@ export function useAuthErrorToast(signedIn: boolean) {
     if (reason === null) return;
     // A reloaded callback can land here already signed in: nothing to report.
     if (!signedIn) {
+      // An id, so StrictMode's second run in dev replaces the toast.
       toast.error(
         AUTH_ERROR_MESSAGES[reason] ??
           "Sign-in didn't complete. Please try again.",
+        { id: "auth-error" },
       );
     }
     url.searchParams.delete(AUTH_ERROR_PARAM);
