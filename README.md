@@ -32,6 +32,15 @@ its install, lint, format check, type checks, build, and tests.
 `tanstack-start` also checks its committed route tree and runs an SSR smoke
 test against a production build.
 
+The `e2e` job serves `tanstack-start`'s production build against a local
+Convex backend (an anonymous deployment, no Convex account) and a mock
+Hercules Auth, then signs in and out in Chromium with Playwright
+(`.github/e2e/`). It adds its own test routes to the copied template, so none
+of it ships to apps. To run it locally, materialize the templates, install
+`tanstack-start`'s and `.github/e2e`'s dependencies, run
+`pnpm exec playwright install chromium` in `.github/e2e`, then
+`node .github/e2e/run.mjs --app-dir <materialized tanstack-start>`.
+
 ## Publishing
 
 On every push to `main`, `package-and-upload.yml` uploads each template to the

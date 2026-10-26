@@ -1,0 +1,2 @@
+# Same supply-chain hold as the templates: skip releases under three days old.
+minimumReleaseAge: 4320

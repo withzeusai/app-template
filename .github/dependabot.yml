@@ -45,3 +45,11 @@ updates:
           - "eslint*"
           - "@eslint/*"
           - "typescript-eslint"
+
+  - package-ecosystem: npm
+    # Playwright for the end-to-end test in ci.yml. Not part of any template.
+    directory: /.github/e2e
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
