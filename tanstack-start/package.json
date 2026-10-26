@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.64.0",
-    "@convex-dev/eslint-plugin": "^3.0.0",
+    "@convex-dev/eslint-plugin": "^5.0.0",
     "@edge-runtime/vm": "^5.0.0",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/typography": "^0.5.20",
