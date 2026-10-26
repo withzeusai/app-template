@@ -29,11 +29,7 @@ export function getRouter() {
     );
   }
 
-  // Server-rendered queries subscribe as soon as the router hydrates, before
-  // ConvexProviderWithHerculesAuth can send the session's token. `expectAuth`
-  // holds them until it does, so they never run signed out and replace the
-  // signed-in data in the server HTML; the provider releases the client for
-  // signed-out visitors.
+  // Hold requests until auth settles so SSR'd queries never run signed out.
   const convexQueryClient = new ConvexQueryClient(
     CONVEX_URL ?? "http://localhost:3000",
     { expectAuth: true },
