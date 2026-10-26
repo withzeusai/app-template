@@ -125,6 +125,7 @@ jobs:
   e2e:
     name: e2e (tanstack-start)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -158,7 +159,7 @@ jobs:
         working-directory: .github/e2e
         run: |
           pnpm install --frozen-lockfile
-          pnpm exec playwright install --with-deps chromium
+          pnpm exec playwright install chromium
 
       - name: Test
         run: |
