@@ -5,6 +5,7 @@ const app = defineApp({
   env: {
     HERCULES_OIDC_AUTHORITY: v.string(),
     HERCULES_OIDC_CLIENT_ID: v.string(),
+    HERCULES_API_KEY: v.string(),
   },
 });
 
