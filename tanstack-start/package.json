@@ -26,7 +26,7 @@
     "@tanstack/react-router": "^1.170.45",
     "@tanstack/react-router-ssr-query": "^1.167.3",
     "@tanstack/react-start": "^1.169.3",
-    "@usehercules/auth-tanstack": "^1.0.0",
+    "@usehercules/auth-tanstack": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
