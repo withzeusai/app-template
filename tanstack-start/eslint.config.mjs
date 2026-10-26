@@ -48,16 +48,6 @@ export default defineConfig([
     },
   },
   {
-    // Secrets reach Convex as env vars the app owner sets in Hercules, often
-    // after the code that reads them exists. Declaring them in
-    // `convex/convex.config.ts` for the typed `env` would fail every deploy
-    // until each one is set, so Convex code keeps reading `process.env`.
-    files: ["**/convex/**/*.ts"],
-    rules: {
-      "@convex-dev/no-process-env": "off",
-    },
-  },
-  {
     // shadcn/ui components co-export their cva variant helpers by design.
     files: ["src/components/ui/**"],
     rules: {
