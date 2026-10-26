@@ -233,6 +233,7 @@ async function main() {
     for (const [name, value] of [
       ["HERCULES_OIDC_AUTHORITY", provider.issuer],
       ["HERCULES_OIDC_CLIENT_ID", CLIENT_ID],
+      ["HERCULES_API_KEY", "ci-e2e-api-key"],
     ]) {
       await run("pnpm", ["exec", "convex", "env", "set", name, value], {
         cwd: appDir,
