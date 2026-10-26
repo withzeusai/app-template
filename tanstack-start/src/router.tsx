@@ -29,8 +29,10 @@ export function getRouter() {
     );
   }
 
+  // Hold requests until auth settles so SSR'd queries never run signed out.
   const convexQueryClient = new ConvexQueryClient(
     CONVEX_URL ?? "http://localhost:3000",
+    { expectAuth: true },
   );
   const queryClient = new QueryClient({
     defaultOptions: {

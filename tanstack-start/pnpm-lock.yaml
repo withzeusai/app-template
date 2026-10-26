@@ -42,8 +42,8 @@ importers:
         specifier: ^1.169.3
         version: 1.169.3(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
       '@usehercules/auth-tanstack':
-        specifier: ^1.0.0
-        version: 1.0.0(convex@1.47.0(react@19.3.1))(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
+        specifier: ^1.1.0
+        version: 1.1.0(convex@1.47.0(react@19.3.1))(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -2097,8 +2097,8 @@ packages:
     resolution: {integrity: sha512-zozlN0UA32bSG2zkKAgQyRYSbEISVoyU6vvkKYo2aSny74D8Jh4e+POkJ6Lk0dlezZi5x7TtD+88Xb06IB8nhg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@usehercules/auth-tanstack@1.0.0':
-    resolution: {integrity: sha512-NVG7zTPzuJVdmqPwze2RChHdE6MQRr83JK+k4hMuLl/YEjYLg8O1bjo7oIJN7YAs9Q3QBGTRW1/O/s4rAb5oxg==}
+  '@usehercules/auth-tanstack@1.1.0':
+    resolution: {integrity: sha512-uWpWLAkeYdzNG30KW7+ttJ3APgsRAn2sDt75O75MFgnIvJuFKwqn5MZ09USPzG2id9724CkYqOkTFbX3mran6g==}
     peerDependencies:
       convex: ^1.29.0
       react: ^18.0.0 || ^19.0.0
@@ -5227,7 +5227,7 @@ snapshots:
       '@typescript-eslint/types': 8.71.2
       eslint-visitor-keys: 5.0.1
 
-  '@usehercules/auth-tanstack@1.0.0(convex@1.47.0(react@19.3.1))(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))':
+  '@usehercules/auth-tanstack@1.1.0(convex@1.47.0(react@19.3.1))(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))':
     dependencies:
       '@tanstack/react-router': 1.170.45(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@tanstack/react-start': 1.169.3(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
