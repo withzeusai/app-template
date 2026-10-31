@@ -315,7 +315,7 @@ async function main() {
           env: {
             ...process.env,
             E2E_BASE_URL: BASE_URL,
-            E2E_USER_EMAIL: TEST_USER.email,
+            E2E_USER_NAME: TEST_USER.name,
           },
         },
       );

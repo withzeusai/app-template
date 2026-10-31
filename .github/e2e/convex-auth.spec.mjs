@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 // backend and a mock OpenID provider (see run.mjs). Every test signs in as the
 // same user; the config runs them one at a time.
 
-const USER_EMAIL = process.env.E2E_USER_EMAIL;
+const USER_NAME = process.env.E2E_USER_NAME;
 // What `getCurrentUser` answers a caller without the session's token.
 const ANONYMOUS_RESULT = "anonymous result";
 
@@ -98,9 +98,9 @@ test("a signed-in page keeps its server-rendered Convex data", async ({
 
   // A full page load: the server renders with the session, the browser hydrates.
   const response = await page.reload();
-  expect(await response.text()).toContain(USER_EMAIL);
+  expect(await response.text()).toContain(USER_NAME);
   await waitForQueryResults(messages);
-  await expect(page.getByTestId("current-user")).toHaveText(USER_EMAIL);
+  await expect(page.getByTestId("current-user")).toHaveText(USER_NAME);
 
   // Soft, so a failure reports every symptom: the queries reached Convex
   // only after the session's token, so the page never showed what a
@@ -111,7 +111,7 @@ test("a signed-in page keeps its server-rendered Convex data", async ({
   expect
     .soft(authenticated, order)
     .toBeLessThan(messages.indexOf("sent:ModifyQuerySet"));
-  expect.soft(await texts()).toEqual([USER_EMAIL]);
+  expect.soft(await texts()).toEqual([USER_NAME]);
   expect.soft(errors).toEqual([]);
 });
 
@@ -122,7 +122,7 @@ test("a signed-in visitor's browser-only queries run as them", async ({
   const errors = recordErrors(page);
 
   await page.reload();
-  await expect(page.getByTestId("live-user")).toHaveText(USER_EMAIL);
+  await expect(page.getByTestId("live-user")).toHaveText(USER_NAME);
   expect(errors).toEqual([]);
 });
 

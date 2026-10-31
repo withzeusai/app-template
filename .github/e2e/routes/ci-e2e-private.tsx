@@ -36,7 +36,7 @@ function CurrentUser() {
   const { data } = useSuspenseQuery(currentUserQuery);
   return (
     <p data-testid="current-user">
-      {data === null ? "anonymous result" : data.email}
+      {data === null ? "anonymous result" : (data.name ?? "")}
     </p>
   );
 }

@@ -5,7 +5,7 @@ import { publicConvexClient } from "./convex-server.ts";
  * Creates the signed-in user's Convex `users` row if it is missing.
  * `/auth/callback` runs this before redirecting into the app. One failure is
  * retried; a second is logged, and `getCurrentUser` then throws
- * `USER_NOT_FOUND` until the user signs in again.
+ * `NOT_FOUND` until the user signs in again.
  */
 export async function syncCurrentUser(
   idToken: string | undefined,

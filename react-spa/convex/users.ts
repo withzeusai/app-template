@@ -1,4 +1,4 @@
-import { ConvexError } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 export const updateCurrentUser = mutation({
@@ -31,15 +31,22 @@ export const updateCurrentUser = mutation({
   },
 });
 
+/**
+ * The signed-in user's public fields, or `null` when signed out. Throws
+ * `NOT_FOUND` if `/auth/callback` failed to create their row (see
+ * `src/pages/auth/Callback.tsx`). Return only what the UI shows: the row's
+ * `tokenIdentifier` and email stay on the server.
+ */
 export const getCurrentUser = query({
   args: {},
+  returns: v.union(
+    v.object({ _id: v.id("users"), name: v.optional(v.string()) }),
+    v.null(),
+  ),
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new ConvexError({
-        code: "UNAUTHENTICATED",
-        message: "Called getCurrentUser without authentication present",
-      });
+      return null;
     }
     const user = await ctx.db
       .query("users")
@@ -47,6 +54,13 @@ export const getCurrentUser = query({
         q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
-    return user;
+    if (user === null) {
+      throw new ConvexError({
+        code: "NOT_FOUND",
+        message:
+          "The signed-in user has no account record yet. Sign out and sign in again.",
+      });
+    }
+    return { _id: user._id, name: user.name };
   },
 });

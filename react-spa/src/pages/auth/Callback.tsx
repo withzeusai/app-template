@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, useAuthCallback } from "@usehercules/auth/react";
+import { useAuthCallback } from "@usehercules/auth/react";
 import { useConvexAuth, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
+import { useAuth } from "@/hooks/use-auth.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import {

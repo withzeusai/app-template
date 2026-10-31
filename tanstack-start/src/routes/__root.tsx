@@ -25,6 +25,9 @@ import appCss from "@/index.css?url";
 
 // The client reuses one session snapshot across navigations (`getAuthAction`
 // is a round trip) until it is a minute old or the tab was hidden.
+// Browser-only: `beforeLoad` never reads it during SSR, where module state is
+// shared across requests and users. Sign-out and session expiry both do a full
+// page load, which clears it.
 const CLIENT_AUTH_TTL_MS = 60_000;
 
 let clientAuth:
@@ -142,6 +145,8 @@ function NotFound() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
+      {/* React hoists this into <head>. The root route's head() can't tell a
+      not-found render from a page, so it can't set noindex there. */}
       <meta name="robots" content="noindex" />
       <div className="text-center space-y-6">
         <div className="space-y-2">

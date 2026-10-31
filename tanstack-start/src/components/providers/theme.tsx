@@ -30,46 +30,57 @@ function applyTheme(theme: Theme) {
   root.style.colorScheme = resolved;
 }
 
+function readStoredTheme(storageKey: string, defaultTheme: Theme): Theme {
+  const stored = localStorage.getItem(storageKey);
+  return stored === "light" || stored === "dark" || stored === "system"
+    ? stored
+    : defaultTheme;
+}
+
+// `setTheme` writes localStorage, which fires no event in the same tab, so it
+// notifies subscribers itself.
+const themeListeners = new Set<() => void>();
+
+function subscribeToTheme(onChange: () => void) {
+  themeListeners.add(onChange);
+  return () => {
+    themeListeners.delete(onChange);
+  };
+}
+
 export default function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "theme",
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = React.useState<Theme>(defaultTheme);
-  const [mounted, setMounted] = React.useState(false);
+  // The server and hydration renders use `defaultTheme`, then React re-renders
+  // with the stored theme. `ScriptOnce` has already painted the right theme.
+  const theme = React.useSyncExternalStore(
+    subscribeToTheme,
+    () => readStoredTheme(storageKey, defaultTheme),
+    () => defaultTheme,
+  );
 
-  // Read localStorage in an effect so the first client render matches the
-  // server's. `ScriptOnce` has already painted the right theme.
-  /* eslint-disable react-hooks/set-state-in-effect -- see the note above */
+  // Re-apply the stored theme after hydration, then follow the OS setting
+  // while it is "system".
   React.useEffect(() => {
-    const stored = localStorage.getItem(storageKey);
-    setThemeState(
-      stored === "light" || stored === "dark" || stored === "system"
-        ? stored
-        : defaultTheme,
-    );
-    setMounted(true);
-  }, [defaultTheme, storageKey]);
-  /* eslint-enable react-hooks/set-state-in-effect */
-
-  React.useEffect(() => {
-    if (!mounted) return;
-    applyTheme(theme);
-  }, [theme, mounted]);
-
-  React.useEffect(() => {
-    if (!mounted || theme !== "system") return;
+    applyTheme(readStoredTheme(storageKey, defaultTheme));
 
     const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => applyTheme("system");
+    const onChange = () => {
+      if (readStoredTheme(storageKey, defaultTheme) === "system") {
+        applyTheme("system");
+      }
+    };
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
-  }, [theme, mounted]);
+  }, [defaultTheme, storageKey]);
 
   const setTheme = React.useCallback(
     (next: Theme) => {
       localStorage.setItem(storageKey, next);
-      setThemeState(next);
+      applyTheme(next);
+      for (const listener of themeListeners) listener();
     },
     [storageKey],
   );
