@@ -31,15 +31,16 @@ export const updateCurrentUser = mutation({
   },
 });
 
+/**
+ * The signed-in user's row, or `null` when signed out. Throws `USER_NOT_FOUND`
+ * if `/auth/callback` failed to create it (see `src/pages/auth/Callback.tsx`).
+ */
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new ConvexError({
-        code: "UNAUTHENTICATED",
-        message: "Called getCurrentUser without authentication present",
-      });
+      return null;
     }
     const user = await ctx.db
       .query("users")
@@ -47,6 +48,13 @@ export const getCurrentUser = query({
         q.eq("tokenIdentifier", identity.tokenIdentifier),
       )
       .unique();
+    if (user === null) {
+      throw new ConvexError({
+        code: "USER_NOT_FOUND",
+        message:
+          "The signed-in user has no account record yet. Sign out and sign in again.",
+      });
+    }
     return user;
   },
 });
