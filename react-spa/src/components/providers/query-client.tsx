@@ -5,7 +5,7 @@ import {
 
 const queryClient = new QueryClient();
 
-export function QueryClientProvider({
+export default function QueryClientProvider({
   children,
 }: {
   children: React.ReactNode;

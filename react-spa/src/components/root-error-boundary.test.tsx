@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Link, MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { RootErrorBoundary } from "./root-error-boundary.tsx";
+import RootErrorBoundary from "./root-error-boundary.tsx";
 
 const page = { shouldThrow: true };
 

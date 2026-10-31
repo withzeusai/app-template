@@ -1,6 +1,10 @@
 import { HerculesAuthProvider } from "@usehercules/auth/react";
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export default function AuthProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <HerculesAuthProvider
       authority={import.meta.env.VITE_HERCULES_OIDC_AUTHORITY!}

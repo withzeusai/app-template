@@ -3,7 +3,10 @@ import {
   type ThemeProviderProps,
 } from "next-themes";
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+export default function ThemeProvider({
+  children,
+  ...props
+}: ThemeProviderProps) {
   return (
     <NextThemeProvider
       attribute="class"

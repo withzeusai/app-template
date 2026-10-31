@@ -16,7 +16,11 @@ import {
  * `useQuery`, and shows a recoverable error screen instead of a blank app.
  * "Try again", navigating to another page, or a hot update clears it.
  */
-export function RootErrorBoundary({ children }: { children: ReactNode }) {
+export default function RootErrorBoundary({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const { pathname } = useLocation();
   const queryErrorResetBoundary = useQueryErrorResetBoundary();
 
