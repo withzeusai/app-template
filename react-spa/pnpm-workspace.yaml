@@ -16,7 +16,7 @@ allowBuilds:
   esbuild: true
 
 overrides:
-  # GHSA-rfgv-xxqx-mfg5 batch, fixed in 8.10.2. Held on 8.10.x: 8.11.0 breaks
-  # gzip/br decoding in Node's built-in fetch over HTTP/2 when an undici 8
-  # Agent is the global dispatcher.
-  "undici@8": "~8.10.2"
+  # GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472, and GHSA-xjj6-f33q-929c, fixed
+  # in 8.12.2. 8.12.0 also fixed the 8.11.0 HTTP/2 gzip/br regression that
+  # held this on 8.10.x. Matches the hercules.app monorepo.
+  "undici@8": "^8.12.2"
