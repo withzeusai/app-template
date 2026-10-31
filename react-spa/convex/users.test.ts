@@ -11,17 +11,17 @@ describe("getCurrentUser", () => {
     expect(await t.query(api.users.getCurrentUser, {})).toBeNull();
   });
 
-  it("throws USER_NOT_FOUND for a signed-in user with no row", async () => {
+  it("throws NOT_FOUND for a signed-in user with no row", async () => {
     const asUser = convexTest(schema, modules).withIdentity({ name: "Ada" });
 
     await expect(
       asUser.query(api.users.getCurrentUser, {}),
     ).rejects.toMatchObject({
-      data: { code: "USER_NOT_FOUND" },
+      data: { code: "NOT_FOUND" },
     });
   });
 
-  it("returns the row updateCurrentUser created", async () => {
+  it("returns only the public fields of the row updateCurrentUser created", async () => {
     const asUser = convexTest(schema, modules).withIdentity({
       name: "Ada",
       email: "ada@example.com",
@@ -29,10 +29,9 @@ describe("getCurrentUser", () => {
 
     const userId = await asUser.mutation(api.users.updateCurrentUser, {});
 
-    expect(await asUser.query(api.users.getCurrentUser, {})).toMatchObject({
+    expect(await asUser.query(api.users.getCurrentUser, {})).toEqual({
       _id: userId,
       name: "Ada",
-      email: "ada@example.com",
     });
   });
 });

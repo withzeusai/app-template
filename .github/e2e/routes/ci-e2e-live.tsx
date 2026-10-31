@@ -15,6 +15,7 @@ export const Route = createFileRoute("/ci-e2e-live")({
 function LivePage() {
   const { data, isPending } = useQuery(currentUserQuery);
   let text = "pending";
-  if (!isPending) text = data === null ? "anonymous result" : data.email;
+  if (!isPending)
+    text = data === null ? "anonymous result" : (data?.name ?? "");
   return <p data-testid="live-user">{text}</p>;
 }
