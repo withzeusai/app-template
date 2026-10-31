@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { site } from "@/lib/site.ts";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: site.name },
+      { name: "description", content: site.tagline },
+    ],
+  }),
   component: Index,
 });
 
