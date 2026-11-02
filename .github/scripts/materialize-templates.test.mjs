@@ -72,6 +72,26 @@ test("materializes the react-spa template as a Vite single-page app", async () =
   await access(path.join(root, "src/App.tsx"));
 });
 
+test("materializes the react-spa-fundulus template as react-spa on Fundulus", async () => {
+  const root = path.join(outputRoot, "react-spa-fundulus");
+  const packageJson = await readPackageJson("react-spa-fundulus");
+
+  assert.equal(packageJson.scripts.build, "tsc -b && vite build");
+  assert.ok(packageJson.dependencies["react-router-dom"]);
+  assert.ok(packageJson.dependencies.fundulus);
+  assert.ok(packageJson.devDependencies["@fundulus/server"]);
+  // Nothing of Convex's comes along.
+  assert.equal(packageJson.dependencies.convex, undefined);
+  assert.equal(packageJson.devDependencies["convex-test"], undefined);
+  await assert.rejects(readFile(path.join(root, "convex/schema.ts")));
+
+  await access(path.join(root, "backend/schema.ts"));
+  await access(path.join(root, "backend/fundulus.config.ts"));
+  // Generated and committed, so the app type checks before any codegen.
+  await access(path.join(root, "backend/.fundulus/api.ts"));
+  await access(path.join(root, "src/App.tsx"));
+});
+
 test("materializes the tanstack-start template as a TanStack Start app", async () => {
   const root = path.join(outputRoot, "tanstack-start");
   const packageJson = await readPackageJson("tanstack-start");

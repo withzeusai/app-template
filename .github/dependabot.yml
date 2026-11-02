@@ -15,6 +15,7 @@ updates:
     # Every template directory. Each one gets its own update pull requests.
     directories:
       - /react-spa
+      - /react-spa-fundulus
       - /tanstack-start
     schedule:
       interval: weekly
@@ -22,8 +23,9 @@ updates:
     # 7-day cooldown so freshly published versions sit out the typical window
     # for npm supply-chain attacks before Dependabot proposes them. This is
     # stricter than the 3-day `minimumReleaseAge` in pnpm-workspace.yaml,
-    # which governs ad-hoc installs. First-party `@usehercules/*` packages
-    # are excluded to mirror the pnpm `minimumReleaseAgeExclude` list.
+    # which governs ad-hoc installs. First-party `@usehercules/*` and
+    # Fundulus packages are excluded to mirror the pnpm
+    # `minimumReleaseAgeExclude` list.
     cooldown:
       default-days: 7
       semver-major-days: 7
@@ -33,6 +35,8 @@ updates:
         - "*"
       exclude:
         - "@usehercules/*"
+        - fundulus
+        - "@fundulus/*"
     groups:
       radix-ui:
         patterns:
