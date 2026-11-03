@@ -78,7 +78,7 @@ test("materializes the react-spa-olympus template as react-spa on Olympus", asyn
 
   assert.equal(packageJson.scripts.build, "tsc -b && vite build");
   assert.ok(packageJson.dependencies["react-router-dom"]);
-  assert.ok(packageJson.dependencies.olympus);
+  assert.ok(packageJson.dependencies["@usehercules/olympus"]);
   assert.ok(packageJson.devDependencies["@usehercules/olympus-server"]);
   // Nothing of Convex's comes along.
   assert.equal(packageJson.dependencies.convex, undefined);
