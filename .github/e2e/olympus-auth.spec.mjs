@@ -1,17 +1,17 @@
 import { expect, test } from "@playwright/test";
 
-// Runs against react-spa-fundulus's production build with a real
-// fundulus-server and a mock OpenID provider (see run-spa.mjs). Every test
+// Runs against react-spa-olympus's production build with a real
+// olympus-server and a mock OpenID provider (see run-spa.mjs). Every test
 // signs in as the same user; the config runs them one at a time.
 
 const USER_EMAIL = process.env.E2E_USER_EMAIL;
 
 /**
- * Collect every message on the Fundulus sync socket, in order, as
+ * Collect every message on the Olympus sync socket, in order, as
  * `sent:<type>` and `received:<type>`. Authenticate messages say whether they
  * carry a token: `sent:Authenticate(token)` or `sent:Authenticate(null)`.
  */
-function recordFundulusMessages(page) {
+function recordOlympusMessages(page) {
   const messages = [];
   page.on("websocket", (socket) => {
     if (!socket.url().includes("/sync")) return;
@@ -57,7 +57,7 @@ async function signIn(page) {
 test("signing in stores the user's row, and their queries run as them", async ({
   page,
 }) => {
-  const messages = recordFundulusMessages(page);
+  const messages = recordOlympusMessages(page);
   const errors = recordErrors(page);
   await signIn(page);
   await expect(page.getByTestId("current-user")).toHaveText(USER_EMAIL);
@@ -72,7 +72,7 @@ test("signing in stores the user's row, and their queries run as them", async ({
   expect.soft(errors).toEqual([]);
 
   // A full reload keeps the session, and sends the token before the query.
-  const reloaded = recordFundulusMessages(page);
+  const reloaded = recordOlympusMessages(page);
   await page.reload();
   await expect(page.getByTestId("current-user")).toHaveText(USER_EMAIL);
   const after = reloaded.join(", ");
@@ -83,7 +83,7 @@ test("signing in stores the user's row, and their queries run as them", async ({
 });
 
 test("a signed-out visitor sends no token", async ({ page }) => {
-  const messages = recordFundulusMessages(page);
+  const messages = recordOlympusMessages(page);
   const errors = recordErrors(page);
   await page.goto("/ci-e2e");
   await expect(page.getByTestId("sign-in")).toBeVisible();

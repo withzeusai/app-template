@@ -3,8 +3,8 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
 // Unit-test config for this app. Two projects run in one command:
-//   - "backend"  backend functions, run on a real fundulus-server through
-//                fundulus/test: each test deploys backend/ to a new database
+//   - "backend"  backend functions, run on a real olympus-server through
+//                olympus/test: each test deploys backend/ to a new database
 //   - "frontend" React components and logic, run in jsdom via Testing Library
 //
 // Keep tests hermetic: the backend tests' server is local and started for the run;
@@ -28,7 +28,7 @@ export default defineConfig({
           name: "backend",
           environment: "node",
           include: ["backend/**/*.test.{ts,js}"],
-          globalSetup: ["fundulus/test/setup"],
+          globalSetup: ["@usehercules/olympus/test/setup"],
         },
       },
       {

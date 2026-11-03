@@ -1,6 +1,6 @@
-import { fundulusTest } from "fundulus/test";
+import { olympusTest } from "@usehercules/olympus/test";
 import { describe, expect, it } from "vitest";
-import { api } from "./.fundulus/api";
+import { api } from "./.olympus/api";
 
 // Hercules sets these on the app's databases; tests set their own.
 const env = {
@@ -11,7 +11,7 @@ const env = {
 
 describe("users", () => {
   it("stores the signed-in user once", async () => {
-    const backend = await fundulusTest({ env });
+    const backend = await olympusTest({ env });
     const ada = backend.as({
       subject: "ada",
       name: "Ada",
@@ -28,7 +28,7 @@ describe("users", () => {
   });
 
   it("refuses callers who aren't signed in", async () => {
-    const backend = await fundulusTest({ env });
+    const backend = await olympusTest({ env });
     await expect(backend.query(api.users.getCurrentUser)).rejects.toMatchObject(
       { data: { code: "UNAUTHENTICATED" } },
     );

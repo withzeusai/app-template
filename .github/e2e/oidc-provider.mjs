@@ -11,7 +11,7 @@ import { createServer } from "node:https";
 // Hercules Auth. It serves just what the templates' consumers read:
 // `@usehercules/auth-tanstack` on the server and `@usehercules/auth` in the
 // browser, which needs CORS (discovery, authorization code with PKCE,
-// refresh, end session), and the Convex and Fundulus backends (discovery and
+// refresh, end session), and the Convex and Olympus backends (discovery and
 // JWKS, to verify ID tokens). Every authorization request signs in the same
 // test user at once, with no login page.
 //

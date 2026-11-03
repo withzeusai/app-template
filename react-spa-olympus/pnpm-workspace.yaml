@@ -11,8 +11,6 @@ blockExoticSubdeps: true
 minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - "@usehercules/*"
-  - fundulus
-  - "@fundulus/*"
 allowBuilds:
   "@swc/core": true
   esbuild: true

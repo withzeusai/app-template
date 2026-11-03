@@ -1,5 +1,5 @@
 {
-  /* The environment Fundulus functions run in: V8 with the web APIs of the WinterTC
+  /* The environment Olympus functions run in: V8 with the web APIs of the WinterTC
    * Minimum Common API, no Node. Used to type check them, and their tests.
    */
   "compilerOptions": {

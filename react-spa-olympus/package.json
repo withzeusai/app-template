@@ -11,8 +11,8 @@
     "lint": "eslint . --max-warnings=0",
     "prettier-fix": "prettier --write .",
     "prettier-check": "prettier --check .",
-    "backend": "fundulus dev",
-    "codegen": "fundulus codegen"
+    "backend": "olympus dev",
+    "codegen": "olympus codegen"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -25,7 +25,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.4.0",
     "embla-carousel-react": "^8.6.0",
-    "fundulus": "^0.1.0",
+    "@usehercules/olympus": "^0.1.0",
     "input-otp": "^1.5.0",
     "lucide-react": "^1.59.0",
     "motion": "^14.3.0",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@fundulus/server": "^0.1.0",
+    "@usehercules/olympus-server": "^0.1.0",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "^7.0.1",

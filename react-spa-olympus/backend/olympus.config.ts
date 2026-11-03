@@ -1,4 +1,4 @@
-import { defineConfig, fromEnv, t } from "fundulus/server";
+import { defineConfig, fromEnv, t } from "@usehercules/olympus/server";
 
 export default defineConfig({
   // Hercules sets these on the app's databases. A deploy fails if one is missing.

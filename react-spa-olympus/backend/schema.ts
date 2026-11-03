@@ -1,4 +1,4 @@
-import { schema, t, table } from "fundulus/server";
+import { schema, t, table } from "@usehercules/olympus/server";
 
 export default schema({
   users: table({

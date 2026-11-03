@@ -1,11 +1,11 @@
-import { FundulusError, mutation, query } from "./.fundulus/server";
+import { OlympusError, mutation, query } from "./.olympus/server";
 
 export const updateCurrentUser = mutation({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new FundulusError({
+      throw new OlympusError({
         code: "UNAUTHENTICATED",
         message: "User not logged in",
       });
@@ -35,7 +35,7 @@ export const getCurrentUser = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new FundulusError({
+      throw new OlympusError({
         code: "UNAUTHENTICATED",
         message: "Called getCurrentUser without authentication present",
       });
