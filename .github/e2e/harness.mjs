@@ -6,7 +6,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import { promisify } from "node:util";
 
 // What the end-to-end runners share (run.mjs for tanstack-start on Convex,
-// run-spa.mjs for react-spa-fundulus): running commands and background
+// run-spa.mjs for react-spa-olympus): running commands and background
 // processes, and the throwaway CA the mock OpenID provider's certificate comes
 // from.
 

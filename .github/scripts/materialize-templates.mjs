@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const execFileAsync = promisify(execFile);
 
 /** Every template directory at the repository root. */
-export const templates = ["react-spa", "react-spa-fundulus", "tanstack-start"];
+export const templates = ["react-spa", "react-spa-olympus", "tanstack-start"];
 
 function containsPath(parent, child) {
   const relative = path.relative(parent, child);

@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useAuthCallback } from "@usehercules/auth/react";
-import { useFundulusAuth, useMutation } from "fundulus/react";
-import { api } from "@/backend/.fundulus/api";
+import { useOlympusAuth, useMutation } from "@usehercules/olympus/react";
+import { api } from "@/backend/.olympus/api";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import {
@@ -26,7 +26,7 @@ export default function AuthCallback({
 }: AuthCallbackProps): React.JSX.Element {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isAuthenticated: isBackendAuthenticated } = useFundulusAuth();
+  const { isAuthenticated: isBackendAuthenticated } = useOlympusAuth();
   const updateCurrentUser = useMutation(api.users.updateCurrentUser);
 
   const onSync = useCallback(async () => {

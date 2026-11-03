@@ -1,11 +1,11 @@
-import { useFundulusAuth, useQuery } from "fundulus/react";
-import { api } from "@/backend/.fundulus/api";
+import { useOlympusAuth, useQuery } from "@usehercules/olympus/react";
+import { api } from "@/backend/.olympus/api";
 import { SignInButton } from "@/components/ui/signin.tsx";
 
 // The private page the app builder is taught to write: gated on whether the
 // backend has the user's token, its query running only once it does.
 export default function CiE2e() {
-  const { isLoading, isAuthenticated } = useFundulusAuth();
+  const { isLoading, isAuthenticated } = useOlympusAuth();
   if (isLoading) return <p>Loading</p>;
   if (!isAuthenticated) return <SignInButton data-testid="sign-in" />;
   return (

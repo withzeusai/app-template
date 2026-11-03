@@ -29,8 +29,8 @@ vi.mock("@usehercules/auth/react", () => ({
   useAuth: () => ({ user: { state: mocks.userState } }),
 }));
 
-vi.mock("fundulus/react", () => ({
-  useFundulusAuth: () => ({
+vi.mock("@usehercules/olympus/react", () => ({
+  useOlympusAuth: () => ({
     isAuthenticated: mocks.backendAuthenticated,
     isLoading: false,
   }),

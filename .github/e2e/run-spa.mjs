@@ -11,10 +11,10 @@ import {
 } from "./harness.mjs";
 import { startOidcProvider, TEST_USER } from "./oidc-provider.mjs";
 
-// End-to-end check of sign-in in the react-spa-fundulus template: its
+// End-to-end check of sign-in in the react-spa-olympus template: its
 // production build, served by `vite preview`, signs in through a mock OpenID
-// provider in the browser and talks to a real fundulus-server, started from
-// the app's own @fundulus/server. The checks pass when, for example, the user's
+// provider in the browser and talks to a real olympus-server, started from
+// the app's own @usehercules/olympus-server. The checks pass when, for example, the user's
 // row is never made because the callback's mutation ran before the backend had
 // the token.
 //
@@ -73,11 +73,11 @@ async function main() {
     );
 
     const server = startBackground(
-      "fundulus-server",
+      "olympus-server",
       "pnpm",
       [
         "exec",
-        "fundulus-server",
+        "olympus-server",
         "--dev",
         "--addr",
         SERVER_ADDR,
@@ -99,7 +99,7 @@ async function main() {
     });
 
     // The variables first: a deploy without the declared ones fails.
-    const cli = ["exec", "fundulus", "--url", SERVER_URL, "--db", DB];
+    const cli = ["exec", "olympus", "--url", SERVER_URL, "--db", DB];
     for (const [name, value] of [
       ["HERCULES_OIDC_AUTHORITY", provider.issuer],
       ["HERCULES_OIDC_CLIENT_ID", CLIENT_ID],
@@ -113,8 +113,8 @@ async function main() {
       ...process.env,
       VITE_HERCULES_OIDC_AUTHORITY: provider.issuer,
       VITE_HERCULES_OIDC_CLIENT_ID: CLIENT_ID,
-      VITE_FUNDULUS_URL: SERVER_URL,
-      VITE_FUNDULUS_DB: DB,
+      VITE_OLYMPUS_URL: SERVER_URL,
+      VITE_OLYMPUS_DB: DB,
     };
     await run("pnpm", ["build"], { cwd: appDir, env: appEnv });
 
@@ -153,7 +153,7 @@ async function main() {
             ...process.env,
             E2E_BASE_URL: BASE_URL,
             E2E_USER_EMAIL: TEST_USER.email,
-            E2E_SPECS: "fundulus-*.spec.mjs",
+            E2E_SPECS: "olympus-*.spec.mjs",
           },
         },
       );
