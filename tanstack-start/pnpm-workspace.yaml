@@ -16,3 +16,7 @@ onlyBuiltDependencies:
 
 packages:
   - .
+
+overrides:
+  # GHSA-rj75-hqrm-r3gf, fixed in 6.1.5 (@tailwindcss/typography's copy).
+  "postcss-selector-parser@6": "^6.1.5"
