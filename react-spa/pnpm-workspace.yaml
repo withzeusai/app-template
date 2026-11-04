@@ -16,7 +16,8 @@ allowBuilds:
   esbuild: true
 
 overrides:
-  # GHSA-rfgv-xxqx-mfg5 batch, fixed in 8.10.2. Held on 8.10.x: 8.11.0 breaks
-  # gzip/br decoding in Node's built-in fetch over HTTP/2 when an undici 8
-  # Agent is the global dispatcher.
-  "undici@8": "~8.10.2"
+  # GHSA-xjj6-f33q-929c, GHSA-4w7w-5xrc-9h26, GHSA-2m5v-pch6-74hx,
+  # GHSA-qrxm-fqhp-jwvm and four moderates, fixed in 8.12.2 (jsdom's copy).
+  "undici@8": "^8.12.2"
+  # GHSA-rj75-hqrm-r3gf, fixed in 6.1.5 (@tailwindcss/typography's copy).
+  "postcss-selector-parser@6": "^6.1.5"
