@@ -71,6 +71,14 @@ jobs:
           pnpm generate-routes
           diff -u "$RUNNER_TEMP/routeTree.gen.ts" src/routeTree.gen.ts
 
+      # Tests that must not ship to apps live in .github/template-tests. Copy
+      # them into the materialized copy so lint, type check, and test cover them.
+      - name: Add repository tests
+        if: matrix.template == 'tanstack-start'
+        run: |
+          cp -R .github/template-tests/tanstack-start/. \
+            /tmp/app-templates/tanstack-start/
+
       - name: Lint
         working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm lint

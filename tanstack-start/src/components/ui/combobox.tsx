@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -158,26 +159,42 @@ function ComboboxItem({
   );
 }
 
+// Base UI's GroupLabel throws outside a group, so a label outside one renders
+// a plain element instead, as Radix labels do.
+const ComboboxGroupContext = React.createContext(false);
+
 function ComboboxGroup({ className, ...props }: ComboboxPrimitive.Group.Props) {
   return (
-    <ComboboxPrimitive.Group
-      data-slot="combobox-group"
-      className={cn(className)}
-      {...props}
-    />
+    <ComboboxGroupContext.Provider value>
+      <ComboboxPrimitive.Group
+        data-slot="combobox-group"
+        className={cn(className)}
+        {...props}
+      />
+    </ComboboxGroupContext.Provider>
   );
 }
 
 function ComboboxLabel({
   className,
+  render,
   ...props
 }: ComboboxPrimitive.GroupLabel.Props) {
+  const inGroup = React.useContext(ComboboxGroupContext);
+  const labelProps = {
+    "data-slot": "combobox-label",
+    className: cn("px-2 py-1.5 text-xs text-muted-foreground", className),
+    ...props,
+  };
+  const plainLabel = useRender({
+    render,
+    props: labelProps,
+    enabled: !inGroup,
+  });
   return (
-    <ComboboxPrimitive.GroupLabel
-      data-slot="combobox-label"
-      className={cn("px-2 py-1.5 text-xs text-muted-foreground", className)}
-      {...props}
-    />
+    plainLabel ?? (
+      <ComboboxPrimitive.GroupLabel render={render} {...labelProps} />
+    )
   );
 }
 

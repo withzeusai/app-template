@@ -1,17 +1,24 @@
 import * as React from "react";
 import { Select as SelectPrimitive } from "@base-ui/react/select";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react";
 
 const Select = SelectPrimitive.Root;
 
+// Base UI's GroupLabel throws outside a group, so a label outside one renders
+// a plain element instead, as Radix labels do.
+const SelectGroupContext = React.createContext(false);
+
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   return (
-    <SelectPrimitive.Group
-      data-slot="select-group"
-      className={cn("scroll-my-1 p-1", className)}
-      {...props}
-    />
+    <SelectGroupContext.Provider value>
+      <SelectPrimitive.Group
+        data-slot="select-group"
+        className={cn("scroll-my-1 p-1", className)}
+        {...props}
+      />
+    </SelectGroupContext.Provider>
   );
 }
 
@@ -97,14 +104,22 @@ function SelectContent({
 
 function SelectLabel({
   className,
+  render,
   ...props
 }: SelectPrimitive.GroupLabel.Props) {
+  const inGroup = React.useContext(SelectGroupContext);
+  const labelProps = {
+    "data-slot": "select-label",
+    className: cn("px-2 py-1.5 text-xs text-muted-foreground", className),
+    ...props,
+  };
+  const plainLabel = useRender({
+    render,
+    props: labelProps,
+    enabled: !inGroup,
+  });
   return (
-    <SelectPrimitive.GroupLabel
-      data-slot="select-label"
-      className={cn("px-2 py-1.5 text-xs text-muted-foreground", className)}
-      {...props}
-    />
+    plainLabel ?? <SelectPrimitive.GroupLabel render={render} {...labelProps} />
   );
 }
 

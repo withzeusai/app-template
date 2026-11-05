@@ -30,7 +30,9 @@ bump, an auth fix) can land in one pull request that edits each directory.
 `ci.yml` copies each template's tracked files out of the repository and runs
 its install, lint, format check, type checks, build, and tests.
 `tanstack-start` also checks its committed route tree and runs an SSR smoke
-test against a production build.
+test against a production build. Tests that must not ship to apps live in
+`.github/template-tests/<template>/`, and CI copies them into the template
+before its checks.
 
 The `e2e` job serves `tanstack-start`'s production build against a local
 Convex backend (an anonymous deployment, no Convex account) and a mock
