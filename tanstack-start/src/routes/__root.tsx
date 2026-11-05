@@ -23,6 +23,11 @@ import { useAuthErrorToast } from "@/hooks/use-auth-error-toast.ts";
 import { site } from "@/lib/site.ts";
 import appCss from "@/index.css?url";
 
+// The app's fonts, from Google Fonts. To change fonts, edit this URL and the
+// `--font-*` families in `src/index.css`; no font package is needed.
+const FONTS_URL =
+  "https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap";
+
 // The client reuses one session snapshot across navigations (`getAuthAction`
 // is a round trip) until it is a minute old or the tab was hidden.
 const CLIENT_AUTH_TTL_MS = 60_000;
@@ -84,6 +89,13 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [
       { rel: "icon", href: "/favicon.ico" },
+      // The stylesheet's font files come from here.
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      { rel: "stylesheet", href: FONTS_URL },
       { rel: "stylesheet", href: appCss },
     ],
   }),
