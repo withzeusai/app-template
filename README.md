@@ -53,6 +53,16 @@ On every push to `main`, `package-and-upload.yml` uploads each template to the
 | `main.tar.gz`                      | `react-spa`, at its older path, which Hercules reads |
 | `releases/<sha>/legacy.tar.gz`     | `react-spa`, immutable, at its older path            |
 
+`tanstack-start`'s tarballs also hold Vite's dependency cache
+(`node_modules/.vite`), so a new app's first dev server start reuses it
+instead of bundling the dependencies. Vite reuses it only while its hash
+matches, and the hash includes the app's absolute path, its aliases and its
+plugins, so `.github/scripts/warm-vite-cache.mjs` builds it at
+`/home/dev-user/app` (where dev machines keep the app) with
+`HERCULES_DEV_MACHINE=1` and the dev machines' pnpm version, then checks that a
+fresh copy reuses it. The `vite-cache` job in `ci.yml` runs the same check on
+every pull request. If the cache cannot be built, the tarball ships without it.
+
 ## Adding a template
 
 1. Add the template as a new top-level directory with its own `package.json`
