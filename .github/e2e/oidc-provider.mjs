@@ -7,12 +7,13 @@ import {
 } from "node:crypto";
 import { createServer } from "node:https";
 
-// A minimal OpenID provider for the auth end-to-end test, standing in for
-// Hercules Auth. It serves just what the template's two consumers read:
-// `@usehercules/auth-tanstack` (discovery, authorization code with PKCE,
-// refresh, end session) and the Convex backend (discovery and JWKS, to verify
-// ID tokens). Every authorization request signs in the same test user at
-// once, with no login page.
+// A minimal OpenID provider for the auth end-to-end tests, standing in for
+// Hercules Auth. It serves just what the templates' consumers read:
+// `@usehercules/auth-tanstack` on the server and `@usehercules/auth` in the
+// browser, which needs CORS (discovery, authorization code with PKCE,
+// refresh, end session), and the Convex and Olympus backends (discovery and
+// JWKS, to verify ID tokens). Every authorization request signs in the same
+// test user at once, with no login page.
 //
 // It must be HTTPS: openid-client refuses plain HTTP issuers.
 
@@ -88,10 +89,18 @@ export async function startOidcProvider({ key, cert, clientId, port = 0 }) {
     };
   }
 
+  // A browser's client (react-spa) fetches discovery and tokens itself.
+  const cors = {
+    "access-control-allow-origin": "*",
+    "access-control-allow-headers": "content-type, authorization",
+    "access-control-allow-methods": "GET, POST, OPTIONS",
+  };
+
   function json(response, status, body) {
     response.writeHead(status, {
       "content-type": "application/json",
       "cache-control": "no-store",
+      ...cors,
     });
     response.end(JSON.stringify(body));
   }
@@ -174,6 +183,11 @@ export async function startOidcProvider({ key, cert, clientId, port = 0 }) {
     const url = new URL(request.url ?? "/", issuer);
     const route = `${request.method} ${url.pathname}`;
     const handle = async () => {
+      if (request.method === "OPTIONS") {
+        response.writeHead(204, cors);
+        response.end();
+        return;
+      }
       switch (route) {
         case "GET /.well-known/openid-configuration":
           json(response, 200, {

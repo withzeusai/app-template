@@ -15,6 +15,7 @@ updates:
     # Every template directory. Each one gets its own update pull requests.
     directories:
       - /react-spa
+      - /react-spa-olympus
       - /tanstack-start
     schedule:
       interval: weekly

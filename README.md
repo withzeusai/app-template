@@ -3,10 +3,11 @@
 The starting points Hercules scaffolds new apps from. Each top-level directory
 is one complete template:
 
-| Directory         | `templateKind`   | Stack                                                        |
-| ----------------- | ---------------- | ------------------------------------------------------------ |
-| `react-spa/`      | `react-spa`      | Vite and React Router single-page app, Convex, Hercules auth |
-| `tanstack-start/` | `tanstack-start` | TanStack Start on Cloudflare Workers, Convex, Hercules auth  |
+| Directory            | `templateKind`      | Stack                                                        |
+| -------------------- | ------------------- | ------------------------------------------------------------ |
+| `react-spa/`         | `react-spa`         | Vite and React Router single-page app, Convex, Hercules auth |
+| `react-spa-olympus/` | `react-spa-olympus` | `react-spa` on Olympus instead of Convex                     |
+| `tanstack-start/`    | `tanstack-start`    | TanStack Start on Cloudflare Workers, Convex, Hercules auth  |
 
 Everything inside a template directory ships to every app made from it.
 Repository tooling lives only in `.github/`.
