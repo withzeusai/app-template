@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu";
+import { useRender } from "@base-ui/react/use-render";
 import { cn } from "@/lib/utils";
 import { ChevronRightIcon, CheckIcon } from "lucide-react";
 
@@ -62,29 +63,45 @@ function ContextMenuContent({
   );
 }
 
+// Base UI's GroupLabel throws outside a group, so a label outside one renders
+// a plain element instead, as Radix labels do.
+const ContextMenuGroupContext = React.createContext(false);
+
 function ContextMenuGroup({ ...props }: ContextMenuPrimitive.Group.Props) {
   return (
-    <ContextMenuPrimitive.Group data-slot="context-menu-group" {...props} />
+    <ContextMenuGroupContext.Provider value>
+      <ContextMenuPrimitive.Group data-slot="context-menu-group" {...props} />
+    </ContextMenuGroupContext.Provider>
   );
 }
 
 function ContextMenuLabel({
   className,
   inset,
+  render,
   ...props
 }: ContextMenuPrimitive.GroupLabel.Props & {
   inset?: boolean;
 }) {
+  const inGroup = React.useContext(ContextMenuGroupContext);
+  const labelProps = {
+    "data-slot": "context-menu-label",
+    "data-inset": inset,
+    className: cn(
+      "px-2 py-1.5 text-xs font-medium text-muted-foreground data-inset:pl-8",
+      className,
+    ),
+    ...props,
+  };
+  const plainLabel = useRender({
+    render,
+    props: labelProps,
+    enabled: !inGroup,
+  });
   return (
-    <ContextMenuPrimitive.GroupLabel
-      data-slot="context-menu-label"
-      data-inset={inset}
-      className={cn(
-        "px-2 py-1.5 text-xs font-medium text-muted-foreground data-inset:pl-8",
-        className,
-      )}
-      {...props}
-    />
+    plainLabel ?? (
+      <ContextMenuPrimitive.GroupLabel render={render} {...labelProps} />
+    )
   );
 }
 
@@ -188,10 +205,12 @@ function ContextMenuRadioGroup({
   ...props
 }: ContextMenuPrimitive.RadioGroup.Props) {
   return (
-    <ContextMenuPrimitive.RadioGroup
-      data-slot="context-menu-radio-group"
-      {...props}
-    />
+    <ContextMenuGroupContext.Provider value>
+      <ContextMenuPrimitive.RadioGroup
+        data-slot="context-menu-radio-group"
+        {...props}
+      />
+    </ContextMenuGroupContext.Provider>
   );
 }
 
