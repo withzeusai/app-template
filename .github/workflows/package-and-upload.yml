@@ -25,6 +25,34 @@ jobs:
           node .github/scripts/materialize-templates.mjs \
             --output-dir /tmp/app-templates
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          # What dev machines run (PNPM_VERSION in hercules.app's
+          # docker/dev-image.dockerfile). The cache records each dependency's
+          # path under node_modules/.pnpm, whose names depend on the version.
+          version: 10.34.7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      # Ship tanstack-start with Vite's dependency cache, so a new app's first
+      # dev server start reuses it instead of bundling the dependencies. Vite
+      # hashes the app's absolute path, so the cache is built where dev
+      # machines keep the app. If it cannot be built or a fresh app would not
+      # reuse it, the tarball ships without it, as before.
+      - name: Warm the Vite dependency cache
+        run: |
+          sudo mkdir -p /home/dev-user/app
+          sudo chown -R "$(id -u):$(id -g)" /home/dev-user
+          node .github/scripts/warm-vite-cache.mjs \
+            --template-dir /tmp/app-templates/tanstack-start \
+            --app-dir /home/dev-user/app \
+            --environments client,ssr \
+            --best-effort
+
       - name: Create tarballs
         env:
           GITHUB_REF: ${{ github.ref }}
