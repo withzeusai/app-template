@@ -23,6 +23,11 @@ import { useAuthErrorToast } from "@/hooks/use-auth-error-toast.ts";
 import { site } from "@/lib/site.ts";
 import appCss from "@/index.css?url";
 
+// Hercules serves Google Fonts from the app's own origin. The path takes the
+// same query as https://fonts.googleapis.com/css2.
+const FONTS_HREF =
+  "/_hercules/font/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap";
+
 // The client reuses one session snapshot across navigations (`getAuthAction`
 // is a round trip) until it is a minute old or the tab was hidden.
 const CLIENT_AUTH_TTL_MS = 60_000;
@@ -84,6 +89,7 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [
       { rel: "icon", href: "/favicon.ico" },
+      { rel: "stylesheet", href: FONTS_HREF },
       { rel: "stylesheet", href: appCss },
     ],
   }),
