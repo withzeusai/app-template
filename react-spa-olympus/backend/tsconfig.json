@@ -1,0 +1,20 @@
+{
+  /* The environment Olympus functions run in: V8 with the web APIs of the WinterTC
+   * Minimum Common API, no Node. Used to type check them, and their tests.
+   */
+  "compilerOptions": {
+    "allowJs": true,
+    "strict": true,
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "types": ["node"],
+    "target": "ESNext",
+    "lib": ["ES2023", "dom"],
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["./**/*"]
+}

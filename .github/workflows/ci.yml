@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        template: [react-spa, tanstack-start]
+        template: [react-spa, react-spa-olympus, tanstack-start]
 
     steps:
       - name: Checkout repository
@@ -79,6 +79,16 @@ jobs:
           cp -R .github/template-tests/tanstack-start/. \
             /tmp/app-templates/tanstack-start/
 
+      # The generated backend code is committed, so the app type checks
+      # before codegen. Regenerate it and fail if it changed.
+      - name: Generate the backend's code
+        if: matrix.template == 'react-spa-olympus'
+        working-directory: /tmp/app-templates/${{ matrix.template }}
+        run: |
+          cp -r backend/.olympus "$RUNNER_TEMP/olympus-generated"
+          pnpm codegen
+          diff -ru "$RUNNER_TEMP/olympus-generated" backend/.olympus
+
       - name: Lint
         working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm lint
@@ -98,9 +108,17 @@ jobs:
         run: pnpm build
 
       - name: Type check Convex
+        if: matrix.template != 'react-spa-olympus'
         working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm exec tsc -p convex/tsconfig.json
 
+      - name: Type check the backend
+        if: matrix.template == 'react-spa-olympus'
+        working-directory: /tmp/app-templates/${{ matrix.template }}
+        run: pnpm exec tsc -p backend/tsconfig.json
+
+      # react-spa-olympus's backend tests run on a real olympus-server,
+      # which olympus/test starts from the template's @usehercules/olympus-server.
       - name: Test
         working-directory: /tmp/app-templates/${{ matrix.template }}
         run: pnpm test
@@ -173,6 +191,53 @@ jobs:
         run: |
           node .github/e2e/run.mjs \
             --app-dir /tmp/app-templates/tanstack-start
+
+  # react-spa-olympus signs in in the browser, against a real
+  # olympus-server and the same mock Hercules Auth: the checks above pass when
+  # the callback's mutation runs before the backend has the user's token.
+  e2e-spa:
+    name: e2e (react-spa-olympus)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: |
+            react-spa-olympus/pnpm-lock.yaml
+            .github/e2e/pnpm-lock.yaml
+
+      - name: Materialize templates
+        run: |
+          node .github/scripts/materialize-templates.mjs \
+            --output-dir /tmp/app-templates
+
+      - name: Install template dependencies
+        working-directory: /tmp/app-templates/react-spa-olympus
+        run: pnpm install --frozen-lockfile
+
+      - name: Install test dependencies
+        working-directory: .github/e2e
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install chromium
+
+      - name: Test
+        run: |
+          node .github/e2e/run-spa.mjs \
+            --app-dir /tmp/app-templates/react-spa-olympus
 
   dependency-review:
     runs-on: ubuntu-latest

@@ -1,9 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Started by run.mjs, which serves the app and passes its URL in.
+// Started by run.mjs or run-spa.mjs, which serve the app and pass its URL in,
+// and the specs for it.
 export default defineConfig({
   testDir: ".",
-  testMatch: "*.spec.mjs",
+  testMatch: process.env.E2E_SPECS ?? "*.spec.mjs",
   outputDir: "test-results",
   timeout: 60_000,
   expect: { timeout: 15_000 },

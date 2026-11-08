@@ -1,0 +1,24 @@
+packages:
+  - .
+
+onlyBuiltDependencies:
+  - "@swc/core"
+  - "@tailwindcss/oxide"
+  - esbuild
+
+blockExoticSubdeps: true
+
+minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - "@usehercules/*"
+allowBuilds:
+  "@swc/core": true
+  esbuild: true
+
+overrides:
+  # GHSA-g3hv-75wg-m249, fixed in 11.0.1. ESLint and typescript-eslint still
+  # ask for ^10 and only use `new Minimatch`, `match` and `minimatch()`, which
+  # 11 keeps.
+  "minimatch@^10": "^11.0.1"
+  # GHSA-rj75-hqrm-r3gf, fixed in 6.1.5. @tailwindcss/typography pins 6.0.10.
+  "postcss-selector-parser@6.0.10": "^6.1.5"
