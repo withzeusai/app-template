@@ -8,6 +8,16 @@ const USER_EMAIL = process.env.E2E_USER_EMAIL;
 // What `getCurrentUser` answers a caller without the session's token.
 const ANONYMOUS_RESULT = "anonymous result";
 
+// The root route links its fonts from /_hercules/font, which the dispatcher
+// and herculesd serve. `vite preview` does not, and the app's 404 page in its
+// place is HTML, which the browser refuses as a stylesheet with a console
+// error. Fonts are not under test, so answer with an empty stylesheet.
+test.beforeEach(async ({ page }) => {
+  await page.route("**/_hercules/font/**", (route) =>
+    route.fulfill({ contentType: "text/css", body: "" }),
+  );
+});
+
 /**
  * Collect the type of every message on the Convex sync socket, in order, as
  * `sent:<type>` and `received:<type>`. Authenticate messages carry their token
