@@ -43,6 +43,24 @@ function SmokePage() {
 }
 `;
 
+// `src/server.ts` wraps Start's handler, and what it adds only happens when
+// the Worker runs that entry. This route throws outside the router, which
+// Start answers with JSON and the entry turns into an HTML page for a browser.
+const CRASH_ROUTE_PATH = "/ci-ssr-smoke-crash";
+const CRASH_ROUTE_FILE = path.join("src", "routes", "ci-ssr-smoke-crash.tsx");
+const CRASH_ROUTE_SOURCE = `import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("${CRASH_ROUTE_PATH}")({
+  server: {
+    handlers: {
+      GET: () => {
+        throw new Error("ci-ssr-smoke-crash");
+      },
+    },
+  },
+});
+`;
+
 // Text that only appears when a render failed: the route error boundary's
 // heading (src/components/route-error.tsx) and the message of the crash this
 // check was added for.
@@ -171,18 +189,17 @@ async function checkPage({ path: pagePath, status, requiredText }) {
   return { pagePath, status: response.status, problems, html };
 }
 
-// Checks on responses rather than page content: the headers `src/server.ts`
-// adds to every response (missing when the Worker does not run that entry),
-// and the 405 the auth routes answer for methods other than GET and HEAD.
+// Checks on responses rather than page content: the error page
+// `src/server.ts` serves a browser in place of Start's JSON (JSON when the
+// Worker does not run that entry), and the 405 the auth routes answer for
+// methods other than GET and HEAD.
 const RESPONSE_CHECKS = [
   {
-    path: "/",
+    path: CRASH_ROUTE_PATH,
     method: "GET",
-    status: 200,
-    headers: {
-      "x-content-type-options": "nosniff",
-      "referrer-policy": "strict-origin-when-cross-origin",
-    },
+    accept: "text/html",
+    status: 500,
+    headers: { "content-type": "text/html; charset=utf-8" },
   },
   {
     path: "/auth/sign-in",
@@ -192,9 +209,16 @@ const RESPONSE_CHECKS = [
   },
 ];
 
-async function checkResponse({ path: pagePath, method, status, headers }) {
+async function checkResponse({
+  path: pagePath,
+  method,
+  accept,
+  status,
+  headers,
+}) {
   const response = await fetch(new URL(pagePath, BASE_URL), {
     method,
+    headers: accept === undefined ? {} : { accept },
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
   const html = await response.text();
@@ -216,14 +240,17 @@ async function checkResponse({ path: pagePath, method, status, headers }) {
 
 async function main() {
   const appDir = readAppDir(process.argv.slice(2));
-  const routeFile = path.join(appDir, SMOKE_ROUTE_FILE);
+  const routeFiles = [
+    [path.join(appDir, SMOKE_ROUTE_FILE), SMOKE_ROUTE_SOURCE],
+    [path.join(appDir, CRASH_ROUTE_FILE), CRASH_ROUTE_SOURCE],
+  ];
   const env = {
     ...process.env,
     VITE_CONVEX_URL: process.env.VITE_CONVEX_URL || PLACEHOLDER_CONVEX_URL,
   };
   let preview;
 
-  await writeFile(routeFile, SMOKE_ROUTE_SOURCE);
+  for (const [file, source] of routeFiles) await writeFile(file, source);
   try {
     await run("pnpm", ["build"], { cwd: appDir, env });
 
@@ -255,7 +282,7 @@ async function main() {
     }
   } finally {
     preview?.stop();
-    await rm(routeFile, { force: true });
+    for (const [file] of routeFiles) await rm(file, { force: true });
   }
 }
 
