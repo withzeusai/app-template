@@ -17,7 +17,7 @@ importers:
         version: 1.9.0(@date-fns/tz@1.5.0)(@types/react@19.3.0)(date-fns@4.4.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@convex-dev/react-query':
         specifier: ^0.1.0
-        version: 0.1.0(@tanstack/react-query@5.104.4(@types/react@19.3.0)(react@19.3.1))(convex@1.47.0(react@19.3.1))
+        version: 0.1.0(@tanstack/react-query@5.104.4(@types/react@19.3.0)(react@19.3.1))(convex@1.49.0(react@19.3.1))
       '@hookform/resolvers':
         specifier: ^5.9.2
         version: 5.9.2(@standard-schema/spec@1.1.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(zod@4.6.7)
@@ -38,7 +38,7 @@ importers:
         version: 1.169.3(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
       '@usehercules/auth-tanstack':
         specifier: ^1.1.0
-        version: 1.1.0(convex@1.47.0(react@19.3.1))(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
+        version: 1.1.0(convex@1.49.0(react@19.3.1))(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -49,8 +49,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       convex:
-        specifier: ^1.47.0
-        version: 1.47.0(react@19.3.1)
+        specifier: ^1.49.0
+        version: 1.49.0(react@19.3.1)
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -102,7 +102,7 @@ importers:
         version: 1.67.0(@types/node@26.6.5)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))(workerd@1.20261101.1)(wrangler@4.156.1(@types/node@26.6.5))
       '@convex-dev/eslint-plugin':
         specifier: ^5.0.0
-        version: 5.0.0(convex@1.47.0(react@19.3.1))(eslint@10.13.0(jiti@2.7.0))(typescript@6.0.3)
+        version: 5.0.0(convex@1.49.0(react@19.3.1))(eslint@10.13.0(jiti@2.7.0))(typescript@6.0.3)
       '@edge-runtime/vm':
         specifier: ^5.0.0
         version: 5.0.0
@@ -149,8 +149,8 @@ importers:
         specifier: ^6.1.2
         version: 6.1.2(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
       convex-test:
-        specifier: ^0.0.55
-        version: 0.0.55(convex@1.47.0(react@19.3.1))
+        specifier: ^0.0.71
+        version: 0.0.71(convex@1.49.0(react@19.3.1))
       eslint:
         specifier: ^10.13.0
         version: 10.13.0(jiti@2.7.0)
@@ -2275,14 +2275,14 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-  convex-test@0.0.55:
-    resolution: {integrity: sha512-ablJ6vR3WUpyTaYrrRQf8yxInGrhHyqBEQsCFzloda3G0MDEu2RMKNGUkvlBXYWPiiEP0UIKPS7gZuLbqGnvQw==}
+  convex-test@0.0.71:
+    resolution: {integrity: sha512-sHptDSWL0b2Og6to5R9/GoCHF7XGNXIAxQDJnA8UYYZa8yym9mfC03h3C47LS3Bj2BIO9lD0pKIv2H7dP+VKPA==}
     peerDependencies:
       convex: ^1.43.0
 
-  convex@1.47.0:
-    resolution: {integrity: sha512-B1z/lOmex7i09NASq8+2WG9rZLzGXXOSkpwGOpaNIvOs4awyW4RMgpVBjt8r2wvvHwhEBEsOr2pGYpulnmAxYQ==}
-    engines: {node: '>=20.0.0', npm: '>=7.0.0'}
+  convex@1.49.0:
+    resolution: {integrity: sha512-mkr9oXF8/arkCI1kvYyGytWd62oVXNABh4uwLeI4UQVN6Zuudm4DlmSzNUJKF63djk6f/uUXC+6ffuVSkPLvzA==}
+    engines: {node: '>=22.0.0', npm: '>=7.0.0'}
     hasBin: true
     peerDependencies:
       '@auth0/auth0-react': ^2.0.1
@@ -3855,20 +3855,20 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20261101.1':
     optional: true
 
-  '@convex-dev/eslint-plugin@5.0.0(convex@1.47.0(react@19.3.1))(eslint@10.13.0(jiti@2.7.0))(typescript@6.0.3)':
+  '@convex-dev/eslint-plugin@5.0.0(convex@1.49.0(react@19.3.1))(eslint@10.13.0(jiti@2.7.0))(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/types': 8.58.2
       '@typescript-eslint/utils': 8.58.2(eslint@10.13.0(jiti@2.7.0))(typescript@6.0.3)
-      convex: 1.47.0(react@19.3.1)
+      convex: 1.49.0(react@19.3.1)
     transitivePeerDependencies:
       - eslint
       - supports-color
       - typescript
 
-  '@convex-dev/react-query@0.1.0(@tanstack/react-query@5.104.4(@types/react@19.3.0)(react@19.3.1))(convex@1.47.0(react@19.3.1))':
+  '@convex-dev/react-query@0.1.0(@tanstack/react-query@5.104.4(@types/react@19.3.0)(react@19.3.1))(convex@1.49.0(react@19.3.1))':
     dependencies:
       '@tanstack/react-query': 5.104.4(@types/react@19.3.0)(react@19.3.1)
-      convex: 1.47.0(react@19.3.1)
+      convex: 1.49.0(react@19.3.1)
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -5210,11 +5210,11 @@ snapshots:
       '@typescript-eslint/types': 8.71.2
       eslint-visitor-keys: 5.0.1
 
-  '@usehercules/auth-tanstack@1.1.0(convex@1.47.0(react@19.3.1))(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))':
+  '@usehercules/auth-tanstack@1.1.0(convex@1.49.0(react@19.3.1))(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))':
     dependencies:
       '@tanstack/react-router': 1.170.45(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@tanstack/react-start': 1.169.3(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0))
-      convex: 1.47.0(react@19.3.1)
+      convex: 1.49.0(react@19.3.1)
       oauth4webapi: 3.8.8
       openid-client: 6.8.8
       react: 19.3.1
@@ -5418,11 +5418,11 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  convex-test@0.0.55(convex@1.47.0(react@19.3.1)):
+  convex-test@0.0.71(convex@1.49.0(react@19.3.1)):
     dependencies:
-      convex: 1.47.0(react@19.3.1)
+      convex: 1.49.0(react@19.3.1)
 
-  convex@1.47.0(react@19.3.1):
+  convex@1.49.0(react@19.3.1):
     dependencies:
       esbuild: 0.27.0
       prettier: 3.9.10
