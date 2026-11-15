@@ -74,10 +74,12 @@ jobs:
       # Tests that must not ship to apps live in .github/template-tests. Copy
       # them into the materialized copy so lint, type check, and test cover them.
       - name: Add repository tests
-        if: matrix.template == 'tanstack-start'
+        env:
+          TEMPLATE: ${{ matrix.template }}
         run: |
-          cp -R .github/template-tests/tanstack-start/. \
-            /tmp/app-templates/tanstack-start/
+          if [ -d ".github/template-tests/$TEMPLATE" ]; then
+            cp -R ".github/template-tests/$TEMPLATE/." "/tmp/app-templates/$TEMPLATE/"
+          fi
 
       # The generated backend code is committed, so the app type checks
       # before codegen. Regenerate it and fail if it changed.
