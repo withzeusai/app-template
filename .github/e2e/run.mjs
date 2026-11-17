@@ -121,6 +121,7 @@ async function main() {
         `HERCULES_OIDC_AUTHORITY=${provider.issuer}`,
         `HERCULES_OIDC_CLIENT_ID=${CLIENT_ID}`,
         `HERCULES_AUTH_COOKIE_PASSWORD=${"ci-e2e-cookie-password-".repeat(2)}`,
+        "HERCULES_API_KEY=ci-e2e-worker-api-key",
       ].join("\n") + "\n",
     );
 
