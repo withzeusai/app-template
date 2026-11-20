@@ -137,8 +137,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       '@usehercules/vite':
-        specifier: ^1.2.5
-        version: 1.2.5(vite@8.3.5(@types/node@26.6.6)(esbuild@0.27.0)(jiti@2.7.0))
+        specifier: ^2.0.3
+        version: 2.0.3(vite@8.3.5(@types/node@26.6.6)(esbuild@0.27.0)(jiti@2.7.0))
       '@vitejs/plugin-react':
         specifier: ^6.1.2
         version: 6.2.1(vite@8.3.5(@types/node@26.6.6)(esbuild@0.27.0)(jiti@2.7.0))
@@ -1965,8 +1965,8 @@ packages:
       vitest:
         optional: true
 
-  '@usehercules/vite@1.2.5':
-    resolution: {integrity: sha512-XmQ2cA+sqBozOkZcWBAVEeOzlNzkEyF0bFnMF9k5SrohkzfVZ0YdbR1SCX9dZiotSTD1DDjMay4c1UKJCbGhGg==}
+  '@usehercules/vite@2.0.3':
+    resolution: {integrity: sha512-/E27hKc+WPhsih4d0mLSeB5J4npQUq0Nf0y6v7sSlhT8L1GpjkSMXQFaQZq+/o8qmRGtQKJaEpjjKUAMEeAxDw==}
     peerDependencies:
       vite: ^7.0.0 || ^8.0.0
 
@@ -4856,14 +4856,14 @@ snapshots:
       react: 19.3.1
       vitest: 4.1.12(@types/node@26.6.6)(jsdom@30.1.3)(vite@8.3.5(@types/node@26.6.6)(esbuild@0.27.0)(jiti@2.7.0))
 
-  '@usehercules/vite@1.2.5(vite@8.3.5(@types/node@26.6.6)(esbuild@0.27.0)(jiti@2.7.0))':
+  '@usehercules/vite@2.0.3(vite@8.3.5(@types/node@26.6.6)(esbuild@0.27.0)(jiti@2.7.0))':
     dependencies:
       '@babel/generator': 8.1.0
       '@babel/parser': 8.1.0
       '@babel/traverse': 8.1.0
       '@babel/types': 8.1.0
       estree-walker: 3.0.3
-      magic-string: 0.30.21
+      magic-string: 1.4.5
       vite: 8.3.5(@types/node@26.6.6)(esbuild@0.27.0)(jiti@2.7.0)
 
   '@vitejs/plugin-react-swc@4.3.3(vite@8.3.5(@types/node@26.6.6)(esbuild@0.27.0)(jiti@2.7.0))':
