@@ -82,8 +82,17 @@ release. The generator copies them into the app and writes a lockfile.
 ```sh
 node .github/scripts/materialize-permissions-pilot.mjs \
   --output "$PILOT_DIR/react-spa-olympus" --sdk "$SDK_TGZ" --values "$VALUES_TGZ"
+node .github/scripts/check-permissions-pilot.mjs \
+  --app "$PILOT_DIR/react-spa-olympus" --server "$OLYMPUS_SERVER_BINARY"
 ```
 
+The acceptance check runs a local issuer and development server. It provisions
+two users, signs app and settings requests, switches organizations, runs an
+access report, revokes access during suspension and recovers a disabled org.
+It then deploys a permission split and verifies that one org can approve its
+replacement grants while another keeps using the original permission.
+Set `OLYMPUS_PILOT_POSTGRES_URL` to a disposable database to run the same
+check on PostgreSQL. It defaults to a temporary SQLite database.
 For the generated app's own tests with an unreleased server, run the matching
 binary on loopback with `--dev` and set `OLYMPUS_TEST_URL` to its URL.
 
