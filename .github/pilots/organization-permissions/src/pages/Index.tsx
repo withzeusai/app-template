@@ -118,10 +118,17 @@ function OrganizationAccess({ org }: { org: string }) {
           <li key={source.id}>
             {source.kind === "user" ? "Direct grants" : source.name}:{" "}
             {source.permissions.join(", ")}
-            {source.kind === "group" && (
-              <Button variant="link" onClick={() => setGroup(source.id)}>
-                View group owner
-              </Button>
+            {source.kind === "group" && source.canViewGroup && (
+              <>
+                <Button variant="link" onClick={() => setGroup(source.id)}>
+                  View group owner
+                </Button>
+                {group === source.id && (
+                  <DirectoryError>
+                    <GroupOwner org={org} group={group} />
+                  </DirectoryError>
+                )}
+              </>
             )}
           </li>
         ))}
@@ -135,11 +142,6 @@ function OrganizationAccess({ org }: { org: string }) {
         <Button variant="outline" onClick={() => setCursor(page.cursor)}>
           Next page
         </Button>
-      )}
-      {group && (
-        <DirectoryError key={group}>
-          <GroupOwner org={org} group={group} />
-        </DirectoryError>
       )}
     </>
   );

@@ -215,6 +215,14 @@ try {
     permission: "reports.read",
   });
   await edit(org, 0, { kind: "addMember", group, user });
+  const inherited = await read("bob", "directory:sources", org, { org });
+  assert.equal(inherited.items[0].canViewGroup, false);
+  await assert.rejects(
+    read("bob", "directory:group", org, { org, group }),
+    /403/,
+  );
+  const details = await read("alice", "directory:group", org, { org, group });
+  assert.equal(details.items[0].owner, owner);
   assert.deepEqual(await read("bob", "reports:access", org), {
     view: true,
     run: false,
