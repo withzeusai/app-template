@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useAuthCallback } from "@usehercules/auth/react";
-import { useOlympusAuth, useMutation } from "@usehercules/olympus/react";
-import { api } from "@/backend/.olympus/api";
+import { useOlympusAuth } from "@usehercules/olympus/react";
+import { useSyncCurrentUser } from "./use-sync-current-user";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import {
@@ -27,11 +27,7 @@ export default function AuthCallback({
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isAuthenticated: isBackendAuthenticated } = useOlympusAuth();
-  const updateCurrentUser = useMutation(api.users.updateCurrentUser);
-
-  const onSync = useCallback(async () => {
-    await updateCurrentUser();
-  }, [updateCurrentUser]);
+  const onSync = useSyncCurrentUser();
 
   const navigateHome = useCallback(
     () => navigate("/", { replace: true }),

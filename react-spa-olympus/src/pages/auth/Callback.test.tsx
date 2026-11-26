@@ -19,7 +19,7 @@ const mocks = vi.hoisted(() => {
   return {
     callback,
     backendAuthenticated: false,
-    updateCurrentUser: vi.fn(),
+    syncCurrentUser: vi.fn(),
     userState: undefined as unknown,
   };
 });
@@ -34,7 +34,8 @@ vi.mock("@usehercules/olympus/react", () => ({
     isAuthenticated: mocks.backendAuthenticated,
     isLoading: false,
   }),
-  useMutation: () => mocks.updateCurrentUser,
+  useMutation: () => mocks.syncCurrentUser,
+  useOlympus: () => ({ query: mocks.syncCurrentUser }),
 }));
 
 function CallbackRoutes(
@@ -58,7 +59,7 @@ beforeEach(() => {
   mocks.userState = undefined;
   vi.mocked(mocks.callback.retry).mockReset().mockResolvedValue(undefined);
   vi.mocked(useAuthCallback).mockClear();
-  mocks.updateCurrentUser.mockReset().mockResolvedValue(null);
+  mocks.syncCurrentUser.mockReset().mockResolvedValue({ id: "user" });
 });
 
 describe("AuthCallback", () => {
@@ -126,7 +127,7 @@ describe("AuthCallback", () => {
       expect(screen.getByRole("button", { name: home })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: retry })).toBeInTheDocument();
       expect(screen.queryByText(mocks.callback.error)).not.toBeInTheDocument();
-      expect(mocks.updateCurrentUser).not.toHaveBeenCalled();
+      expect(mocks.syncCurrentUser).not.toHaveBeenCalled();
       expect(mocks.callback.retry).not.toHaveBeenCalled();
     },
   );
@@ -185,7 +186,7 @@ describe("AuthCallback", () => {
 
     await user.click(screen.getByRole("button", { name: "Zur Startseite" }));
     expect(screen.getByText("App home")).toBeInTheDocument();
-    expect(mocks.updateCurrentUser).not.toHaveBeenCalled();
+    expect(mocks.syncCurrentUser).not.toHaveBeenCalled();
   });
 
   it("preserves the backend authentication and sync callbacks", async () => {
@@ -196,7 +197,7 @@ describe("AuthCallback", () => {
     expect(
       vi.mocked(useAuthCallback).mock.lastCall?.[0]?.isBackendAuthenticated,
     ).toBe(false);
-    expect(mocks.updateCurrentUser).not.toHaveBeenCalled();
+    expect(mocks.syncCurrentUser).not.toHaveBeenCalled();
 
     mocks.backendAuthenticated = true;
     rerender(<CallbackRoutes messages={authCallbackMessages.de} />);
@@ -204,7 +205,7 @@ describe("AuthCallback", () => {
     const options = vi.mocked(useAuthCallback).mock.lastCall?.[0];
     expect(options?.isBackendAuthenticated).toBe(true);
     await options?.onSync?.();
-    expect(mocks.updateCurrentUser).toHaveBeenCalledExactlyOnceWith();
+    expect(mocks.syncCurrentUser).toHaveBeenCalledOnce();
   });
 
   it.each(["onSuccess", "onNoAuthParams"] as const)(
@@ -215,7 +216,7 @@ describe("AuthCallback", () => {
       act(() => vi.mocked(useAuthCallback).mock.lastCall?.[0]?.[callback]?.());
 
       expect(screen.getByText("App home")).toBeInTheDocument();
-      expect(mocks.updateCurrentUser).not.toHaveBeenCalled();
+      expect(mocks.syncCurrentUser).not.toHaveBeenCalled();
       expect(mocks.callback.retry).not.toHaveBeenCalled();
     },
   );

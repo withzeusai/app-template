@@ -40,7 +40,7 @@ async function listTemplateFiles(repositoryRoot, template) {
     .map((file) => file.slice(prefix.length));
 }
 
-async function copyTrackedTemplate(repositoryRoot, template, destinationRoot) {
+export async function copyTrackedTemplate(repositoryRoot, template, destinationRoot) {
   const files = await listTemplateFiles(repositoryRoot, template);
 
   if (files.length === 0) {

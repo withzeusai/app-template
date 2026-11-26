@@ -63,3 +63,42 @@ On every push to `main`, `package-and-upload.yml` uploads each template to the
 2. Add it to `templates` in `.github/scripts/materialize-templates.mjs`.
 3. Add it to the `check` matrix in `.github/workflows/ci.yml`.
 4. Add its directory to the npm entry in `.github/dependabot.yml`.
+
+## Internal Olympus permissions pilot
+
+Generate a separate `react-spa-olympus/` directory for an internal app with
+platform-provisioned users and organization permissions. Use an unused output
+path. For a compatible published SDK and server, pin their exact release:
+
+```sh
+node .github/scripts/materialize-permissions-pilot.mjs \
+  --output "$PILOT_DIR/react-spa-olympus" --release "$OLYMPUS_VERSION"
+```
+
+For an unreleased build, pack the built Olympus SDK and values packages with
+`pnpm pack` in their package directories. Supply the two tarballs instead of a
+release. The generator copies them into the app and writes a lockfile.
+
+```sh
+node .github/scripts/materialize-permissions-pilot.mjs \
+  --output "$PILOT_DIR/react-spa-olympus" --sdk "$SDK_TGZ" --values "$VALUES_TGZ"
+node .github/scripts/check-permissions-pilot.mjs \
+  --app "$PILOT_DIR/react-spa-olympus" --server "$OLYMPUS_SERVER_BINARY"
+```
+
+The acceptance check runs a local issuer and development server. It provisions
+two users, signs app and settings requests, switches organizations, runs an
+access report, revokes access during suspension and recovers a disabled org.
+It then deploys a permission split and verifies that one org can approve its
+replacement grants while another keeps using the original permission.
+Set `OLYMPUS_PILOT_POSTGRES_URL` to a disposable database to run the same
+check on PostgreSQL. It defaults to a temporary SQLite database.
+For the generated app's own tests with an unreleased server, run the matching
+binary on loopback with `--dev` and set `OLYMPUS_TEST_URL` to its URL.
+
+For a hosted pilot, commit the generated directory at `react-spa-olympus/`
+on a dedicated template branch. Select that branch and a compatible Olympus
+cell in internal app creation. The pilot requires the Hercules auth backend
+that provisions users in both mapped app databases before issuing their
+tokens. The workspace owner creates the first organization and assigns its
+owner through Hercules settings.
